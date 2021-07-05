@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "title": "Recent Views",
+      "handle": "recently-viewed-products",
+      "template_suffix": "recently_viewed"
+    },
+    "settings": []
+  },
+  {
+    "data": {
+      "title": "Wishlist",
+      "handle": "wishlist",
+      "template_suffix": "wishlist"
+    },
+    "settings": [
+      "#setting-page_wishlist"
+    ]
+  },
+  {
+    "data": {
+      "title": "Shortcode",
+      "handle": "shortcode",
+      "template_suffix": "shortcode"
+    },
+    "settings": []
+  }
+]

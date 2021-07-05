@@ -1,0 +1,67 @@
+{%- if section.blocks.size > 0 -%}
+   {%- assign on_active_first = section.settings.active_first -%}
+   <div class="{{section.settings.accordion_style}} nt_accordions_js w_100">
+      {%- for block in section.blocks -%}
+            <div class="tab_text sp-accordion{%- if forloop.first and on_active_first %} active{%- endif -%}">
+               <div class="heading">
+                  <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}</a>
+               </div>
+               <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                  {{ block.settings.text }}
+               </div>
+            </div>
+      {%- endfor -%}
+   </div>
+{%- else -%}
+    <div class="text-center">{%- include 'no-blocks'-%}</div>   
+{%- endif -%}
+{%- schema -%}
+  {
+    "name": "Accordions Faq",
+    "class": "Accordions_faq",
+    "settings": [
+      {
+        "type": "select",
+        "id": "accordion_style",
+        "label": "Accordions style",
+        "default": "sp-accordions",
+        "options": [
+          {
+            "value": "sp-accordions",
+            "label": "Style 1"
+          },
+          {
+            "value": "sp-accordions_2",
+            "label": "Style 2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "active_first",
+        "label": "Enable first active?",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "faq",
+        "name": "Faq",
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Question",
+            "default": "Lorem ipsum dolor sit amet"
+            },
+            {
+            "type": "textarea",
+            "id": "text",
+            "label": "Answer",
+            "default": "<p><strong>Lorem Ipsum<\/strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<\/p>"
+            }
+         ]
+      }
+    ]
+  }
+{% endschema %}

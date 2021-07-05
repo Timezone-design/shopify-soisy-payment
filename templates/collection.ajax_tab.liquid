@@ -1,0 +1,47 @@
+{%- layout none -%}
+{%- if canonical_url contains 'q=' -%}
+{%- assign paginate = canonical_url | split: 'q=' -%}
+{%- assign last = paginate | last -%}
+{%- assign last = last | split: '+' -%}
+  {%- assign convert_index = last[0] | remove: "paginate_" -%}
+  {%- assign paginate_index = convert_index | plus: 0 -%}
+  {%- assign grid_columns = last[1] | remove: "columns_" -%}
+  {%- assign class_md = last[2] | remove: "columns_md_" -%}
+  {%- assign class_xs = last[3] | remove: "columns_xs_" -%}
+  {%- assign show_vendor = last[4] | remove: "vendor_" -%}
+  {%- assign img_size = last[5] | remove: "img_size_" -%}
+  {%- assign use_pagination = last[6] | remove: "use_pagination_" -%}
+  {%- assign countdown = last[7] | remove: "countdown_" -%}
+  {%- assign countdown_timer_style = last[8] | remove: "countdown_style_" -%}
+  {%- assign product_hover = last[9] | remove: "pr_hover_" -%}
+  {%- assign image_size = last[10] | remove: "image_size_" -%}
+  {%- assign ratio = last[11] | remove: "ntratio_" -%}
+  {%- assign position = last[12] | remove: "position_" -%}
+{%- endif -%}
+{%- assign grid_columns_mb = columns_mb -%}
+{%- assign settings_pr_img_size = false -%}
+{%- assign section_settings_countdown = false -%}
+{%- if img_size == 'true' -%}{%- assign settings_pr_img_size = true -%}{%- endif -%}
+{%- if countdown == 'true' -%}{%- assign section_settings_countdown = true -%}{%- endif -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- capture min_html -%}
+      {%- assign current_page = '1' -%}
+      {%- paginate collection.products by paginate_index -%}
+      <div class="products row nt-products-holder {{image_size}} {{ratio}} position_{{position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}">
+        {%- for product in collection.products -%}
+        {%- include 'nt_product_loop' -%}
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 and use_pagination != 'none' -%}
+      <div class="products-footer tc">
+        {%- if use_pagination == 'more-btn-infinite' or use_pagination == 'more-btn' -%}
+        {%- assign next_url =  paginate.next.url | split: '?' | last -%}
+        <a href="{{paginate.next.url | replace: 'ajax_tab', 'ajax' }}" class="pr tu fwb ls__2 nt-products-load-more{%- if use_pagination == 'more-btn-infinite' %} load-on-scroll{%- endif -%}"><span class="load-label">{{ 'products.grid_items.load_more' | t }}</span><span class="load-finished dn">{{ 'products.grid_items.load_finished' | t }}</span><span class="loading-label flex pa">{{ 'products.grid_items.loading' | t }}</span></a>
+        {%- else -%}
+        <a href="{{ collection.url }}" class="nt_btn_view tu fwb ls__2">{{ 'products.grid_items.view_more' | t }}</a>
+        {%- endif -%}
+      </div>
+      {%- endif -%}
+      {%- endpaginate -%}
+{%- endcapture -%}
+{{min_html | strip_newlines | remove: "  "}} 

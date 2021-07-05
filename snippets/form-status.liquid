@@ -1,0 +1,18 @@
+{% if form.posted_successfully? %}
+  <p class="form-message form-message--success shopify-message" tabindex="-1" data-form-status="success">
+    {%- if notify_me == '1' -%}{{ 'products.product.success_notify_me' | t }}{%- else -%}{{ 'contact.form.post_success' | t }}{%- endif -%}
+  </p>
+{% endif %}
+
+{%- if form.errors -%}
+  <div class="form-message form-message--error shopify-error">
+    <ul>
+      {% for field in form.errors %}
+        <li>
+          {% comment %} the href should match the input's id {% endcomment %}
+          <a href="#{{ formId }}-{{ field }}">{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{%- endif -%}

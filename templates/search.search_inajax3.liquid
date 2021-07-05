@@ -1,0 +1,74 @@
+{%- layout none -%}
+{%- assign limit = settings.products_per_page_search | plus:0 -%}
+{%- assign grid_columns = '3' -%}
+{%- assign class_md = '4' -%}
+{%- assign class_xs = '6' -%}
+{%- assign settings_pr_img_size = settings.use_eq_height_search -%}
+{%- assign show_vendor = settings.show_vendor_search -%}
+{%- assign shop_sidebar = settings.shop_sidebar -%}
+{%- assign coll_style = settings.search_style -%}
+{%- assign use_pagination = settings.use_pagination_search -%}
+{%- assign section_settings_countdown = settings.sale_countdown_search -%}
+{%- assign countdown_timer_style = settings.search_countdown_style -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- capture min_html -%}
+{%- paginate search.results by limit -%}
+<div class="nt-products-element">
+   <div class="products elements-grid row nt-products-holder pagination-arrows" id="nt_data_products">
+      {%- for item in search.results -%}
+         {%- if item.object_type == 'product' -%}
+          {%- include 'nt_product_loop',product:item -%}
+         {%- elsif item.object_type == 'article' -%}
+            {%- assign article = item -%}
+            <div class="blog_item style_3 col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item grid nt-grid-item hover-fade spb_animate">
+               <article class="post-{{article.id}}">
+                  {%- if settings_pr_img_size and article.image -%}
+                     <div class="article__grid-image-wrapper pr oh product-img hover-{{settings.post_hover_effect}}">
+                        <a class="db pr nt-pr-image-link nt_img_ratio lazyload nt_bg_lz" href="{{ article.url }}" data-bgset="{%- include 'bgset', image: article.image -%}" data-sizes="auto" data-parent-fit="cover"></a>
+                     </div>
+                  {%- elsif article.image -%}
+                     {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                     <div class="article__grid-image-wrapper product-img pr oh hover-{{settings.post_hover_effect}}">
+                        <a class="db pr" href="{{ article.url }}">
+                          <img class="article__grid-image w_100 lazyload" src="{{ article.image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ article.image.aspect_ratio }}" data-sizes="auto" alt="{{ article.image.alt | escape }}">
+                          <div class="nt-wrap-lazy"></div>
+                        </a>
+                     </div>
+                  {%- endif -%}
+                  <div class="post-info">
+                      {%- if settings.blog_show_author -%}<span class="post-author mr__5">{{ 'blogs.article.by' | t }} <span class="cd">{{ article.author }}</span></span>{%- endif -%}{%- if settings.blog_show_date -%}<span class="post-time">{{ 'blogs.article.on' | t }} <span class="cd">{{ article.published_at | time_tag: format: 'month_day_year' }}</span></span>{%- endif -%}
+                     <h5 class="blog_title fwb mb__10"><a href="{{ article.url }}">{{ article.title }}</a></h5>
+                     {%- if settings.article_excerpt and article.excerpt.size > 0 -%}
+                         <div class="post-content mb__10">{{ article.excerpt | strip_html }}</div>
+                     {%- elsif settings.article_excerpt -%}
+                         <div class="post-content mb__10">{{ article.content | strip_html | truncatewords: 15, " […]" }}</div>
+                     {%- endif -%}
+                     {%- if settings.blog_show_read_more -%}
+                        <div class="post-action mt__10">
+                           {%- if settings.blog_show_read_more -%}<a href="{{ article.url }}" class="{{before_block}} post-read-more">{{ 'blogs.article.read_more' | t }} <i class="icon-arrow-right icons ml__5"></i></a>{%- endif -%}
+                        </div>
+                     {%- endif -%}
+                  </div>
+               </article>
+            </div>
+           {%- else -%}
+           <div class="col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item grid nt-grid-item hover-fade spb_animate">
+               <div class="grid-search__page-link nasa-content-group product-info-wrap">
+                  <h3 class="name pr fs__14 fwb"><a class="cd chp" href="{{ item.url }}">{{ item.title }}</a></h3>
+                  <p class="mt__5 dib">{{ item.content | strip_html | truncatewords: 40, " […]" }}</p>
+               </div>
+            </div>
+         {%- endif -%}
+       {%- endfor -%}
+   </div>
+   <div id="shopify_result_count">{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = search.results.size | plus:paginate.current_offset -%}{%- if current_tags == blank -%}{%- if limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{{ 'collections.general.results_with_count' | t:count:1,curent_count:current_product_size,pr_count:search.results_count }}{%- endif -%}{%- elsif limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = search.results.size | plus:paginate.current_offset -%}{{ 'collections.general.results_with_count' | t:count:1,curent_count:current_product_size,pr_count:paginate.items }}{%- endif -%}</div>
+   {%- if paginate.pages > 1 -%}
+   <div class="products-footer" id="nt_data_arrow" data-status="{%- if paginate.next.is_link -%}have-posts{%- else -%}no-more-posts{%- endif -%}">
+      <a id="nt_section_previous" href="{%- if paginate.previous.is_link -%}{{ paginate.previous.url }}{%- else -%}javascript:void(0);{%- endif -%}" class="btn jas-products-load-prev{% unless paginate.previous.is_link %} disabled{% endunless %}">Load previous products</a>
+      <a id="nt_section_next" href="{%- if paginate.next.is_link -%}{{ paginate.next.url }}{%- else -%}javascript:void(0);{%- endif -%}" class="btn jas-products-load-next{% unless paginate.next.is_link %} disabled{% endunless %}">Load next products</a>
+   </div>
+   {%- endif -%}
+</div>
+{%- endpaginate -%}
+{%- endcapture -%}
+{{min_html | strip_newlines | remove: "  "}} 

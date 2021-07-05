@@ -1,0 +1,425 @@
+{%- include 'style_mp_section' -%}
+{%- assign image_size = '170x' -%}
+<div class="nt_custom_{{section.id}}{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+   {%- assign sett_title = section.settings.title -%}
+   {%- assign sett_sub_title = section.settings.sub_title -%}
+   {%- assign style_title = section.settings.style_title -%}
+   {%- include 'nt_section_title' with style_title -%}
+   {%- assign view = section.settings.view -%}
+   <div class="row {{view}} image_videos" data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }} ]}'>
+      {%- for block in section.blocks -%}
+            {%- case block.type -%}
+            {%- when 'video' -%}
+               <div class="{%- if section.blocks.size == 1 %} col-12{%- else %} col-12 col-lg-6{%- endif -%}">
+                  <div class="column-inner{%- if check %} gl_mb_8h{%- else %} gl_mb_4{%- endif -%}">
+                    <div class="spb_wrapper">
+                      <div class="spb_video_widget spb_content_element clearfix gl_video-aspect-ratio-{{block.settings.ratio}} gl_video-el-width-{{block.settings.width}} gl_video-align-{{block.settings.alignment}}">
+                        <div class="spb_wrapper">
+                          <div class="spb_video_wrapper">
+                          {%- if block.settings.video_url == blank -%}
+                             <iframe class="lazyload" data-src="//www.youtube.com/embed/_9VUPq3SxOc?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+                          {% elsif block.settings.video_url.type == "vimeo" %}
+                             <iframe class="lazyload" data-src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}" width="640" height="390" frameborder="0" title="{{shop.name}}" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="true"></iframe>
+                          {% elsif block.settings.video_url.type == "youtube" %}
+                             <iframe class="lazyload" width="640" height="390" data-src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}?feature=oembed" frameborder="0" allowfullscreen=""></iframe>
+                          {%- endif -%}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               </div>
+            {%- when 'text' -%}
+               <div class="{%- if section.blocks.size == 1 %} col-12{%- else %} col-12 col-lg-6{%- endif %} mt__25 pl__40">
+                  <div class="row">
+                     <div class="col-12">
+                        <div class="nasa-title clearfix hr-type-none">
+                           <div class="nasa-wrap">
+                              <h2 class="nasa-heading-title"><span class="nasa-title-wrap"><span>{{block.settings.title}}</span><span class="nasa-title-hr"></span></span></h2>
+                           </div>
+                        </div>
+                        <p class="mg__0">{{block.settings.content}}</p>
+                     </div>
+                     {%- assign block_image = block.settings.image -%}
+                     {%- for i in (1..6) -%}
+                        {%- assign img = 'img_' | append:i -%}
+                        {%- assign text = 'text_' | append:i -%}
+                        {%- assign img_id = block.settings[img] -%}
+                        {%- assign text_id = block.settings[text] -%}
+                        {%- if text_id != blank -%}
+                           <div class="mt__35 col-12 col-md-6">
+                              <div class="spb_wrapper">
+                                 {%- if img_id != blank -%}
+                                 <div class="spb_single_image mr__20 mt__5 tl fl">
+                                    <img data-src="{{img_id | img_url: '600x'}}" class="lazyload" alt="{{img_id.alt}}">
+                                 </div>
+                                 {%- endif -%}
+                                 {%- assign arr_text = text_id | split:"," -%}
+                                 <div class="nasa-title clearfix hr-type-none">
+                                    <div class="nasa-wrap">
+                                       <h5 class="nasa-heading-title"><span class="nasa-title-wrap"><span>{{arr_text[0]}}</span><span class="nasa-title-hr"></span></span></h5>
+                                       <div class="nasa-title-desc">{{arr_text[1]}}</div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        {%- endif -%}
+                     {%- endfor -%}
+                  </div>
+               </div>
+         {%- endcase -%}
+      {%- endfor -%}
+      {%- if section.blocks.size == 0 -%}
+          {%- include 'no-blocks' -%}
+      {%- endif -%}
+   </div>
+</div>
+{% schema %}
+  {
+    "name": "Video embed",
+    "class": "nt-section nt_video",
+    "settings": [
+    {
+        "type": "header",
+        "content": "== General Settings"
+      },
+    {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title"
+      },
+      {
+        "type": "select",
+        "id": "style_title",
+        "options": [
+         {
+            "value": "type-simple",
+            "label": "Style 1"
+         },
+         {
+            "value": "hr-type-simple",
+            "label": "Style 2"
+          }
+        ],
+        "label": "Style title"
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "video",
+        "name": "Video Player",
+        "settings": [
+          {
+            "type": "video_url",
+            "id": "video_url",
+            "label": "YouTube or Vimeo link",
+            "accept": ["youtube", "vimeo"]
+          },
+          {
+            "type": "select",
+            "id": "width",
+            "label": "Video width",
+            "info":"Select video width (percentage).",
+            "default": "100",
+            "options": [
+              {
+                "value": "100",
+                "label": "100%"
+              },
+              {
+                "value": "90",
+                "label": "90%"
+              },
+              {
+                "value": "80",
+                "label": "80%"
+              },
+              {
+                "value": "70",
+                "label": "70%"
+              },
+              {
+                "value": "60",
+                "label": "60%"
+              },
+              {
+                "value": "50",
+                "label": "50%"
+              },
+              {
+                "value": "40",
+                "label": "40%"
+              },
+              {
+                "value": "30",
+                "label": "30%"
+              },
+              {
+                "value": "20",
+                "label": "20%"
+              },
+              {
+                "value": "10",
+                "label": "10%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "ratio",
+            "label": "Video aspect ratio",
+            "info":"Select video aspect ratio.",
+            "default": "169",
+            "options": [
+              {
+                "value": "169",
+                "label": "16:9"
+              },
+              {
+                "value": "43",
+                "label": "4:3"
+              },
+              {
+                "value": "235",
+                "label": "2.35:1"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Alignment",
+            "info":"Select video alignment.",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+             {
+              "type": "text",
+              "id": "title",
+              "label": "Title",
+              "default": "About Us"
+            },
+            {
+              "type": "textarea",
+              "id": "content",
+              "label": "Content",
+              "default": "Our mission is to bring together a diverse, curated collection of beautiful furniture and homewares from around the world. I was popularised in the 1960s with the release."
+            },
+           {
+              "type": "image_picker",
+              "id": "img_1",
+              "label": "== Image 1"
+            },
+            {
+              "type": "textarea",
+              "id": "text_1",
+              "label": "content 1",
+              "default": "We work in Global,Lorem ipsum"
+            },
+           {
+              "type": "image_picker",
+              "id": "img_2",
+              "label": "== Image 2"
+            },
+            {
+              "type": "textarea",
+              "id": "text_2",
+              "label": "content 2",
+              "default": "We work in Global,Lorem ipsum"
+            },
+           {
+              "type": "image_picker",
+              "id": "img_3",
+              "label": "== Image 3"
+            },
+            {
+              "type": "textarea",
+              "id": "text_3",
+              "label": "content 3",
+              "default": "We work in Global,Lorem ipsum"
+            },
+           {
+              "type": "image_picker",
+              "id": "img_4",
+              "label": "== Image 4"
+            },
+            {
+              "type": "textarea",
+              "id": "text_4",
+              "label": "content 4",
+              "default": "We work in Global,Lorem ipsum"
+            },
+           {
+              "type": "image_picker",
+              "id": "img_5",
+              "label": "== Image 5"
+            },
+            {
+              "type": "textarea",
+              "id": "text_5",
+              "label": "content 5",
+              "default": "We work in Global,Lorem ipsum"
+            },
+           {
+              "type": "image_picker",
+              "id": "img_6",
+              "label": "== Image 6"
+            },
+            {
+              "type": "textarea",
+              "id": "text_6",
+              "label": "content 6",
+              "default": "We work in Global,Lorem ipsum"
+            },
+            {
+              "type": "text",
+              "id": "btn_title",
+              "label": "Button Title",
+              "default": "More about us"
+            },
+            {
+              "type": "url",
+              "id": "btn_link",
+               "label": "Button Link"
+            }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Video embed",
+        "category": "9. Layout",
+        "blocks": [
+          {
+            "type": "video"
+          },
+          {
+            "type": "text"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

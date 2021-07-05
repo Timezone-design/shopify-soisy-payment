@@ -1,0 +1,29 @@
+{%- unless currency_header -%}
+{%- assign currency_header = false -%}
+{%- endunless -%}
+{%- if currency_header -%}
+    <ul>
+      {%- assign title_dow = settings.language_title | downcase -%}
+       {%- for link in linklists[settings.language_link_list].links -%}
+        {%- assign link_dow = link.title | downcase -%}
+        {%- assign link_dow_2 = link.title | split: '[' | first | downcase -%}
+       <li><a class="currency__item {{top_color }}{%- if link.active or title_dow == link_dow or title_dow == link_dow_2 %} selected{%- endif -%}" href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+       {%- endfor -%}
+    </ul>
+{%- else -%}
+   <li id="nt_preview_lang" class="language menu-item-top nt-has-children preview_lang">
+      <a href="javascript:void(0);" class="value current-currency">{{ settings.language_title }}</a>
+      <div class="nav_dropdown color-scheme-dark">
+         <div>
+            <ul class="sub-menu color-scheme-dark">
+            	{%- assign title_dow = settings.language_title | downcase -%}
+   		       {%- for link in linklists[settings.language_link_list].links -%}
+   		        {%- assign link_dow = link.title | downcase -%}
+   		        {%- assign link_dow_2 = link.title | split: '[' | first | downcase -%}
+   			    <li  class="menu-item"><a class="{%- if link.active or title_dow == link_dow or title_dow == link_dow_2 -%} selected{%- endif -%}" href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+   			    {%- endfor -%}
+            </ul>
+         </div>
+      </div>
+   </li>
+ {%- endif -%}

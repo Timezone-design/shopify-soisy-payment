@@ -1,0 +1,2759 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- if section.blocks.size > 0 -%}
+   <nav role="navigation" class="text-{{settings.nathan_menu_align}} {{section.settings.hover}}">
+      <ul id="nt_main_menu" class="nt_menu clearfix">
+         {%- for block in section.blocks -%}
+            {%- case block.type -%}
+               {%- when 'shop' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign link_list = block.settings.menu -%}
+                  <li id="menu-item-{{block.id}}" class="type_shop fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if link_list != blank -%}
+                        <div class="nav_dropdown pa tl">
+                           <div class="container">
+                              <div class="row">
+                                 <div class="{%- if block.settings.show_pr -%}col-9{%- else -%}col-12{%- endif -%}">
+                                    <div class="row">
+                                       {%- assign child_index = 0 -%}
+                                       {%- assign no_index = 0 -%}
+                                       {%- for link in linklists[link_list].links -%}
+                                           {%- assign child_list_handle = link.title | handleize -%}
+                                          {%- if linklists[child_list_handle].links != blank or link.links != blank -%}
+                                          {%- assign child_index = child_index | plus:1 -%}
+                                          {%- else -%}
+                                          {%- assign no_index = no_index | plus:1 -%}
+                                          {%- endif -%}
+                                       {%- endfor -%}
+                                       {%- if child_index > 5 %}
+                                         {%- assign link_list_size = 6 -%}
+                                       {%- elsif no_index > 6 -%}
+                                         {%- assign link_list_size = child_index |plus:2 -%}
+                                       {%- elsif no_index > 0 -%}
+                                         {%- assign link_list_size = child_index |plus:1 -%}
+                                       {%- else -%}
+                                         {%- assign link_list_size = child_index -%}
+                                       {%- endif -%}
+                                       {%- if link_list_size == 5 -%}{%- assign class = 'lg-15' -%}
+                                       {%- elsif link_list_size > 5 -%}{%- assign class = '2' -%}
+                                       {%- else -%}{%- assign class = 12 | divided_by:link_list_size -%}
+                                       {%- endif -%}
+                                       {%- assign index = 0 -%}
+                                       {%- for link in linklists[link_list].links limit:6 -%}
+                                          {%- assign child_list_handle = link.title | handleize -%}
+                                             {%- if linklists[child_list_handle].links != blank -%}
+                                             {%- assign index = index |plus:1 -%}
+                                             <div class="col-{{class}}">
+                                                <ul class="sub-menu mega-menu">
+                                                   <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                      <ul class="sub-column">
+                                                         {%- for thirdlink in linklists[child_list_handle].links -%}
+                                                            {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                            {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                            <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                                         {%- endfor -%}
+                                                      </ul>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                             {%- elsif link.links != blank -%}
+                                             {%- assign index = index |plus:1 -%}
+                                             <div class="col-{{class}}">
+                                                <ul class="sub-menu mega-menu">
+                                                   <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                      <ul class="sub-column">
+                                                         {%- for thirdlink in link.links -%}
+                                                            {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                            {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                            <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                                         {%- endfor -%}
+                                                      </ul>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                             {%- endif -%}
+                                          {%- if index == 6 -%}{%- break -%}{%- endif -%}
+                                       {%- endfor -%}
+                                       {%- if child_index < 6 and no_index > 0 -%}
+                                          <div class="col-{{class}}">
+                                             <ul class="sub-menu mega-menu">
+                                                {%- assign index_1 = 0 -%}
+                                                {%- for link in linklists[link_list].links -%}
+                                                   {%- assign child_list_handle = link.title | handleize -%}
+                                                   {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                                   <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                   </li>
+                                                   {%- assign index_1 = index_1 |plus:1 -%}
+                                                   {%- endif -%}
+                                                   {% assign forindex = forloop.index -%}
+                                                   {%- if index_1 == 6 -%}{%- break -%}{%- endif -%}
+                                                {%- endfor -%}
+                                             </ul>
+                                          </div>
+                                          {%- if no_index > 6 and child_index < 5 -%}
+                                             <div class="col-{{class}}">
+                                                <ul class="sub-menu mega-menu">
+                                                   {%- assign index_2 = 0 -%}
+                                                   {%- for link in linklists[link_list].links offset:forindex -%}
+                                                      {%- assign child_list_handle = link.title | handleize -%}
+                                                      {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                                      <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                         <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                      </li>
+                                                      {%- assign index_2 = index_2 |plus:1 -%}
+                                                      {%- endif -%}
+                                                      {%- if index_2 == 6 -%}{%- break -%}{%- endif -%}
+                                                   {%- endfor -%}
+                                                </ul>
+                                             </div>
+                                          {%- endif -%}
+                                       {%- endif -%}
+                                    </div>
+                                    {%- if block.settings.show_ship -%}
+                                    <div class="row mt__20 pt__20 nav_border_top">
+                                       {%- assign style = block.settings.style -%}
+                                       {%- for i in (1..3) -%}
+                                          {%- assign shipping_heading = 'shipping_heading_' | append:i -%}
+                                          {%- assign shipping_subtex = 'shipping_subtext_' | append:i -%}
+                                          {%- assign shipping_icon = 'shipping_icon_' | append:i -%}
+                                          {%- assign shipping_heading_id = block.settings[shipping_heading] -%}
+                                          {%- assign shipping_subtex_id = block.settings[shipping_subtex] -%}
+                                          {%- assign shipping_icon_id = block.settings[shipping_icon] -%}
+                                          {%- if shipping_heading_id != blank and shipping_subtex_id != blank -%}
+                                             <div class="spb_animate col-4">
+                                                <div class="service-block {{block.settings.align}} service-style-{{style}}">
+                                                   {%- if shipping_icon_id != blank -%}<div class="service-icon {{block.settings.icon_size}}" style="color: {{block.settings.icon_color}}"><i class="{%- if shipping_icon_id contains 'fa' %}fa {% endif -%}{{shipping_icon_id }}"></i></div>{%- endif -%}
+                                                   <div class="service-text">
+                                                      <h3 class="title text-c fwb fs__20 mb__5" style="color: {{block.settings.title_color}}">{{ shipping_heading_id }}</h3>
+                                                      <p class="mg__0" style="color: {{block.settings.text_color}}">{{ shipping_subtex_id }}</p>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          {%- endif -%}
+                                       {%- endfor -%}
+                                    </div>
+                                    {%- endif -%}
+                                 </div>
+                                 {%- if block.settings.show_pr -%}
+                                 <div class="col-3 nav_border_left_none">
+                                        {%- if block.settings.conditions_setting == '1' -%}
+                                          {%- if block.settings.id_collection == blank -%}
+                                             {%- assign collection = collections["all"] -%}
+                                          {%- else -%}
+                                             {%- assign collection = collections[block.settings.id_collection] -%}
+                                          {%- endif -%}
+                                          {%- if collection.products.size > 0 -%}
+                                            {%- assign show_vendor = block.settings.show_vendor -%}
+                                            {%- assign settings_pr_img_size = block.settings.use_eq_height -%}
+                                            {%- assign img_size = block.settings.image_size -%}
+                                            {%- assign section_settings_countdown = block.settings.sale_countdown -%}
+                                            {%- assign countdown_timer_style = block.settings.countdown_style -%}
+                                             {%- assign class_md = '12' -%}
+                                             {%- assign class_xs = '12' -%}
+                                             {%- assign many_products = block.settings.many_products -%}
+                                                <div class="products row nt-products-holder nt-carousel {{block.settings.image_size}} {{block.settings.image_ratio}} position_{{block.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": 1,"slidesToScroll": 1,"arrows":false,"dots": true,"rtl": {{ settings.use_rtl }}}'>
+                                                   {%- for product in collection.products -%}
+                                                      {%- include 'nt_product_loop' -%}
+                                                      {%- if forloop.index == many_products -%}{%- break -%}{%- endif -%}
+                                                   {%- endfor -%}
+                                                </div>
+                                          {%- endif -%}
+                                       {%- else -%}
+                                          {%- assign check_product_id = '' -%}
+                                            {%- assign show_vendor = block.settings.show_vendor -%}
+                                            {%- assign settings_pr_img_size = block.settings.use_eq_height -%}
+                                            {%- assign img_size = block.settings.image_size -%}
+                                            {%- assign section_settings_countdown = block.settings.sale_countdown -%}
+                                            {%- assign countdown_timer_style = block.settings.countdown_style -%}
+                                          {%- assign class_md = '12' -%}
+                                          {%- assign class_xs = '12' -%}
+                                             {%- capture html_pr -%}
+                                                {%- for i in (1..5) -%}
+                                                   {%- assign product_id = 'product_id_' | append:i -%}
+                                                   {%- assign block_product_id = block.settings[product_id] -%}
+                                                   {%- if block_product_id != blank -%}
+                                                      {% assign product = all_products[block_product_id] %}
+                                                      {%- unless check_product_id contains product.id -%}
+                                                         {%- include 'nt_product_loop' -%}
+                                                      {%- endunless -%}
+                                                      {%- assign check_product_id = check_product_id | append: product.id -%}
+                                                   {%- endif -%}
+                                                {%- endfor-%}
+                                             {%- endcapture -%}
+                                             {%- if check_product_id != blank -%}
+                                                   <div class="products row nt-products-holder nt-carousel {{block.settings.image_size}} {{block.settings.image_ratio}} position_{{block.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": 1,"slidesToScroll": 1,"arrows":false,"dots": true,"rtl": {{ settings.use_rtl }}}'>
+                                                      {{html_pr}}
+                                                   </div>
+                                             {%- endif -%}
+                                       {%- endif -%}
+                                 </div>
+                                 {%- endif -%}
+                              </div>
+                           </div>
+                        </div>
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- when 'banner' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign link_list = block.settings.menu -%}
+                  {%- assign block_image = block.settings.image -%}
+                  <li id="menu-item-{{block.id}}" class="type_banner fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if link_list != blank -%}
+                        <div class="nav_dropdown pa tl">
+                           <div class="container">
+                              <div class="row">
+                                 <div class="{%- if block.settings.show_banner and block_image != blank -%}col-9{%- else -%}col-12{%- endif -%}">
+                                    <div class="row">
+                                       {%- assign child_index = 0 -%}
+                                       {%- assign no_index = 0 -%}
+                                       {%- for link in linklists[link_list].links -%}
+                                          {%- assign child_list_handle = link.title | handleize -%}
+                                          {%- if linklists[child_list_handle].links != blank or link.links != blank -%}
+                                          {%- assign child_index = child_index | plus:1 -%}
+                                          {%- else -%}
+                                          {%- assign no_index = no_index | plus:1 -%}
+                                          {%- endif -%}
+                                       {%- endfor -%}
+                                       {%- if child_index > 5 %}
+                                         {%- assign link_list_size = 6 -%}
+                                       {%- elsif no_index > 6 -%}
+                                         {%- assign link_list_size = child_index |plus:2 -%}
+                                       {%- elsif no_index > 0 -%}
+                                         {%- assign link_list_size = child_index |plus:1 -%}
+                                       {%- else -%}
+                                         {%- assign link_list_size = child_index -%}
+                                       {%- endif -%}
+                                       {%- if link_list_size == 5 -%}{%- assign class = 'lg-15' -%}
+                                       {%- elsif link_list_size > 5 -%}{%- assign class = '2' -%}
+                                       {%- else -%}{%- assign class = 12 | divided_by:link_list_size -%}
+                                       {%- endif -%}
+                                       {%- assign index = 0 -%}
+                                       {%- for link in linklists[link_list].links -%}
+                                          {%- assign child_list_handle = link.title | handleize -%}
+                                             {%- if linklists[child_list_handle].links != blank -%}
+                                             {%- assign index = index |plus:1 -%}
+                                             <div class="col-{{class}}">
+                                                <ul class="sub-menu mega-menu">
+                                                   <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                      <ul class="sub-column">
+                                                         {%- for thirdlink in linklists[child_list_handle].links -%}
+                                                            {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                            {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                            <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                                         {%- endfor -%}
+                                                      </ul>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                             {%- elsif link.links != blank -%}
+                                             {%- assign index = index |plus:1 -%}
+                                             <div class="col-{{class}}">
+                                                <ul class="sub-menu mega-menu">
+                                                   <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                      <ul class="sub-column">
+                                                         {%- for thirdlink in link.links -%}
+                                                            {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                            {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                            <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                                         {%- endfor -%}
+                                                      </ul>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                             {%- endif -%}
+                                          {%- if index == 6 -%}{%- break -%}{%- endif -%}
+                                       {%- endfor -%}
+                                       {%- if child_index < 6 and no_index > 0 -%}
+                                          <div class="col-{{class}}">
+                                             <ul class="sub-menu mega-menu">
+                                                {%- assign index_1 = 0 -%}
+                                                {%- for link in linklists[link_list].links -%}
+                                                   {%- assign child_list_handle = link.title | handleize -%}
+                                                   {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                                   <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                   </li>
+                                                   {%- assign index_1 = index_1 |plus:1 -%}
+                                                   {%- endif -%}
+                                                   {% assign forindex = forloop.index -%}
+                                                   {%- if index_1 == 6 -%}{%- break -%}{%- endif -%}
+                                                {%- endfor -%}
+                                             </ul>
+                                          </div>
+                                          {%- if no_index > 6 and child_index < 5 -%}
+                                             <div class="col-{{class}}" forindex='{{forindex}}'>
+                                                <ul class="sub-menu mega-menu">
+                                                   {%- assign index_2 = 0 -%}
+                                                   {%- for link in linklists[link_list].links offset:forindex -%}
+                                                      {%- assign child_list_handle = link.title | handleize -%}
+                                                      {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                                      <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                         <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                                      </li>
+                                                      {%- assign index_2 = index_2 |plus:1 -%}
+                                                      {%- endif -%}
+                                                      {%- if index_2 == 6 -%}{%- break -%}{%- endif -%}
+                                                   {%- endfor -%}
+                                                </ul>
+                                             </div>
+                                          {%- endif -%}
+                                       {%- endif -%}
+                                    </div>
+                                    {%- if block.settings.show_ship -%}
+                                    <div class="row mt__20 pt__20 nav_border_top">
+                                       {%- assign style = block.settings.style -%}
+                                       {%- for i in (1..3) -%}
+                                          {%- assign shipping_heading = 'shipping_heading_' | append:i -%}
+                                          {%- assign shipping_subtex = 'shipping_subtext_' | append:i -%}
+                                          {%- assign shipping_icon = 'shipping_icon_' | append:i -%}
+                                          {%- assign shipping_heading_id = block.settings[shipping_heading] -%}
+                                          {%- assign shipping_subtex_id = block.settings[shipping_subtex] -%}
+                                          {%- assign shipping_icon_id = block.settings[shipping_icon] -%}
+                                          {%- if shipping_heading_id != blank and shipping_subtex_id != blank -%}
+                                             <div class="spb_animate col-4">
+                                                <div class="service-block {{block.settings.align}} service-style-{{style}}">
+                                                   {%- if shipping_icon_id != blank -%}<div class="service-icon {{block.settings.icon_size}}" style="color: {{block.settings.icon_color}}"><i class="{%- if shipping_icon_id contains 'fa' %}fa {% endif -%}{{shipping_icon_id }}"></i></div>{%- endif -%}
+                                                   <div class="service-text">
+                                                      <h3 class="title text-c fwb fs__20 mb__5" style="color: {{block.settings.title_color}}">{{ shipping_heading_id }}</h3>
+                                                      <p class="mg__0" style="color: {{block.settings.text_color}}">{{ shipping_subtex_id }}</p>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          {%- endif -%}
+                                       {%- endfor -%}
+                                    </div>
+                                    {%- endif -%}
+                                 </div>
+                                 {%- if block.settings.show_banner and block_image != blank -%}
+                                 {%- assign block_url = block.settings.url -%}
+                                 <div class="col-3 nav_border_left_none">
+                                    <a class="db nt-promotion oh pr nt_zoom_img_banner middle center"{%- if block_url != blank %} href="{{block_url}}"{%- endif -%}>
+                                       <div class="nt_banner_img">
+                                          {%- if block_image != blank -%}
+                                          {%- assign img_url = block_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                                          <img src="{{ block_image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block_image.aspect_ratio }}"  data-sizes="auto" class="w_100 lazyload ts__05 attachment-shop_catalog size-shop_catalog" alt="{{block_image.alt}}" >
+                                          <div class="nt-wrap-lazy"></div>
+                                          {%- else -%}
+                                          <img src="https://placehold.it/700x500/eee/999" alt="placehold" class="ts__05 w_100">
+                                         {%- endif -%}
+                                       </div>
+                                    </a>   
+                                 </div>
+                                 {%- endif -%}
+                              </div>
+                           </div>
+                        </div>
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- when 'simple' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign position = block.settings.position -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign link_list = block.settings.menu -%}
+                  <li id="menu-item-{{block.id}}" class="type_simple autowidth menu_has_offsets menu-{{position}} pr menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     {%- if label contains 'nt_demo' -%}
+                        <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and label != 'nt_demo' and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label | remove:'nt_demo'}}</span>{%- endif -%}</a>
+                        {%- if link_list != blank -%}
+                           <div class="nav_dropdown pa tl">
+                              {%- assign child_index = 0 -%}
+                              {%- assign no_index = 0 -%}
+                              {%- for link in linklists[link_list].links -%}
+                                  {%- assign child_list_handle = link.title | handleize -%}
+                                 {%- if linklists[child_list_handle].links != blank or link.links != blank -%}
+                                 {%- assign child_index = child_index | plus:1 -%}
+                                 {%- else -%}
+                                 {%- assign no_index = no_index | plus:1 -%}
+                                 {%- endif -%}
+                              {%- endfor -%}
+                              {%- if child_index > 5 %}
+                                {%- assign link_list_size = 6 -%}
+                              {%- elsif no_index > 6 -%}
+                                {%- assign link_list_size = child_index |plus:2 -%}
+                              {%- elsif no_index > 0 -%}
+                                {%- assign link_list_size = child_index |plus:1 -%}
+                              {%- else -%}
+                                {%- assign link_list_size = child_index -%}
+                              {%- endif -%}
+                              {%- if link_list_size == 5 -%}{%- assign class = 'lg-15' -%}
+                              {%- elsif link_list_size > 5 -%}{%- assign class = '2' -%}
+                              {%- else -%}{%- assign class = 12 | divided_by:link_list_size -%}
+                              {%- endif -%}
+                              {%- assign index = 0 -%}
+                              {%- for link in linklists[link_list].links -%}
+                                 {%- assign child_list_handle = link.title | handleize -%}
+                                    {%- if linklists[child_list_handle].links != blank -%}
+                                    {%- assign index = index |plus:1 -%}
+                                    <div class="nt_class nt_{{class}}">
+                                       <ul class="sub-menu mega-menu">
+                                          <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                             <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                             <ul class="sub-column">
+                                                {%- for thirdlink in linklists[child_list_handle].links -%}
+                                                   {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                   {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                   {%- assign img_third  = thirdlink.title |  split: '[img_' | last  | split: ']' | first -%}
+                                                   <li class="menu-item">
+                                                      <a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}
+                                                         {%- if thirdlink.title contains '[img_' -%}<span class="menu_hover_img"><img class="lazypreload lazyload" data-src="{{img_third}}"></span>{%- endif -%}
+                                                      </a>
+                                                   </li>
+                                                {%- endfor -%}
+                                             </ul>
+                                          </li>
+                                       </ul>
+                                    </div>
+                                    {%- elsif link.links != blank -%}
+                                    {%- assign index = index |plus:1 -%}
+                                    <div class="nt_class nt_{{class}}">
+                                       <ul class="sub-menu mega-menu">
+                                          <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                             <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                             <ul class="sub-column">
+                                                {%- for thirdlink in link.links -%}
+                                                   {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                   {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                   {%- assign img_third  = thirdlink.title |  split: '[img_' | last  | split: ']' | first -%}
+                                                   <li class="menu-item">
+                                                      <a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}
+                                                         {%- if thirdlink.title contains '[img_' -%}<span class="menu_hover_img"><img class="lazyload" data-src="{{img_third}}"></span>{%- endif -%}
+                                                      </a>
+                                                   </li>
+                                                {%- endfor -%}
+                                             </ul>
+                                          </li>
+                                       </ul>
+                                    </div>
+                                    {%- endif -%}
+                                 {%- if index == 6 -%}{%- break -%}{%- endif -%}
+                              {%- endfor -%}
+                              {%- if child_index < 6 and no_index > 0 -%}
+                                 <div class="nt_class nt_{{class}}">
+                                    <ul class="sub-menu mega-menu">
+                                       {%- assign index_1 = 0 -%}
+                                       {%- for link in linklists[link_list].links -%}
+                                          {%- assign child_list_handle = link.title | handleize -%}
+                                          {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                          <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                             <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                          </li>
+                                          {%- assign index_1 = index_1 |plus:1 -%}
+                                          {%- endif -%}
+                                          {% assign forindex = forloop.index -%}
+                                          {%- if index_1 == 6 -%}{%- break -%}{%- endif -%}
+                                       {%- endfor -%}
+                                    </ul>
+                                 </div>
+                                 {%- if no_index > 6 and child_index < 5 -%}
+                                    <div class="nt_class nt_{{class}}">
+                                       <ul class="sub-menu mega-menu">
+                                          {%- assign index_2 = 0 -%}
+                                          {%- for link in linklists[link_list].links offset:forindex -%}
+                                             {%- assign child_list_handle = link.title | handleize -%}
+                                             {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                             <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                             </li>
+                                             {%- assign index_2 = index_2 |plus:1 -%}
+                                             {%- endif -%}
+                                             {%- if index_2 == 6 -%}{%- break -%}{%- endif -%}
+                                          {%- endfor -%}
+                                       </ul>
+                                    </div>
+                                 {%- endif -%}
+                              {%- endif -%}
+                           </div>
+                        {%- endif -%}
+                     {%- else -%}
+                        <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                        {%- if link_list != blank -%}
+                           <div class="nav_dropdown pa tl">
+                              {%- assign child_index = 0 -%}
+                              {%- assign no_index = 0 -%}
+                              {%- for link in linklists[link_list].links -%}
+                                  {%- assign child_list_handle = link.title | handleize -%}
+                                 {%- if linklists[child_list_handle].links != blank or link.links != blank -%}
+                                 {%- assign child_index = child_index | plus:1 -%}
+                                 {%- else -%}
+                                 {%- assign no_index = no_index | plus:1 -%}
+                                 {%- endif -%}
+                              {%- endfor -%}
+                              {%- if child_index > 5 %}
+                                {%- assign link_list_size = 6 -%}
+                              {%- elsif no_index > 6 -%}
+                                {%- assign link_list_size = child_index |plus:2 -%}
+                              {%- elsif no_index > 0 -%}
+                                {%- assign link_list_size = child_index |plus:1 -%}
+                              {%- else -%}
+                                {%- assign link_list_size = child_index -%}
+                              {%- endif -%}
+                              {%- if link_list_size == 5 -%}{%- assign class = 'lg-15' -%}
+                              {%- elsif link_list_size > 5 -%}{%- assign class = '2' -%}
+                              {%- else -%}{%- assign class = 12 | divided_by:link_list_size -%}
+                              {%- endif -%}
+                              {%- assign index = 0 -%}
+                              {%- for link in linklists[link_list].links -%}
+                                 {%- assign child_list_handle = link.title | handleize -%}
+                                    {%- if linklists[child_list_handle].links != blank -%}
+                                    {%- assign index = index |plus:1 -%}
+                                    <div class="nt_class nt_{{class}}">
+                                       <ul class="sub-menu mega-menu">
+                                          <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                             <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                             <ul class="sub-column">
+                                                {%- for thirdlink in linklists[child_list_handle].links -%}
+                                                   {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                   {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                   <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                                {%- endfor -%}
+                                             </ul>
+                                          </li>
+                                       </ul>
+                                    </div>
+                                    {%- elsif link.links != blank -%}
+                                    {%- assign index = index |plus:1 -%}
+                                    <div class="nt_class nt_{{class}}">
+                                       <ul class="sub-menu mega-menu">
+                                          <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                             <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                             <ul class="sub-column">
+                                                {%- for thirdlink in link.links -%}
+                                                   {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                   {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                   <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                                {%- endfor -%}
+                                             </ul>
+                                          </li>
+                                       </ul>
+                                    </div>
+                                    {%- endif -%}
+                                 {%- if index == 6 -%}{%- break -%}{%- endif -%}
+                              {%- endfor -%}
+                              {%- if child_index < 6 and no_index > 0 -%}
+                                 <div class="nt_class nt_{{class}}">
+                                    <ul class="sub-menu mega-menu">
+                                       {%- assign index_1 = 0 -%}
+                                       {%- for link in linklists[link_list].links -%}
+                                          {%- assign child_list_handle = link.title | handleize -%}
+                                          {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                          <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                             <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                          </li>
+                                          {%- assign index_1 = index_1 |plus:1 -%}
+                                          {%- endif -%}
+                                          {% assign forindex = forloop.index -%}
+                                          {%- if index_1 == 6 -%}{%- break -%}{%- endif -%}
+                                       {%- endfor -%}
+                                    </ul>
+                                 </div>
+                                 {%- if no_index > 6 and child_index < 5 -%}
+                                    <div class="nt_class nt_{{class}}">
+                                       <ul class="sub-menu mega-menu">
+                                          {%- assign index_2 = 0 -%}
+                                          {%- for link in linklists[link_list].links offset:forindex -%}
+                                             {%- assign child_list_handle = link.title | handleize -%}
+                                             {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                             <li class="menu-item menu-item-has-children nt-has-children  sub-column-item">
+                                                <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                             </li>
+                                             {%- assign index_2 = index_2 |plus:1 -%}
+                                             {%- endif -%}
+                                             {%- if index_2 == 6 -%}{%- break -%}{%- endif -%}
+                                          {%- endfor -%}
+                                       </ul>
+                                    </div>
+                                 {%- endif -%}
+                              {%- endif -%}
+                           </div>
+                        {%- endif -%}
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and label != 'nt_demo' and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- when 'product' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign id_collection = block.settings.id_collection -%}
+                  {%- assign collection = collections[id_collection] -%}
+                  {%- assign many_products = block.settings.many_products -%}
+                  {%- assign section_settings_countdown = block.settings.sale_countdown -%}
+                  {%- assign countdown_timer_style = block.settings.countdown_style -%}
+                  {%- assign grid_columns = '12' -%}
+                  {%- assign class_md = '12' -%}
+                  {%- assign class_xs = '12' -%}
+                  {%- assign block_image = block.settings.image -%}
+                  <li id="menu-item-{{block.id}}" class="type_product fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if collection != blank -%}
+                        <div class="nav_dropdown pa tl">
+                          <div class="container">
+                           <div class="products row nt-products-holder nt-carousel {{block.settings.image_size}} {{block.settings.image_ratio}} position_{{block.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": {{ block.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ block.settings.use_autoplay }}, "autoplaySpeed": {{ block.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{block.settings.use_loop}}, "arrows": {{block.settings.use_arrows}},"dots": {{block.settings.use_dots}} }'>
+                              {%- for product in collection.products -%}
+                                 {%- include 'nt_product_loop' -%}
+                                 {%- if forloop.index == many_products -%}{%- break -%}{%- endif -%}
+                              {%- endfor -%}
+                           </div>
+                           {%- if block.settings.show_banner and block_image != blank -%}
+                            {%- assign block_url = block.settings.url -%}
+                            <div class="img_banner mt__30">
+                              <a class="db nt-promotion oh pr nt_zoom_img_banner middle center"{%- if block_url != blank %} href="{{block_url}}"{%- endif -%}>
+                                <div class="nt_banner_img tc">
+                                  {%- if block_image != blank -%}
+                                  {%- assign img_url = block_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                                  <img src="{{ block_image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block_image.aspect_ratio }}"  data-sizes="auto" class="w_100 lazyload ts__05 attachment-shop_catalog size-shop_catalog" alt="{{block_image.alt}}" >
+                                  <div class="nt-wrap-lazy"></div>
+                                  {%- endif -%}
+                                </div>
+                              </a>   
+                            </div>
+                            {%- endif -%}
+                         </div>
+                        </div>
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- when 'tabs' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign many_products = block.settings.many_products -%}
+                  {%- assign grid_columns = '12' -%}
+                  {%- assign class_md = '12' -%}
+                   {%- assign class_xs = '12' -%}
+                  {%- assign product_hover = 'hover-fade' -%}
+                   {%- assign current_page = '1' -%}
+                   {%- assign paginate_index = many_products | plus: 0 -%}
+                  {%- assign show_vendor = block.settings.show_vendor -%}
+                  {%- assign settings_pr_img_size = block.settings.use_eq_height -%}
+                  {%- assign img_size = block.settings.image_size -%}
+                  {%- assign section_settings_countdown = block.settings.sale_countdown -%}
+                  {%- assign countdown_timer_style = block.settings.countdown_style -%}
+                  <li id="menu-item-{{block.id}}" class="type_tabs fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- assign ck_cat = false -%}
+                    {%- capture get_cat -%}
+                        {%- for i in (1..5) -%}
+                        {%- assign id_collection = 'id_collection_' | append:i -%}
+                        {%- assign collection = collections[block.settings[id_collection]] -%}
+                          {%- if collection != blank and collection.all_products_count > 0 %}{%- assign ck_cat = true -%}
+                          <li class="nt_tta-tab li_ajax{%- if forloop.first %} nt_active{%- endif -%}" data-atts='{{ collection.url }}?&q=paginate_{{paginate_index}}+vendor_{{ show_vendor }}+img_size_{{ settings_pr_img_size }}+countdown_{{ section_settings_countdown }}+countdown_style_{{ countdown_timer_style }}+sidetoshow_{{block.settings.sidetoshow}}+autoplay_{{block.settings.use_autoplay}}+autoplaySpeed_{{block.settings.slider_speed}}+infinite_{{block.settings.use_loop}}+arrows_{{block.settings.use_arrows}}+dots_{{block.settings.use_dots}}+slidesToShow_1024_2+slidesToShow_600_2+slidesToShow_480_2+pr_hover_{{ product_hover }}+image_size_{{img_size}}+ntratio_{{block.settings.image_ratio}}+position_{{block.settings.image_position}}&view=ajax_tab_owl'>
+                            <a href="#{{block.id}}_{{i}}"><span class="nt_tta-title-text pr db tu">{{collection.title}}</span></a>
+                          </li>
+                          {%- endif -%}
+                        {%- endfor -%}
+                     {%- endcapture -%}
+                    {%- if ck_cat -%}
+                        <div class="nav_dropdown pa tl">
+                          <div class="container nt_tta-container">
+                            <div class="row">
+                              <div class="col-3">
+                                <ul class="hover_tabs_ajax nt_tta-tabs-list products_tabs_ajax">
+                                  {{get_cat}}
+                                </ul>
+                              </div>
+                              <div class="col-9 nt_tta-tabs-container">
+                                <div class="nt_tta-panels-container">
+                                    <div class="nt-products-loader"></div>
+                                    <div class="nt_tta-panels">
+                                      {%- for i in (1..5) -%}
+                                        {%- assign id_collection = 'id_collection_' | append:i -%}
+                                        {%- assign collection = collections[block.settings[id_collection]] -%}
+                                        {%- if collection != blank and collection.all_products_count > 0 %}
+                                        <div class="nt_tta-panel {%- if forloop.first%} nt_active{%- endif %}" id="{{block.id}}_{{i}}">
+                                          <div class="nt_tta-panel-body">
+                                            <div class="products row nt-products-holder nt-carousel {{block.settings.image_size}} {{block.settings.image_ratio}} position_{{block.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": 4,"slidesToScroll": 1, "autoplay": {{ block.settings.use_autoplay }}, "autoplaySpeed": {{ block.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{block.settings.use_loop}}, "arrows": {{block.settings.use_arrows}},"dots": {{block.settings.use_dots}}}'>
+                                              {%- for product in collection.products -%}
+                                                 {%- include 'nt_product_loop' -%}
+                                                 {%- if forloop.index == many_products -%}{%- break -%}{%- endif -%}
+                                              {%- endfor -%}   
+                                             </div>
+                                          </div>
+                                        </div>
+                                        {%- break -%}
+                                        {%- endif -%}
+                                      {%- endfor -%}
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                         </div>
+                        </div>
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- when 'blog' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign blog = blogs[block.settings.id_blog] -%}
+                  {%- assign many_blogs = block.settings.many_blogs -%}
+                  {%- assign settings_pr_img_size = block.settings.use_eq_height -%}
+                  <li id="menu-item-{{block.id}}" class="type_blog fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if blog != blank -%}
+                        <div class="nav_dropdown pa tl">
+                          <div class="container">
+                           <div class="row nt-carousel nt-products-holder {{block.settings.image_size}} {{block.settings.image_ratio}} position_{{block.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": {{ block.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ block.settings.use_autoplay }}, "autoplaySpeed": {{ block.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{block.settings.use_loop}}, "arrows": {{block.settings.use_arrows}},"dots": {{block.settings.use_dots}} }'>
+                              {%- for article in blog.articles limit: many_blogs -%}
+                                <div class="article_nav col-12 tc">
+                                  <div class="article_nav_img">
+                                     {%- if settings_pr_img_size and article.image -%}
+                                     <a class="db pr nt-pr-image-link nt_img_ratio lazyload nt_bg_lz" href="{{ article.url }}" data-bgset="{%- include 'bgset', image: article.image -%}" data-sizes="auto" data-parent-fit="cover"></a>
+                                     {%- elsif article.image -%}
+                                       {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                                       <a class="db pr" href="{{ article.url }}">
+                                         <img class="article__grid-image w_100 lazyload" src="{{ article.image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ article.image.aspect_ratio }}" data-sizes="auto" alt="{{ article.image.alt | escape }}">
+                                         <div class="nt-wrap-lazy"></div>
+                                       </a>
+                                     {%- endif -%}
+                                  </div>
+                                  <h4 class="article_nav_title mg__0 pt__15"><a href="{{ article.url }}">{{ article.title }}</a></h4>
+                                  <div class="article_nav_date mt__5 fwb">{{ article.published_at | time_tag: format: 'month_day_year' }}</div>
+                                </div>
+                              {%- endfor -%}
+                           </div>
+                         </div>
+                        </div>
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- when 'contact' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  <li id="menu-item-{{block.id}}" class="type_contact fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if html == blank -%}
+                        <div class="nav_dropdown pa tl">
+                          <div class="container">
+                            <div class="row">
+                               <div class="col-6">
+                                 <h3 class="pr tu widget-title fwsb fs__16 mb__30 tab-heading">{{ 'contact.form.title' | t }}</h3>
+                                 {% form 'contact' %}
+                                   {%- if form.posted_successfully? -%}
+                                       <div class="shopify-message resetSuccess">{{ 'contact.form.post_success' | t }}</div>
+                                    {%- elsif form.errors -%}
+                                          {%- assign gl_shopify_error = true -%}
+                                          {%- for field in form.errors -%}
+                                             {%- if field == 'form' -%}
+                                                {%- assign error_html = form.errors.messages[field] -%}
+                                             {%- else -%}
+                                                {%- assign error_html = form.errors.translated_fields[field] | append:' ' | append:form.errors.messages[field] -%}
+                                             {%- endif -%}
+                                          {%- endfor -%}
+                                          <ul id="gl_shopify_error" class="shopify-error">
+                                             <li class="html_li" id="nt_html_frm">{{error_html}}</li>
+                                          </ul>
+                                    {%- endif -%}
+                                    <div class="row">
+                                      <p class="col-6">
+                                       {{ 'contact.form.name' | t }}
+                                       <input type="text" class="w__100{% if form.errors contains 'name' %} input--error{% endif %}" id="ContactFormNameNav" name="contact[name]" autocomplete="nope" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+                                      </p>
+                                      <p class="col-6">
+                                         {{ 'contact.form.email' | t }}
+                                         <input type="email" class="w__100{% if form.errors contains 'email' %} input--error{% endif %}" id="ContactFormEmailNav" name="contact[email]" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+                                       </p>
+                                    </div>
+                                   <p>
+                                     {{ 'contact.form.message' | t }}
+                                     <textarea autocomplete="off" rows="6" class="w__100{% if form.errors contains 'body' %} input--error{% endif %}" id="ContactFormMessageNav" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+                                   </p>
+                                   <p><input type="submit" class="btn btn_primary w__100" value="{{ 'contact.form.submit' | t }}"></p>
+                                 {% endform %}
+                               </div>
+                               <div class="col-6"><div class="footer-contact footer__top">{{block.settings.contact}}</div></div>
+                            </div>
+                          </div>
+                        </div>
+                     {%- endif -%}
+                  </li>
+                {%- endif -%}
+               {%- when 'dropdown' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign position = block.settings.position -%}
+                  {%- assign link_list = block.settings.menu -%}
+                  <li id="menu-item-{{block.id}}" class="type_dropdown pr autowidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if link_list != blank -%}
+                        <ul class="sub-menu">
+                           {%- for link in linklists[link_list].links -%}
+                              {%- assign child_list_handle = link.title | handleize -%}
+                              {%- if linklists[child_list_handle].links != blank -%}
+                                  <li class="menu-item has_drop {{position}}">
+                                    <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                    <ul class="sub-column">
+                                       {%- for thirdlink in linklists[child_list_handle].links -%}
+                                          {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                          {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                          {%- assign third_list_handle = thirdlink.title | handleize -%}
+                                          {%- if linklists[third_list_handle].links != blank -%}
+                                             <li class="menu-item has_drop {{position}}"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a>
+                                                <ul class="sub-column">
+                                                   {%- for fourlink in linklists[third_list_handle].links -%}
+                                                      {%- assign icon_four = fourlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                      {%- assign label_four  = fourlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                      <li class="menu-item"><a href="{{ fourlink.url }}">{%- if fourlink.title contains '[icon_' -%}<i class="fa fa-{{icon_four}}"></i>{%- endif -%}{{ fourlink.title | split: '[' | first }}{%- if fourlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_four | handleize}}">{{label_four}}</span>{%- endif -%}</a></li>
+                                                   {%- endfor -%}
+                                                </ul>
+                                             </li>
+                                          {%- elsif thirdlink.links != blank -%}
+                                               <li class="menu-item has_drop {{position}}"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a>
+                                                   <ul class="sub-column">
+                                                      {%- for fourlink in thirdlink.links -%}
+                                                         {%- assign icon_four = fourlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                         {%- assign label_four  = fourlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                         <li class="menu-item"><a href="{{ fourlink.url }}">{%- if fourlink.title contains '[icon_' -%}<i class="fa fa-{{icon_four}}"></i>{%- endif -%}{{ fourlink.title | split: '[' | first }}{%- if fourlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_four | handleize}}">{{label_four}}</span>{%- endif -%}</a></li>
+                                                      {%- endfor -%}
+                                                   </ul>
+                                                </li>
+                                          {%- else -%}
+                                             <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                          {%- endif -%}
+                                       {%- endfor -%}
+                                    </ul>
+                                 </li>
+                              {%- elsif link.links != blank -%}
+                                 <li class="menu-item has_drop">
+                                    <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                    <ul class="sub-column">
+                                       {%- for thirdlink in link.links -%}
+                                          {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                          {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                          {%- if thirdlink.links != blank -%}
+                                               <li class="menu-item has_drop {{position}}"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a>
+                                                   <ul class="sub-column">
+                                                      {%- for fourlink in thirdlink.links -%}
+                                                         {%- assign icon_four = fourlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                         {%- assign label_four  = fourlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                         <li class="menu-item"><a href="{{ fourlink.url }}">{%- if fourlink.title contains '[icon_' -%}<i class="fa fa-{{icon_four}}"></i>{%- endif -%}{{ fourlink.title | split: '[' | first }}{%- if fourlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_four | handleize}}">{{label_four}}</span>{%- endif -%}</a></li>
+                                                      {%- endfor -%}
+                                                   </ul>
+                                                </li>
+                                          {%- else -%}
+                                             <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                          {%- endif -%}
+                                       {%- endfor -%}
+                                    </ul>
+                                 </li>
+                              {%- else -%}
+                                 {%- assign icon_two  = link.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                 {%- assign label_two  = link.title |  split: '[label_' | last  | split: ']' | first -%}
+                                 <li class="menu-item"><a href="{{ link.url }}">{%- if link.title contains '[icon_' -%}<i class="fa fa-{{icon_two}}"></i>{%- endif -%}{{ link.title | split: '[' | first }}{%- if link.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_two | handleize}}">{{label_two}}</span>{%- endif -%}</a></li>
+                              {%- endif -%}
+                           {%- endfor -%}
+                        </ul>
+                     {%- endif -%}
+                  </li>
+                {%- endif -%}
+               {%- when 'html_block' -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  {%- assign html = block.settings.html -%}
+                  <li id="menu-item-{{block.id}}" class="type_html fullwidth menu-item menu-item-hover has-children nt-has-children  menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                     {%- if html != blank -%}
+                        <div class="nav_dropdown pa tl"><div class="container">{{html}}</div></div>
+                     {%- endif -%}
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+               {%- else -%}
+                {%- if block.settings.hidden_block == false -%}
+                  {%- assign label = block.settings.label -%}
+                  {%- assign icon = block.settings.icon -%}
+                  {%- assign label_dow = label | downcase -%}
+                  <li id="menu-item-{{block.id}}" class="type_no_child menu-item menu-item-hover menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                     <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                  </li>
+                  {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+                {%- endif -%}
+            {%- endcase -%}
+         {%- endfor -%}
+      </ul>
+   </nav>
+   {%- if section.settings.label_1 != blank or section.settings.label_2 != blank or section.settings.label_3 != blank or section.settings.label_4 != blank or section.settings.label_5 != blank -%}
+   <style type="text/css">
+   {%- capture min_css -%}
+      {%- for i in (1..5) -%}
+      {%- assign label = 'label_' | append:i -%}
+      {%- assign color = 'color_' | append:i -%}
+      {%- assign label_id = section.settings[label] -%}
+      {%- assign color_id = section.settings[color] -%}
+         {%- if label_id != blank and color_id != blank -%}
+         .nt-menu-label.nt-menu-label-{{label_id | handleize }} {background-color: {{color_id}}}
+         {%- endif -%}
+      {%- endfor -%}
+   {%- endcapture -%}
+   {{min_css | strip_newline | remove: " " }}
+   </style>
+   {%- endif -%}
+{%- endif -%}
+{%- if section.blocks.size == 0 -%}<h5 class="mg__0">Create your first navigation menu sidebar using the sidebar.</h5>{%- endif -%}
+{%- schema -%}
+ {
+  "name": "Main navigation",
+  "class": "menu-section-container menu-section",
+  "settings": [
+      {
+      "type": "select",
+      "id": "hover",
+      "options": [
+        {
+          "value": "hover_side_up",
+          "label": "Hover Slide Up"
+        },
+        {
+          "value": "hover_fade_in",
+          "label": "Hover Fade In"
+        }
+      ],
+      "label": "Hover effect:",
+      "default": "hover_side_up"
+    },
+    {
+      "type": "header",
+      "content": "== Label menu Settings"
+    },
+    {
+      "type":"text",
+      "id":"label_1",
+      "label":"Menu label 1"
+    },
+    {
+      "type":"color",
+      "id":"color_1",
+      "label":"Label color 1"
+    },
+    {
+      "type":"text",
+      "id":"label_2",
+      "label":"Menu label 2"
+    },
+    {
+      "type":"color",
+      "id":"color_2",
+      "label":"Label color 2"
+    },
+    {
+      "type":"text",
+      "id":"label_3",
+      "label":"Menu label 3"
+    },
+    {
+      "type":"color",
+      "id":"color_3",
+      "label":"Label color 3"
+    },
+    {
+      "type":"text",
+      "id":"label_4",
+      "label":"Menu label 4"
+    },
+    {
+      "type":"color",
+      "id":"color_4",
+      "label":"Label color 4"
+    },
+    {
+      "type":"text",
+      "id":"label_5",
+      "label":"Menu label 5"
+    },
+    {
+      "type":"color",
+      "id":"color_5",
+      "label":"Label color 5"
+    }
+  ],
+  "blocks": [
+    {
+      "type":"shop",
+      "name":"Mega Menu Shop",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Shop",
+          "info": "Ex: Shop"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Add sub menu"
+        },
+        {
+          "type": "header",
+          "content": "== Product Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pr",
+          "label": "Show product?",
+          "default": true
+        },
+        {
+          "type": "radio",
+          "id": "conditions_setting",
+          "options": [
+            {
+              "value": "1",
+              "label": "Automatically select products based on conditions"
+            },
+            {
+              "value": "2",
+              "label": "Manually select products"
+            }
+
+          ],
+          "label": "___ Conditions"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show product vendors",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "sale_countdown",
+          "default": false,
+          "label": "Use Sale countdown",
+          "info": "Countdown to the end sale date will be shown. Be sure you have set final date of the product sale price. product.metafields.meta.countdown ( 2018/01/19 )"
+        },
+        {
+          "type": "select",
+          "id": "countdown_style",
+          "label": "Countdown style",
+          "default": "dark",
+          "options": [
+            {
+              "value": "default",
+              "label": "Countdown timer default"
+            },
+            {
+              "value": "light",
+              "label": "Countdown timer light"
+            },
+            {
+              "value": "light_2",
+              "label": "Countdown timer light 2"
+            },
+            {
+              "value": "dark",
+              "label": "Countdown timer dark"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "=== Design Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_eq_height",
+          "label": "Use equal height images?",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "Aspect Ratio",
+          "default": "ratio_nt",
+          "options": [
+            {
+              "value": "ratio2_1",
+              "label": "2:1"
+            },
+            {
+              "value": "ratio16_9",
+              "label": "16:9"
+            },
+            {
+              "value": "ratio8_5",
+              "label": "8:5"
+            },
+            {
+              "value": "ratio3_2",
+              "label": "3:2"
+            },
+            {
+              "value": "ratio4_3",
+              "label": "4:3 (Landscape)"
+            },
+            {
+              "value": "ratio1_1",
+              "label": "1:1 (Square)"
+            },
+            {
+              "value": "ratio_nt",
+              "label": "Ratio Elessi"
+            },
+            {
+              "value": "ratio2_3",
+              "label": "2:3 (Portrait)"
+            },
+            {
+              "value": "ratio1_2",
+              "label": "1:2"
+            },
+            {
+              "value": "ratio_cus1",
+              "label": "Ratio Custom 1"
+            },
+            {
+              "value": "ratio_cus2",
+              "label": "Ratio Custom 2"
+            },
+            {
+              "value": "ratio_cus3",
+              "label": "Ratio Custom 3"
+            },
+            {
+              "value": "ratio_cus4",
+              "label": "Ratio Custom 4"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_size",
+          "label": "Image Size",
+          "default": "nt_cover",
+          "options": [
+            {
+              "value": "nt_cover",
+              "label": "Full"
+            },
+            {
+              "value": "nt_contain",
+              "label": "Auto"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "info":"The first value is the horizontal position and the second value is the vertical.",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "1",
+              "label": "Left Top"
+            },
+            {
+              "value": "2",
+              "label": "Left Center"
+            },
+            {
+              "value": "3",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "4",
+              "label": "Right Top"
+            },
+            {
+              "value": "5",
+              "label": "Right Center"
+            },
+            {
+              "value": "6",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "7",
+              "label": "Center Top"
+            },
+            {
+              "value": "8",
+              "label": "Center Center"
+            },
+            {
+              "value": "9",
+              "label": "Center Bottom"
+            }
+          ],
+          "label": "Image Position",
+          "default": "8"
+        },
+        {
+          "type": "header",
+          "content": "___ Automatically select products"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection",
+          "label": "Collection to use"
+        },
+        {
+          "type": "range",
+          "id": "many_products",
+          "label": "Number of Products to display",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "header",
+          "content": "___ Manually select products"
+        },
+        {
+          "type":"product",
+          "id":"product_id_1",
+          "label":"Choose product 1"
+        },
+        {
+          "type":"product",
+          "id":"product_id_2",
+          "label":"Choose product 2"
+        },
+        {
+          "type":"product",
+          "id":"product_id_3",
+          "label":"Choose product 3"
+        },
+        {
+          "type":"product",
+          "id":"product_id_4",
+          "label":"Choose product 4"
+        },
+        {
+          "type":"product",
+          "id":"product_id_5",
+          "label":"Choose product 5"
+        },
+        {
+          "type": "header",
+          "content": "== Shipping Options"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_ship",
+          "label": "Show Shipping?",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "default": "standard",
+          "options": [
+            {
+              "label": "Standard",
+              "value": "standard"
+            },
+            {
+              "label": "Boxed",
+              "value": "boxed"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align",
+          "label": "Align",
+          "default": "tl",
+          "options": [
+            {
+              "label": "Center",
+              "value": "tc"
+            },
+            {
+              "label": "Left",
+              "value": "tl"
+            },
+            {
+              "label": "Right",
+              "value": "tr"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "icon_size",
+          "label": "Icon size",
+          "default": "medium",
+          "options": [
+            {
+              "label": "Small",
+              "value": "small"
+            },
+            {
+              "label": "Medium",
+              "value": "medium"
+            },
+            {
+              "label": "Large",
+              "value": "large"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#9e9e9e"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Heading color",
+          "default": "#222222"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#878787"
+        },
+        {
+          "type": "header",
+          "content": "__ Shipping Settings 1"
+        },
+        {
+          "type": "text",
+          "id": "shipping_icon_1",
+          "label": "Icon",
+          "info": "ex:pe-7s-car [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)",
+          "default": "pe-7s-car"
+        },
+        {
+          "type": "text",
+          "id": "shipping_heading_1",
+          "label": "Heading",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtext_1",
+          "label": "Subtext",
+          "default": "Free for $50+ orders"
+        },
+        {
+          "type": "header",
+          "content": "__ Shipping Settings 2"
+        },
+        {
+          "type": "text",
+          "id": "shipping_icon_2",
+          "label": "Icon",
+          "info": "ex:pe-7s-car [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)",
+          "default": "pe-7s-car"
+        },
+        {
+          "type": "text",
+          "id": "shipping_heading_2",
+          "label": "Heading",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtext_2",
+          "label": "Subtext",
+          "default": "Free for $50+ orders"
+        },
+        {
+          "type": "header",
+          "content": "__ Shipping Settings 3"
+        },
+        {
+          "type": "text",
+          "id": "shipping_icon_3",
+          "label": "Icon",
+          "info": "ex:pe-7s-car [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)",
+          "default": "pe-7s-car"
+        },
+        {
+          "type": "text",
+          "id": "shipping_heading_3",
+          "label": "Heading",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtext_3",
+          "label": "Subtext",
+          "default": "Free for $50+ orders"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"banner",
+      "name":"Mega Menu Banner",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Banner",
+          "info": "Ex: Banner"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Add sub menu"
+        },
+        {
+          "type": "header",
+          "content": "== Banner Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_banner",
+          "label": "Show banner?",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "label": "Link to",
+          "id": "url",
+          "type": "url"
+        },
+        {
+          "type": "header",
+          "content": "== Shipping Options"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_ship",
+          "label": "Show Shipping?",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "default": "standard",
+          "options": [
+            {
+              "label": "Standard",
+              "value": "standard"
+            },
+            {
+              "label": "Boxed",
+              "value": "boxed"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align",
+          "label": "Align",
+          "default": "tl",
+          "options": [
+            {
+              "label": "Center",
+              "value": "tc"
+            },
+            {
+              "label": "Left",
+              "value": "tl"
+            },
+            {
+              "label": "Right",
+              "value": "tr"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "icon_size",
+          "label": "Icon size",
+          "default": "medium",
+          "options": [
+            {
+              "label": "Small",
+              "value": "small"
+            },
+            {
+              "label": "Medium",
+              "value": "medium"
+            },
+            {
+              "label": "Large",
+              "value": "large"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#9e9e9e"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Heading color",
+          "default": "#222222"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#878787"
+        },
+        {
+          "type": "header",
+          "content": "__ Shipping Settings 1"
+        },
+        {
+          "type": "text",
+          "id": "shipping_icon_1",
+          "label": "Icon",
+          "info": "ex:pe-7s-car [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)",
+          "default": "pe-7s-car"
+        },
+        {
+          "type": "text",
+          "id": "shipping_heading_1",
+          "label": "Heading",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtext_1",
+          "label": "Subtext",
+          "default": "Free for $50+ orders"
+        },
+        {
+          "type": "header",
+          "content": "__ Shipping Settings 2"
+        },
+        {
+          "type": "text",
+          "id": "shipping_icon_2",
+          "label": "Icon",
+          "info": "ex:pe-7s-car [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)",
+          "default": "pe-7s-car"
+        },
+        {
+          "type": "text",
+          "id": "shipping_heading_2",
+          "label": "Heading",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtext_2",
+          "label": "Subtext",
+          "default": "Free for $50+ orders"
+        },
+        {
+          "type": "header",
+          "content": "__ Shipping Settings 3"
+        },
+        {
+          "type": "text",
+          "id": "shipping_icon_3",
+          "label": "Icon",
+          "info": "ex:pe-7s-car [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)",
+          "default": "pe-7s-car"
+        },
+        {
+          "type": "text",
+          "id": "shipping_heading_3",
+          "label": "Heading",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtext_3",
+          "label": "Subtext",
+          "default": "Free for $50+ orders"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"simple",
+      "name":"Mega Menu Simple",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Simple",
+          "info": "Ex: Simple"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Add sub menu"
+        },
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Sub menu position",
+          "default": "auto",
+          "options": [
+            {
+              "value": "auto",
+              "label": "Auto (Default)"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"product",
+      "name":"Mega Menu Product",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Product",
+          "info": "Ex: Product"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection",
+          "label": "Collection to use"
+        },
+        {
+          "type": "range",
+          "id": "many_products",
+          "label": "Number of Products to display",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 6
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show product vendors",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "sale_countdown",
+          "default": false,
+          "label": "Use Sale countdown",
+          "info": "Countdown to the end sale date will be shown. Be sure you have set final date of the product sale price. product.metafields.meta.countdown ( 2018/01/19 )"
+        },
+        {
+          "type": "select",
+          "id": "countdown_style",
+          "label": "Countdown style",
+          "default": "dark",
+          "options": [
+            {
+              "value": "default",
+              "label": "Countdown timer default"
+            },
+            {
+              "value": "light",
+              "label": "Countdown timer light"
+            },
+            {
+              "value": "light_2",
+              "label": "Countdown timer light 2"
+            },
+            {
+              "value": "dark",
+              "label": "Countdown timer dark"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "=== Design Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_eq_height",
+          "label": "Use equal height images?",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "Aspect Ratio",
+          "default": "ratio_nt",
+          "options": [
+            {
+              "value": "ratio2_1",
+              "label": "2:1"
+            },
+            {
+              "value": "ratio16_9",
+              "label": "16:9"
+            },
+            {
+              "value": "ratio8_5",
+              "label": "8:5"
+            },
+            {
+              "value": "ratio3_2",
+              "label": "3:2"
+            },
+            {
+              "value": "ratio4_3",
+              "label": "4:3 (Landscape)"
+            },
+            {
+              "value": "ratio1_1",
+              "label": "1:1 (Square)"
+            },
+            {
+              "value": "ratio_nt",
+              "label": "Ratio Elessi"
+            },
+            {
+              "value": "ratio2_3",
+              "label": "2:3 (Portrait)"
+            },
+            {
+              "value": "ratio1_2",
+              "label": "1:2"
+            },
+            {
+              "value": "ratio_cus1",
+              "label": "Ratio Custom 1"
+            },
+            {
+              "value": "ratio_cus2",
+              "label": "Ratio Custom 2"
+            },
+            {
+              "value": "ratio_cus3",
+              "label": "Ratio Custom 3"
+            },
+            {
+              "value": "ratio_cus4",
+              "label": "Ratio Custom 4"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_size",
+          "label": "Image Size",
+          "default": "nt_cover",
+          "options": [
+            {
+              "value": "nt_cover",
+              "label": "Full"
+            },
+            {
+              "value": "nt_contain",
+              "label": "Auto"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "info":"The first value is the horizontal position and the second value is the vertical.",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "1",
+              "label": "Left Top"
+            },
+            {
+              "value": "2",
+              "label": "Left Center"
+            },
+            {
+              "value": "3",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "4",
+              "label": "Right Top"
+            },
+            {
+              "value": "5",
+              "label": "Right Center"
+            },
+            {
+              "value": "6",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "7",
+              "label": "Center Top"
+            },
+            {
+              "value": "8",
+              "label": "Center Center"
+            },
+            {
+              "value": "9",
+              "label": "Center Bottom"
+            }
+          ],
+          "label": "Image Position",
+          "default": "8"
+        },
+        {
+          "type": "header",
+          "content": "== settings Slider"
+        },
+        {
+          "type": "range",
+          "id": "slider_speed",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "label": "Autoplay Speed in milliseconds",
+          "unit": "sec",
+          "default": 6
+        },
+        {
+          "type": "checkbox",
+          "id": "use_autoplay",
+          "label": "Use autoplay?",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "use_arrows",
+          "label": "Use Arrows?",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "use_dots",
+          "default": true,
+          "label": "Use pagination control?"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_loop",
+          "label": "Use Infinite loop sliding?",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "sidetoshow",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "label": "slides To Show",
+          "default": 4
+        },
+        {
+          "type": "header",
+          "content": "== Banner Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_banner",
+          "label": "Show banner?",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "label": "Link to",
+          "id": "url",
+          "type": "url"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"tabs",
+      "name":"Mega Menu Tabs",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Tabs",
+          "info": "Ex: Tabs"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection_1",
+          "label": "Collection 1 to use"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection_2",
+          "label": "Collection 2 to use"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection_3",
+          "label": "Collection 3 to use"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection_4",
+          "label": "Collection 4 to use"
+        },
+        {
+          "type": "collection",
+          "id": "id_collection_5",
+          "label": "Collection 5 to use"
+        },
+        {
+          "type": "range",
+          "id": "many_products",
+          "label": "Number of Products to display",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 6
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show product vendors",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "sale_countdown",
+          "default": false,
+          "label": "Use Sale countdown",
+          "info": "Countdown to the end sale date will be shown. Be sure you have set final date of the product sale price. product.metafields.meta.countdown ( 2018/01/19 )"
+        },
+        {
+          "type": "select",
+          "id": "countdown_style",
+          "label": "Countdown style",
+          "default": "dark",
+          "options": [
+            {
+              "value": "default",
+              "label": "Countdown timer default"
+            },
+            {
+              "value": "light",
+              "label": "Countdown timer light"
+            },
+            {
+              "value": "light_2",
+              "label": "Countdown timer light 2"
+            },
+            {
+              "value": "dark",
+              "label": "Countdown timer dark"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "=== Design Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_eq_height",
+          "label": "Use equal height images?",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "Aspect Ratio",
+          "default": "ratio_nt",
+          "options": [
+            {
+              "value": "ratio2_1",
+              "label": "2:1"
+            },
+            {
+              "value": "ratio16_9",
+              "label": "16:9"
+            },
+            {
+              "value": "ratio8_5",
+              "label": "8:5"
+            },
+            {
+              "value": "ratio3_2",
+              "label": "3:2"
+            },
+            {
+              "value": "ratio4_3",
+              "label": "4:3 (Landscape)"
+            },
+            {
+              "value": "ratio1_1",
+              "label": "1:1 (Square)"
+            },
+            {
+              "value": "ratio_nt",
+              "label": "Ratio Elessi"
+            },
+            {
+              "value": "ratio2_3",
+              "label": "2:3 (Portrait)"
+            },
+            {
+              "value": "ratio1_2",
+              "label": "1:2"
+            },
+            {
+              "value": "ratio_cus1",
+              "label": "Ratio Custom 1"
+            },
+            {
+              "value": "ratio_cus2",
+              "label": "Ratio Custom 2"
+            },
+            {
+              "value": "ratio_cus3",
+              "label": "Ratio Custom 3"
+            },
+            {
+              "value": "ratio_cus4",
+              "label": "Ratio Custom 4"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_size",
+          "label": "Image Size",
+          "default": "nt_cover",
+          "options": [
+            {
+              "value": "nt_cover",
+              "label": "Full"
+            },
+            {
+              "value": "nt_contain",
+              "label": "Auto"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "info":"The first value is the horizontal position and the second value is the vertical.",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "1",
+              "label": "Left Top"
+            },
+            {
+              "value": "2",
+              "label": "Left Center"
+            },
+            {
+              "value": "3",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "4",
+              "label": "Right Top"
+            },
+            {
+              "value": "5",
+              "label": "Right Center"
+            },
+            {
+              "value": "6",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "7",
+              "label": "Center Top"
+            },
+            {
+              "value": "8",
+              "label": "Center Center"
+            },
+            {
+              "value": "9",
+              "label": "Center Bottom"
+            }
+          ],
+          "label": "Image Position",
+          "default": "8"
+        },
+        {
+          "type": "header",
+          "content": "== settings Slider"
+        },
+        {
+          "type": "range",
+          "id": "slider_speed",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "label": "Autoplay Speed in milliseconds",
+          "unit": "sec",
+          "default": 6
+        },
+        {
+          "type": "checkbox",
+          "id": "use_autoplay",
+          "label": "Use autoplay?",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "use_arrows",
+          "label": "Use Arrows?",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "use_dots",
+          "default": true,
+          "label": "Use pagination control?"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_loop",
+          "label": "Use Infinite loop sliding?",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "sidetoshow",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "label": "slides To Show",
+          "default": 4
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"blog",
+      "name":"Mega Menu Blog",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Blog",
+          "info": "Ex: Blog"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "blog",
+          "id": "id_blog",
+          "label": "Blog to use"
+        },
+        {
+          "type": "range",
+          "id": "many_products",
+          "label": "Number of posts to display",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 6
+        },
+        {
+          "type": "header",
+          "content": "=== Design Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_eq_height",
+          "label": "Use equal height images?",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "Aspect Ratio",
+          "default": "ratio4_3",
+          "options": [
+            {
+              "value": "ratio2_1",
+              "label": "2:1"
+            },
+            {
+              "value": "ratio16_9",
+              "label": "16:9"
+            },
+            {
+              "value": "ratio8_5",
+              "label": "8:5"
+            },
+            {
+              "value": "ratio3_2",
+              "label": "3:2"
+            },
+            {
+              "value": "ratio4_3",
+              "label": "4:3 (Landscape)"
+            },
+            {
+              "value": "ratio1_1",
+              "label": "1:1 (Square)"
+            },
+            {
+              "value": "ratio_nt",
+              "label": "Ratio Elessi"
+            },
+            {
+              "value": "ratio2_3",
+              "label": "2:3 (Portrait)"
+            },
+            {
+              "value": "ratio1_2",
+              "label": "1:2"
+            },
+            {
+              "value": "ratio_cus1",
+              "label": "Ratio Custom 1"
+            },
+            {
+              "value": "ratio_cus2",
+              "label": "Ratio Custom 2"
+            },
+            {
+              "value": "ratio_cus3",
+              "label": "Ratio Custom 3"
+            },
+            {
+              "value": "ratio_cus4",
+              "label": "Ratio Custom 4"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_size",
+          "label": "Image Size",
+          "default": "nt_cover",
+          "options": [
+            {
+              "value": "nt_cover",
+              "label": "Full"
+            },
+            {
+              "value": "nt_contain",
+              "label": "Auto"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "info":"The first value is the horizontal position and the second value is the vertical.",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "1",
+              "label": "Left Top"
+            },
+            {
+              "value": "2",
+              "label": "Left Center"
+            },
+            {
+              "value": "3",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "4",
+              "label": "Right Top"
+            },
+            {
+              "value": "5",
+              "label": "Right Center"
+            },
+            {
+              "value": "6",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "7",
+              "label": "Center Top"
+            },
+            {
+              "value": "8",
+              "label": "Center Center"
+            },
+            {
+              "value": "9",
+              "label": "Center Bottom"
+            }
+          ],
+          "label": "Image Position",
+          "default": "8"
+        },
+        {
+          "type": "header",
+          "content": "== settings Slider"
+        },
+        {
+          "type": "range",
+          "id": "slider_speed",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "label": "Autoplay Speed in milliseconds",
+          "unit": "sec",
+          "default": 6
+        },
+        {
+          "type": "checkbox",
+          "id": "use_autoplay",
+          "label": "Use autoplay?",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "use_arrows",
+          "label": "Use Arrows?",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "use_dots",
+          "default": true,
+          "label": "Use pagination control?"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_loop",
+          "label": "Use Infinite loop sliding?",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "sidetoshow",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "label": "slides To Show",
+          "default": 4
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"contact",
+      "name":"Mega Menu Contact",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Contact",
+          "info": "Ex: Contact"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "textarea",
+          "id": "contact",
+          "label": "Contact info",
+          "default":"<h3 class=\"pr tu widget-title fwsb fs__16 mb__30 tab-heading\">Get in touch<\/h3>\n<div class=\"nt_footer_content entry-content\">\n<p><i class=\"icon-location-pin icons\"> <\/i>451 Wall Street, USA, New York<\/p>\n<p><i class=\"icon-envelope icons\"><\/i><span> <a href=\"mailto:youremail@site.com\">youremail@site.com<\/a><\/span><\/p>\n<p><i class=\"icon-phone icons\"><\/i> <span>+01 23456789 <\/span><\/p>\n<ul class=\"nt_icons nathan-share style_design-default default\">\n<li class=\"facebook\"><a href=\"#\" target=\"_blank\" class=\"\"><i class=\"fa fa-facebook\"><\/i>Facebook<\/a><\/li>\n<li class=\"twitter\"><a href=\"#\" target=\"_blank\" class=\"\"><i class=\"fa fa-twitter\"><\/i>Twitter<\/a><\/li>\n<li class=\"google\"><a href=\"#\" target=\"_blank\" class=\"\"><i class=\"fa fa-google-plus\"><\/i>Google<\/a><\/li>\n<li class=\"pinterest\"><a href=\"#\" target=\"_blank\" class=\"\"><i class=\"fa fa-pinterest\"><\/i>Pinterest<\/a><\/li>\n<li class=\"instagram\"><a href=\"#\" target=\"_blank\" class=\"\"><i class=\"fa fa-instagram\"><\/i>Instagram<\/a><\/li>\n<\/ul>\n<\/div>"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"dropdown",
+      "name":"Mega Menu Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Dropdown",
+          "info": "Ex: Dropdown"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Add sub menu"
+        },
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Sub menu position",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left (Default)"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"html_block",
+      "name":"Mega Menu HTML Custom",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "HTML",
+          "info": "Ex: HTML"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "html",
+          "id": "html",
+          "label": "Custom HTMl",
+          "info": "Create a drop-down menu"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"menu_item_no_children",
+      "name":"Menu item no children",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "no child",
+          "info": "Ex: no child"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

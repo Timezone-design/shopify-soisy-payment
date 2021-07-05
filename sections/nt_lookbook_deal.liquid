@@ -1,0 +1,423 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- include 'style_mp_section' -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = grid_columns -%}
+{%- assign class_xs = '12' -%}
+{%- assign countdown_timer_style = section.settings.countdown_style -%}
+<div id="pin-{{section.id}}" class="pin__wrapper pr nt_custom_{{section.id}} bg_overlay_{{section.settings.overlay}}">
+   <div class="div_overlay"></div>
+   <div class="pin__image">
+      {%- assign image = section.settings.image -%}
+      {%- if image != blank -%}
+         {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+         <img 
+         src="{{ image | img_url: '50x50' }}"
+         data-src="{{ img_url }}"
+         data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" 
+         data-aspectratio="{{ image.aspect_ratio }}" 
+         data-sizes="auto"
+         class="db w_100 attachment-full size-full lazyload lazypreload" alt="{{image.alt}}" >
+         <div class="nt-wrap-lazy"></div>
+      {%- else -%}
+         <img src="{{ 'no_bg_img.jpg' | asset_url }}" alt="no image">
+      {%- endif -%}
+   </div>
+   {%- for block in section.blocks -%}
+      {%- assign top_pin = block.settings.top_pin -%}
+      {%- assign left_pin = block.settings.left_pin -%}
+      {%- assign product = all_products[block.settings.product_id] -%}
+      {%- if product != blank and top_pin != blank and left_pin != blank -%}
+         <div class="{{block.settings.tooltip_design}} pa pin__type pin_{{block.id}} cusor_pointer" aria-label="{{product.title |strip_html}}" style="
+            background-color: {{block.settings.bg}};
+            width: {{block.settings.width}}px;
+            height: {{block.settings.height}}px;
+            top:{%- if top_pin == 100 -%}100%{%- else -%}{{top_pin}}.80886454085634%{%- endif -%};
+            left:{%- if left_pin == 100 -%}100%{%- else -%}{{left_pin}}.43785310734463%{%- endif -%}">
+            <span class="pin__title flex c_center alin_center">{{block.settings.title}}</span>
+            <a href="javascript void(0);" data-ajax="{{product.url}}/?view=quick_view_mpf" class="open-qv-mpf pin__title flex c_center alin_center">{{block.settings.title}}</a>
+            <div class="pin__popup pin__popup--{{block.settings.product_design}} pin__popup--fade">
+               <div class="popup__content popup__content--product">
+                  {%- include 'nt_product_loop' -%}
+               </div>
+            </div>
+         </div>
+      {%- endif -%}
+   {%- endfor -%}
+</div>
+<div class="container wrap_countdown pa-center">
+    <div class="nasa-banner-content {{section.settings.color_scheme}} {{section.settings.align}}">
+       <div class="banner-inner">
+          <h3 class="mt__0 mb__50 fwb">{{section.settings.title}}</h3>
+          {%- if section.settings.sub_title != blank -%}
+          <div class="mb__30 sub_nt_deal price">{{section.settings.sub_title}}</div>
+          {%- endif -%}
+          {%- if section.settings.timer != blank -%}
+            {%- if section.settings.timer contains ',' -%}
+               {%- assign list_countdown = section.settings.timer | replace: ' ,', ',' | replace: ', ', ',' | replace: ' , ', ',' | split: ',' -%}
+               {%- assign year_now = "now" | date: "%Y" | plus:0 -%}
+               {%- assign month_now_text = "now" | date: "%m" | downcase -%}
+               {%- assign month_now = "now" | date: "%m" | plus:0 -%}
+               {%- assign day_now = "now" | date: "%e" | plus:0 -%}
+               {%- assign day_now_text = "now" | date: "%e" | downcase -%}
+               {%- for list in list_countdown -%}
+                    {%- assign countdown = list | split: ' ' | first | replace: ' /', '/' | replace: '/ ', '/' | replace: ' / ', '/' | split: '/' -%}
+                    {%- assign year = countdown[0] | plus:0 -%}
+                   {%- assign month = countdown[1] | plus:0 -%}
+                    {%- assign day = countdown[2] | plus:0 -%}
+                    {%- if year >= year_now and month >= month_now and day >= day_now -%}
+                        {%- assign _user_countdown = list -%}
+                        {%- break -%}
+                    {%- endif -%}
+               {%- endfor -%}
+            {%- else -%}
+               {%- assign _user_countdown = section.settings.timer -%}
+            {%- endif -%}
+               <div class="nt_countdow_page size_ex_large {{countdown_timer_style}}" data-time="{{_user_countdown}} 23:59:59"></div>
+            {%- endif -%}
+          <a class="button small nasa-button-banner mt__50 pr" href="{{section.settings.link}}">{{section.settings.button}}</a>
+       </div>
+    </div>
+ </div>
+{%- schema -%}
+  {
+    "name": "Lookbook Deal",
+    "class": "nt-section nt_lookbook_deal nt_product_deal_4 spb_animate",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Background Image"
+      },
+      {
+        "type": "range",
+        "id": "overlay",
+        "label": "Background overlay",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "%"
+      },
+      {
+        "type": "select",
+        "id": "align",
+        "label": "Align",
+        "default": "tc",
+        "options": [
+          {
+            "label": "Center",
+            "value": "tc"
+          },
+          {
+            "label": "Left",
+            "value": "tl"
+          },
+          {
+            "label": "Right",
+            "value": "tr"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "color_scheme",
+        "label": "Color Scheme",
+        "default": "dark",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light"
+          },
+          {
+            "value": "dark",
+            "label": "Dark"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "timer",
+        "label": "Countdown timer",
+        "info":"2020/04/19",
+        "default": "2020/04/19"
+      },
+      {
+        "type": "select",
+        "id": "countdown_style",
+        "label": "Countdown style",
+        "default": "dark",
+        "options": [
+          {
+            "value": "light",
+            "label": "Countdown timer light"
+          },
+          {
+            "value": "light_2",
+            "label": "Countdown timer light 2"
+          },
+          {
+            "value": "dark",
+            "label": "Countdown timer default"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title: ",
+        "default": "Deals of the day"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title: "
+      },
+      {
+        "type": "text",
+        "id": "button",
+        "label": "Button Title: ",
+        "default": "SHOP NOW"
+      },
+      {
+        "type":"url",
+        "id":"link",
+        "label":"Link",
+        "info": "Optional"
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [{
+       "type": "pin",
+       "name": "Pin",
+       "settings": [
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+           "default": "$59"
+         },
+         {
+           "type": "range",
+           "id": "top_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Top",
+           "default": 46
+         },
+         {
+           "type": "range",
+           "id": "left_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Left",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "width",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Width",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "height",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Height",
+           "default": 30
+         },
+         {
+           "type": "color",
+           "id": "bg",
+           "label": "__ Select Color",
+           "default": "#f76b6a"
+         },
+         {
+           "type": "select",
+           "id": "tooltip_design",
+           "options": [
+             {
+               "value": "tooltip_top",
+               "label": "Top"
+             },
+             {
+               "value": "tooltip_top_left",
+               "label": "Top Left"
+             },
+             {
+               "value": "tooltip_top_right",
+               "label": "Top Right"
+             },
+             {
+               "value": "tooltip_bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "tooltip_bottom_left",
+               "label": "Bottom Left"
+             },
+             {
+               "value": "tooltip_bottom_right",
+               "label": "Bottom Right"
+             },
+             {
+               "value": "tooltip_left",
+               "label": "Left"
+             },
+             {
+               "value": "tooltip_right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Tooltip",
+           "default": "tooltip_top"
+         },
+         {
+             "type":"product",
+             "id":"product_id",
+             "label":"Choose product"
+         },
+         {
+           "type": "select",
+           "id": "product_design",
+           "options": [
+             {
+               "value": "top",
+               "label": "Top"
+             },
+             {
+               "value": "bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Product",
+           "default": "top"
+         }
+       ]
+    }],
+    "presets": [
+      {
+        "name": "Lookbook Deal",
+        "category": "2. Lookbook",
+        "blocks": [
+           {
+             "type": "pin"
+           }
+         ]
+      }
+    ]
+  }
+{% endschema %}

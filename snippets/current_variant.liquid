@@ -1,0 +1,21 @@
+{%- assign check_my_variant = false -%}
+{%- if current_tags != blank and product.has_only_default_variant == false -%}
+  {%- for tag_color in current_tags -%}
+      {%- assign downcased_tag_color = tag_color | split:'  ' | last | handle -%}
+      {%- for variant in product.variants -%}
+         {%- assign downcased_variant_title = variant.options | handle -%}
+         {%- if downcased_variant_title contains downcased_tag_color -%}
+           {%- assign current_variant = variant -%}{%- assign check_my_variant = true -%}
+           {%- break -%}
+         {%- endif  -%}
+      {%- endfor -%}
+      {%- if check_my_variant -%}{%- break -%}{%- endif  -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if check_my_variant == false -%}
+   {%- if product.selected_variant != blank -%}
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+   {%- else -%}
+    {%- assign current_variant = product -%}
+   {%- endif -%}
+{%- endif -%}

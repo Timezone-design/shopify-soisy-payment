@@ -1,0 +1,69 @@
+{%- assign image = settings.contact_bg_image -%}
+{%- assign color_scheme = settings.contact_color -%}
+<div class="{{color_scheme}} ntparallax collection_header contact_header with_term_description bg_overlay_{{settings.contact_overlay}} pr oh{%- if settings.use_parallax_contact %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover"{%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{page.title}}</h1>
+      </div>
+   </div>
+</div>
+<div class="container container_page container_contact mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+  <div class="row">
+    {%- if settings.use_map -%}
+    <div class="col-lg-5 col-12 mt__20">
+      <div class="ellesi-gmap nt-gmap" data-lat='{{ settings.lat }}' data-lon='{{ settings.lon }}' {% if settings.icon_map != blank %}data-icon='{{ settings.icon_map | img_url: 'master' }}'{% endif %} data-style='{{ settings.style_json }}'></div>
+    </div>
+    {%- endif -%}
+    {%- if settings.use_map == false -%}<div class="col-lg-3 col-12"></div>{%- endif -%}
+    <div class="{%- if settings.use_map -%}col-lg-7 col-12 mt__20{%- else -%}col-lg-6 col-12 mt__20 tc{%- endif -%}">
+      <div class="pl__10">
+         {%- if page.content.size > 0 -%}{{page.content}}{%- endif -%}
+         <h3>{{ 'contact.form.title' | t }}</h3>
+         {%- form 'contact' -%}
+            {%- if form.posted_successfully? -%}
+                <div class="shopify-message resetSuccess">{{ 'contact.form.post_success' | t }}</div>
+            {%- elsif form.errors -%}
+                {%- assign gl_shopify_error = true -%}
+                {%- for field in form.errors -%}
+                   {%- if field == 'form' -%}
+                      {%- assign error_html = form.errors.messages[field] -%}
+                   {%- else -%}
+                      {%- assign error_html = form.errors.translated_fields[field] | append:' ' | append:form.errors.messages[field] -%}
+                   {%- endif -%}
+                {%- endfor -%}
+                <ul id="gl_shopify_error" class="shopify-error">
+                   <li class="html_li" id="nt_html_frm">{{error_html}}</li>
+                </ul>
+            {%- endif -%}
+            <div class="row">
+               <div class="col-12 col-md-6 mb__20">
+                 <label>{{ 'contact.form.name' | t }}</label>
+                 <input type="text" class="w__100{% if form.errors contains 'name' %} input--error{% endif %}" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+               </div>
+               <div class="col-12 col-md-6 mb__20">
+                 <label>{{ 'contact.form.email' | t }}</label>
+                 <input type="email" class="w__100{% if form.errors contains 'email' %} input--error{% endif %}" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+               </div>
+               {%- comment -%} 
+               <div class="col-12 mb__20">
+                 <label>{{ 'contact.form.phone' | t }}</label>
+                 <input type="telephone" class="w__100{% if form.errors contains 'phone' %} input--error{% endif %}" id="ContactFormPhone" name="contact[phone]" pattern="[0-9\-]*" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+               </div>
+               {%- endcomment -%} 
+               <div class="col-12 mb__20">
+                 <label>{{ 'contact.form.message' | t }}</label>
+                 <textarea rows="10" class="w__100{% if form.errors contains 'body' %} input--error{% endif %}" id="ContactFormMessage" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+               </div>
+            </div>
+            <p><input type="submit" class="btn btn_primary w__100" value="{{ 'contact.form.submit' | t }}"></p>
+            {%- if settings.social_enabled -%}
+              {%- if settings.share_contact == '1' -%} {%- assign gl_follow_social = false -%} {%- else -%} {%- assign gl_follow_social = true -%} {%- endif -%}
+            {%- include 'social-sharing', gl_design:'colored tc',gl_size:'medium', follow_social:gl_follow_social,nt_tooltip:true -%}
+            {%- endif -%}
+         {%- endform -%}
+      </div>
+    </div>
+    {%- if settings.use_map == false -%}<div class="col-lg-3 col-12"></div>{%- endif -%}
+  </div>
+</div>

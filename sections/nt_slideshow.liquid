@@ -1,0 +1,330 @@
+{%- include 'style_mp_section' -%}
+<div class="nt_custom_{{section.id}} color-scheme-{{ section.settings.text_color }}{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+   {%- if section.blocks.size > 0 -%}
+   <div class="nt-carousel nt_slick_op" data-slick='{"slidesToShow": 1,"slidesToScroll": 1,"fade": true,"infinite": {{ section.settings.use_loop }},"slidesToScroll": 1,"rtl": {{ settings.use_rtl }},"autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"adaptiveHeight": {%- if section.settings.use_custom_img -%}false{%- else -%}true{%- endif -%},"arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}}'>
+      {%- for block in section.blocks -%}
+         <div class="slick-item-wrap" {{ block.shopify_attributes }}>
+            {%- assign image = block.settings.image -%}
+            <div class="nt_banner_img pr oh bg_overlay_{{section.settings.overlay}}{%- if image != blank %} lazyload nt_bg_lz{%- if forloop.first == false %} js lazypreload{%- endif -%}{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: block.settings.image -%}" data-sizes="auto" data-parent-fit="cover"{%- else %} style="background-image: url(https://placehold.it/1920x1080/eee/999);"{%- endif %}{%- if image != blank and section.settings.use_custom_img == false %} style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;"{%- endif -%}>
+               <div class="div_overlay"></div>
+            </div>
+            {%- if block.settings.link != blank -%}<a href="{{block.settings.link}}" class="pa nt_slideshow_link"></a>{%- endif -%}
+            <div class="pa-center container {{block.settings.alignment}}">
+               {%- if block.settings.subheading != blank -%}<h5 class="tu color-scheme-{{ block.settings.text_color }}">{{block.settings.subheading}}</h5>{%- endif -%}
+               {%- if block.settings.title != blank -%}<h2 class="mb__30 color-scheme-{{ block.settings.text_color }}">{{block.settings.title}}</h2>{%- endif -%}
+               {%- if block.settings.btn_title != blank and block.settings.link != blank -%}<a href="{{block.settings.link}}" target="_blank" class="button {%- if block.settings.style_btn == '2' %} button_before{%- else %} nasa-button-banner{%- endif -%}">{{block.settings.btn_title}}</a>{%- endif -%} 
+            </div>
+         </div>
+      {%- endfor -%}
+   </div>
+   {%- endif -%}
+   {%- if section.blocks.size == 0 -%}
+      <div class="tc placeholder-noblocks">
+         {{ 'homepage.onboarding.no_content' | t }}
+      </div>
+   {%- endif -%}
+</div>
+{%- if section.settings.use_custom_img %}
+<style>
+   .nt_custom_{{section.id}} .nt_banner_img {background-position: top;background-repeat: no-repeat;background-size: cover; height:{{section.settings.desktop}} }
+   @media (max-width: 1024px) {.nt_custom_{{section.id}} .nt_banner_img{height:{{section.settings.notebook}} }}
+   @media (max-width: 778px) {.nt_custom_{{section.id}} .nt_banner_img{height:{{section.settings.tablet}} }}
+   @media (max-width: 480px) {.nt_custom_{{section.id}} .nt_banner_img{height:{{section.settings.mobile}} }}
+</style>
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Slideshow",
+    "class": "nt-section nt_slideshow",
+    "max_blocks": 10,
+    "settings": [
+      {
+             "type": "select",
+             "id": "text_color",
+             "options": [
+              {
+                 "value": "light",
+                 "label": "Light"
+               },
+               {
+                 "value": "dark",
+                 "label": "Dark"
+               }
+             ],
+             "label": "== Color Scheme Slider",
+             "default": "dark"
+           },
+      {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Slider speed (second)",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Show pagination control?"
+      },
+       {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "default": false,
+        "label": "Show prev/next buttons?"
+      },
+       {
+        "type": "checkbox",
+        "id": "use_loop",
+        "default": false,
+        "label": "Slider loop?",
+        "info": "Enables loop mode."
+      },
+      {
+       "type": "checkbox",
+       "id": "use_autoplay",
+       "label": "Slider autoplay",
+       "info": "Enables autoplay mode.",
+       "default": false
+     },
+     {
+        "type": "header",
+        "content": "== Design Height Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_custom_img",
+        "label": "Use custom height image?",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "desktop",
+        "label": "Desktop Large",
+        "info": "475px",
+        "default": "475px"
+      },
+      {
+        "type": "text",
+        "id": "notebook",
+        "label": "Notebook (<= 1024px)",
+        "info": "485px",
+        "default": "485px"
+      },
+      {
+        "type": "text",
+        "id": "tablet",
+        "label": "Tablet (<= 778px)",
+        "info": "600px",
+        "default": "600px"
+      },
+      {
+        "type": "text",
+        "id": "mobile",
+        "label": "Mobile (<= 480px)",
+        "info": "600px",
+        "default": "600px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "overlay",
+        "label": "Background overlay",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "%"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image slide",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Text alignment",
+            "default": "tl",
+            "options": [
+              {
+                "value": "tl",
+                "label": "Left"
+              },
+              {
+                "value": "tc",
+                "label": "Center"
+              },
+              {
+                "value": "tr",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Looking for<br> the best price"
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "ELESSI STORE"
+          },
+          {
+             "type": "select",
+             "id": "text_color",
+             "options": [
+              {
+                 "value": "light",
+                 "label": "Light"
+               },
+               {
+                 "value": "dark",
+                 "label": "Dark"
+               }
+             ],
+             "label": "== Color Scheme",
+             "default": "dark"
+           },
+          {
+            "type": "text",
+            "id": "btn_title",
+            "label": "Slide button title",
+            "default":"SHOP NOW"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Slide link",
+            "default": "/"
+          },
+          {
+            "type": "select",
+            "id": "style_btn",
+            "label": "Button Style",
+            "default": "1",
+            "options": [
+              {
+                "value": "1",
+                "label": "Style 1"
+              },
+              {
+                "value": "2",
+                "label": "Style 2"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Slideshow",
+      "category": "8. Slider",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }]
+  }
+{% endschema %}

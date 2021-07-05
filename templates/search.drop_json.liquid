@@ -1,0 +1,61 @@
+{%- layout none -%}
+{%- capture min_html -%}
+{%- assign image_size = '100x' -%}
+{%- if search.terms != blank -%}
+  {%- if search.results_count == 0 or search.performed == false -%}
+     <li class="animate_move">{{ 'general.search.no_results_html' | t: terms: search.terms }}</li>
+  {%- else -%}
+     {%- for item in search.results limit:4 -%}
+         {%- if item.object_type == 'product' -%}
+            {% assign product = item %}  
+            {%- assign on_sale = false -%}
+            {%- assign current_variant = product.selected_or_first_available_variant -%}
+            {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+            {%- if current_variant.compare_at_price > current_variant.price -%}
+               {%- unless product.tags contains 'notsale'-%}
+               {%- assign on_sale = true -%}
+               {%-endunless-%}
+            {%- endif -%}
+            <li class="oh mt__10 pt__10 ui-menu-item animate_move">
+               <a href="{{ product.url | within: product.collections.first }}">
+               	  {%- if featured_image != blank -%}
+                     {%- assign image_0 = featured_image -%}
+                     <img class="ajax-result-item fl" src="{{ image_0 | img_url: image_size }}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">
+                     {%- endif -%}               
+                </a>
+               <div class="oh pl__15">
+                   <a class="ajax-result-item-name" href="{{ product.url | within: product.collections.first }}">{{ product.title | highlight: search.terms }}</a>
+                    <div class="suggestion-price price mt__5">
+                       {%- if product.price_varies -%}
+                       <span class="shopify-Price-amount amount">{{ product.price_min | money }}</span> <span class="shopify-Price-amount amount">–</span> <span class="shopify-Price-amount amount">{{ product.price_max | money }}</span>
+                       {%- elsif on_sale -%}
+                        <del>{{ current_variant.compare_at_price  | money }}</del> <ins>{{ current_variant.price | money }}</ins>
+                       {%- else -%}
+                       <span class="shopify-Price-amount amount">{{ current_variant.price | money }}</span>
+                       {%- endif -%}
+                    </div>
+               </div>
+            </li>
+         {%- else -%}
+            <li class="oh mt__10 pt__10 ui-menu-item animate_move">
+               <a href="{{ item.url }}">
+                  {%- if item.image != blank -%}
+                 {%- assign image_0 = item.image -%}
+                 <img class="ajax-result-item fl" src="{{ image_0 | img_url: image_size }}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">
+                 {%- endif -%} 
+               </a>
+               <div class="oh pl__15">
+                  <a class="ajax-result-item-name" href="{{ item.url }}">{{ item.title | highlight: search.terms }}</a>
+                  <p>{{ item.content | strip_html | truncate: 60 }}</p>
+               </div>
+            </li>
+         {%- endif -%}
+     {%- endfor -%}
+     {%- if search.results_count > 4 -%}
+     <li class="oh mt__10 pt__10 ui-menu-item animate_move"><a href="{%- if settings.only_search_products -%}/search?type=product&q={{ search.terms }}{%- else -%}/search?q={{ search.terms }}{%- endif -%}" class="view_all">{{ 'general.search.search_ajax_results' | t :count: search.results_count }}</a></li>
+     {%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+{%- endcapture -%}
+{{min_html | strip_newlines | remove: "  "}} 
+

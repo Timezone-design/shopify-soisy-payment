@@ -1,0 +1,9 @@
+<div class="container">
+   <div class="header_wrapper">
+      {%- include 'push_menu' -%}
+      <div class="text_header">{%- if settings.header_text_ss contains '[social_buttons' -%}{%- if settings.header_text_ss contains 'social_buttons_share' -%}{%- assign gl_follow_social = false -%}{%- else -%}{%- assign gl_follow_social = true -%}{%- endif -%}{%- include 'social-sharing', gl_size:'icons-size-small', follow_social:gl_follow_social -%} {{settings.header_text_ss | remove:'[social_buttons_share]' | remove:'[social_buttons_follow]' | strip_newlines }}{%-else-%}{{settings.header_text_ss}}{%- endif -%}</div>
+      {%- include 'nathan_logo' -%}
+      {%- include 'nathan-action' -%}
+   </div>
+</div>
+<div class="nav_section_wrap"><div class="container">{%- section 'mega_menu' -%}</div></div>

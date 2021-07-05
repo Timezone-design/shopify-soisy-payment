@@ -1,0 +1,65 @@
+{%- if settings.color_name_check != blank -%}{%- assign _gl_color_name = settings.color_name_check | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}{%- assign gl_color_name = _gl_color_name | downcase -%}{%-else-%}{%- assign gl_color_name = '\nathan_dt\' -%}{%-endif-%}
+{%- if settings.size_name_check != blank -%}{%- assign _gl_size_name = settings.size_name_check | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}{%- assign gl_size_name = _gl_size_name | downcase -%}{%-else-%}{%- assign gl_size_name = '\nathan_dt\' -%}{%-endif-%}
+{%- assign lang_option = 'Größe'| downcase -%}
+{%- if select_id == 'nt_select_quick'-%}
+   {%- assign select_id = 'nt_select_quick' -%}
+   {%- assign select_class = 'nt_none_' -%}   
+{%- else -%}
+   {%- assign select_id = 'nt_select' -%}
+   {%- assign select_class = 'nt_select_pr_' -%}    
+{%- endif -%}
+{%- assign bclass = 'is-selected-no' -%}
+
+{%- assign selected_variant = product.selected_variant -%}
+{%- assign pr_variants = product.variants -%}{%- assign v_size = pr_variants.size -%}
+{%- assign size = product.options_with_values.size -%}
+{%- if product.available -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+{%- case settings.pr_curent -%}
+  {%- when '1' -%}{%- assign current_variant = product.selected_or_first_available_variant -%}{%- if selected_variant != blank -%}{%- assign bclass = 'is-selected-none' -%}{%- else -%}{%- assign bclass = 'is-selected-no' -%}{%- endif -%}
+  {%- when '2' -%}{%- assign current_variant = selected_variant |default: pr_variants.first -%}{%- assign bclass = 'is-selected-none' -%}{%- if current_variant.available == false and remove_soldout and product.available -%}{%- assign current_variant = product.first_available_variant -%}{%- endif -%}
+  {%- else -%}{%- assign current_variant = product.selected_or_first_available_variant -%}{%- assign bclass = 'is-selected-none' -%}
+{%- endcase -%}
+
+{%- if v_size == 1 -%}{%- assign current_variant = pr_variants.first -%}{%- assign bclass = 'is-selected' -%}{%- endif -%}
+
+<div class="variations variant_square radio full{%- if settings.swatch_style_color == '2' %} square{%- endif %}{%- if settings.quick_swatch_style_color == '2' %} square_quick{%- endif %}">
+   {%- for option in product.options_with_values -%}
+      {%- assign option_index = forloop.index0 -%}
+      {%- case option_index -%}{%- when 0 -%}{%- assign selected_value = current_variant.option1 -%}{%- when 1 -%}{%- assign selected_value = current_variant.option2 -%}{%- else -%}{%- assign selected_value = current_variant.option3 -%}{%- endcase -%}
+      {%- if bclass != 'is-selected-no' -%}
+        {%- assign txt_value = selected_value -%}
+      {%- else -%}  
+        {%- capture txt_value -%}{{ 'products.product.pick_a' | t:option:option.name }}{%- endcapture -%}
+      {%- endif -%}  
+  
+      {%- assign downcased_option = option.name | downcase -%}
+      {%- assign downcased_option_check = downcased_option | prepend: '"' | append: '"' | strip -%} 
+      {%- if downcased_option == 'color' or downcased_option == 'couleur' or downcased_option == 'colour' or gl_color_name contains downcased_option_check -%}
+		   <div class="{{select_class}}{{ option_index }} swatch is-color style_color{%- if forloop.last == true %} mb__25{%- else %} mb__15{%- endif -%}" data-option-index="{{ option_index }}" id="{{select_id}}_{{ option_index }}">
+		   	<h4 class="swatch__title">{{option.name}}: <span class="nt_name_current">{{txt_value}}</span></h4>
+		   	<ul class="swatches-select swatch__list" data-attribute="pa_color" data-id="{{ option_index }}" data-size="{{product.options_with_values.size}}">
+		   	   {%- for value in option.values -%}
+		   		   <li data-index="{{ forloop.index0 }}" aria-label='{{ value | capitalize }}' class="tooltip_top{%- if forloop.first == true -%}_right{%- endif %} nt-swatch swatch__list--item pr bg_css_{{ value | handleize }} swatch-size-{{settings.swatch_size}}{%- if settings.swatch_style == '1' %} colored-swatch{%- else %} image-swatch{%- endif %}{%- if selected_value == value %} {{bclass}}{%- endif -%}" data-value='{{ value | handleize }}' data-bcvalue='bc_{{ value | handleize }}'>
+		   		   	<span class="swatch__value bg_color_{{ value | handleize }}">{{ value | capitalize }}</span>
+		   		   </li>
+		   	   {%- endfor -%}
+		   	</ul>
+		   </div>
+		{%- else -%}
+		   <div class="{{select_class}}{{ option_index }} swatch is-label{%- if forloop.last == true %} mb__25{%- else %} mb__15{%- endif -%}" data-option-index="{{ option_index }}" id="{{select_id}}_{{ option_index }}">
+		   	{%- if downcased_option == 'size' or downcased_option == 'sizes' or downcased_option == 'taille' or downcased_option == lang_option or gl_size_name contains downcased_option_check -%}
+		   	   {%- assign has_size_guide = true -%}
+		   	{%- endif -%}
+		   	<h4 class="swatch__title">{{option.name}}: <span class="nt_name_current">{{txt_value}}</span></h4>
+		   	<ul class="swatches-select swatch__list" data-attribute="pa_{{option.name | handleize}}" data-id="{{ option_index }}" data-size="{{product.options_with_values.size}}">
+		   	   {%- for value in option.values -%}
+		   		   <li data-index="{{ forloop.index0 }}" aria-label='{{ value }}' class="nt-swatch bg_css_{{ value | handleize }} swatch-size-{{settings.swatch_size}}{%- if settings.swatch_style == '1' %} colored-swatch{%- else %} image-swatch{%- endif %}{%- if selected_value == value %} {{bclass}}{%- endif -%}" data-value='{{ value | handleize }}' data-bcvalue='bc_{{ value | handleize }}'>
+		   		   	<span class="radio_styled"></span>
+		   		   	<span class="swatch__value">{{ value }}</span>
+		   		   </li>
+		   	   {%- endfor -%}
+		   	</ul>
+		   </div>
+		{%- endif -%}
+   {%- endfor -%}
+</div>

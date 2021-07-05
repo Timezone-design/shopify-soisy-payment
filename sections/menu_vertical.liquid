@@ -1,0 +1,492 @@
+ <div class="title-inner">
+    <h5 class="section-title"> <span>{{section.settings.title}}</span></h5>
+ </div>
+ <div class="vertical-menu-container flex {{section.settings.hover}}">
+    {%- if section.blocks.size > 0 -%}
+    <ul class="vertical-menu-wrapper" id="vertical-menu-wrapper-vertical">
+       {%- for block in section.blocks -%}
+          {%- case block.type -%}
+             {%- when 'simple' -%}
+              {%- if block.settings.hidden_block == false -%}
+                {%- assign label = block.settings.label -%}
+                {%- assign icon = block.settings.icon -%}
+                {%- assign position = block.settings.position -%}
+                {%- assign label_dow = label | downcase -%}
+                {%- assign link_list = block.settings.menu -%}
+                <li id="menu-item-{{block.id}}" class="type_simple autowidth menu_has_offsets {{position}} menu-item menu-item-hover has-children menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                   <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                   {%- if link_list != blank -%}
+                      <div class="nav_dropdown pa tl"{%- if block.settings.image != blank %} style="background-image: url({{block.settings.image | img_url: '284x'}})"{%- endif -%}>
+                         {%- assign child_index = 0 -%}
+                         {%- assign no_index = 0 -%}
+                         {%- for link in linklists[link_list].links -%}
+                             {%- assign child_list_handle = link.title | handleize -%}
+                            {%- if linklists[child_list_handle].links != blank or link.links != blank -%}
+                            {%- assign child_index = child_index | plus:1 -%}
+                            {%- else -%}
+                            {%- assign no_index = no_index | plus:1 -%}
+                            {%- endif -%}
+                         {%- endfor -%}
+                         {%- if child_index > 5 %}
+                           {%- assign link_list_size = 6 -%}
+                         {%- elsif no_index > 6 -%}
+                           {%- assign link_list_size = child_index |plus:2 -%}
+                         {%- elsif no_index > 0 -%}
+                           {%- assign link_list_size = child_index |plus:1 -%}
+                         {%- else -%}
+                           {%- assign link_list_size = child_index -%}
+                         {%- endif -%}
+                         {%- if link_list_size == 5 -%}{%- assign class = 'lg-15' -%}
+                         {%- elsif link_list_size > 5 -%}{%- assign class = '2' -%}
+                         {%- else -%}{%- assign class = 12 | divided_by:link_list_size -%}
+                         {%- endif -%}
+                         {%- assign index = 0 -%}
+                         {%- for link in linklists[link_list].links -%}
+                            {%- assign child_list_handle = link.title | handleize -%}
+                               {%- if linklists[child_list_handle].links != blank -%}
+                               {%- assign index = index |plus:1 -%}
+                               <div class="nt_class nt_{{class}}" child_index='{{child_index}}' no_index='{{no_index}}'>
+                                  <ul class="sub-menu mega-menu">
+                                     <li class="menu-item menu-item-has-children sub-column-item">
+                                        <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                        <ul class="sub-column">
+                                           {%- for thirdlink in linklists[child_list_handle].links -%}
+                                              {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                              {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                              <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                           {%- endfor -%}
+                                        </ul>
+                                     </li>
+                                  </ul>
+                               </div>
+                               {%- elsif link.links != blank -%}
+                               {%- assign index = index |plus:1 -%}
+                               <div class="nt_class nt_{{class}}">
+                                  <ul class="sub-menu mega-menu">
+                                     <li class="menu-item menu-item-has-children sub-column-item">
+                                        <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                        <ul class="sub-column">
+                                           {%- for thirdlink in link.links -%}
+                                              {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                              {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                              <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="nt-menu-label nt-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                           {%- endfor -%}
+                                        </ul>
+                                     </li>
+                                  </ul>
+                               </div>
+                               {%- endif -%}
+                            {%- if index == 6 -%}{%- break -%}{%- endif -%}
+                         {%- endfor -%}
+                         {%- if child_index < 6 and no_index > 0 -%}
+                            <div class="nt_class nt_{{class}}">
+                               <ul class="sub-menu mega-menu">
+                                  {%- assign index_1 = 0 -%}
+                                  {%- for link in linklists[link_list].links -%}
+                                     {%- assign child_list_handle = link.title | handleize -%}
+                                     {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                     <li class="menu-item menu-item-has-children sub-column-item">
+                                        <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                     </li>
+                                     {%- assign index_1 = index_1 |plus:1 -%}
+                                     {%- endif -%}
+                                     {% assign forindex = forloop.index -%}
+                                     {%- if index_1 == 6 -%}{%- break -%}{%- endif -%}
+                                  {%- endfor -%}
+                               </ul>
+                            </div>
+                            {%- if no_index > 6 and child_index < 5 -%}
+                               <div class="nt_class nt_{{class}}" forindex='{{forindex}}'>
+                                  <ul class="sub-menu mega-menu">
+                                     {%- assign index_2 = 0 -%}
+                                     {%- for link in linklists[link_list].links offset:forindex -%}
+                                        {%- assign child_list_handle = link.title | handleize -%}
+                                        {%- if linklists[child_list_handle].links == blank and link.links == blank -%}
+                                        <li class="menu-item menu-item-has-children sub-column-item">
+                                           <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                        </li>
+                                        {%- assign index_2 = index_2 |plus:1 -%}
+                                        {%- endif -%}
+                                        {%- if index_2 == 6 -%}{%- break -%}{%- endif -%}
+                                     {%- endfor -%}
+                                  </ul>
+                               </div>
+                            {%- endif -%}
+                         {%- endif -%}
+                      </div>
+                   {%- endif -%}
+                </li>
+                {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+              {%- endif -%}
+             {%- when 'dropdown' -%}
+              {%- if block.settings.hidden_block == false -%}
+                {%- assign label = block.settings.label -%}
+                {%- assign icon = block.settings.icon -%}
+                {%- assign label_dow = label | downcase -%}
+                {%- assign position = block.settings.position -%}
+                {%- assign link_list = block.settings.menu -%}
+                <li id="menu-item-{{block.id}}" class="type_dropdown {{position}} autowidth menu-item menu-item-hover has-children menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                   <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                   {%- if link_list != blank -%}
+                      <ul class="sub-menu">
+                         {%- for link in linklists[link_list].links -%}
+                            {%- assign child_list_handle = link.title | handleize -%}
+                            {%- if linklists[child_list_handle].links != blank -%}
+                                <li class="menu-item has_drop {{position}}">
+                                  <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                  <ul class="sub-column">
+                                     {%- for thirdlink in linklists[child_list_handle].links -%}
+                                        {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                        {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                        {%- assign third_list_handle = thirdlink.title | handleize -%}
+                                        {%- if linklists[third_list_handle].links != blank -%}
+                                           <li class="menu-item has_drop {{position}}"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a>
+                                              <ul class="sub-column">
+                                                 {%- for fourlink in linklists[third_list_handle].links -%}
+                                                    {%- assign icon_four = fourlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                    {%- assign label_four  = fourlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                    <li class="menu-item"><a href="{{ fourlink.url }}">{%- if fourlink.title contains '[icon_' -%}<i class="fa fa-{{icon_four}}"></i>{%- endif -%}{{ fourlink.title | split: '[' | first }}{%- if fourlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_four | handleize}}">{{label_four}}</span>{%- endif -%}</a></li>
+                                                 {%- endfor -%}
+                                              </ul>
+                                           </li>
+                                        {%- elsif thirdlink.links != blank -%}
+                                             <li class="menu-item has_drop {{position}}"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a>
+                                                 <ul class="sub-column">
+                                                    {%- for fourlink in thirdlink.links -%}
+                                                       {%- assign icon_four = fourlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                       {%- assign label_four  = fourlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                       <li class="menu-item"><a href="{{ fourlink.url }}">{%- if fourlink.title contains '[icon_' -%}<i class="fa fa-{{icon_four}}"></i>{%- endif -%}{{ fourlink.title | split: '[' | first }}{%- if fourlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_four | handleize}}">{{label_four}}</span>{%- endif -%}</a></li>
+                                                    {%- endfor -%}
+                                                 </ul>
+                                              </li>
+                                        {%- else -%}
+                                           <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                        {%- endif -%}
+                                     {%- endfor -%}
+                                  </ul>
+                               </li>
+                            {%- elsif link.links != blank -%}
+                               <li class="menu-item has_drop">
+                                  <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                                  <ul class="sub-column">
+                                     {%- for thirdlink in link.links -%}
+                                        {%- assign icon_third  = thirdlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                        {%- assign label_third  = thirdlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                        {%- if thirdlink.links != blank -%}
+                                             <li class="menu-item has_drop {{position}}"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a>
+                                                 <ul class="sub-column">
+                                                    {%- for fourlink in thirdlink.links -%}
+                                                       {%- assign icon_four = fourlink.title |  split: '[icon_' | last  | split: ']' | first -%}
+                                                       {%- assign label_four  = fourlink.title |  split: '[label_' | last  | split: ']' | first -%}
+                                                       <li class="menu-item"><a href="{{ fourlink.url }}">{%- if fourlink.title contains '[icon_' -%}<i class="fa fa-{{icon_four}}"></i>{%- endif -%}{{ fourlink.title | split: '[' | first }}{%- if fourlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_four | handleize}}">{{label_four}}</span>{%- endif -%}</a></li>
+                                                    {%- endfor -%}
+                                                 </ul>
+                                              </li>
+                                        {%- else -%}
+                                           <li class="menu-item"><a href="{{ thirdlink.url }}">{%- if thirdlink.title contains '[icon_' -%}<i class="fa fa-{{icon_third}}"></i>{%- endif -%}{{ thirdlink.title | split: '[' | first }}{%- if thirdlink.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_third | handleize}}">{{label_third}}</span>{%- endif -%}</a></li>
+                                        {%- endif -%}
+                                     {%- endfor -%}
+                                  </ul>
+                               </li>
+                            {%- else -%}
+                               {%- assign icon_two  = link.title |  split: '[icon_' | last  | split: ']' | first -%}
+                               {%- assign label_two  = link.title |  split: '[label_' | last  | split: ']' | first -%}
+                               <li class="menu-item"><a href="{{ link.url }}">{%- if link.title contains '[icon_' -%}<i class="fa fa-{{icon_two}}"></i>{%- endif -%}{{ link.title | split: '[' | first }}{%- if link.title contains '[label_' -%}<span class="jas-menu-label jas-menu-label-{{label_two | handleize}}">{{label_two}}</span>{%- endif -%}</a></li>
+                            {%- endif -%}
+                         {%- endfor -%}
+                      </ul>
+                   {%- endif -%}
+                </li>
+              {%- endif -%}
+             {%- else -%}
+              {%- if block.settings.hidden_block == false -%}
+                {%- assign label = block.settings.label -%}
+                {%- assign icon = block.settings.icon -%}
+                {%- assign label_dow = label | downcase -%}
+                <li id="menu-item-{{block.id}}" class="type_no_child menu-item menu-item-hover menu-item-{{block.id}}{%- if label_dow == 'sale' or label_dow == 'sale!' %} sale{%- endif -%}">
+                   <a href="{{block.settings.button_link | default:'/'}}">{%- if icon != blank -%}<i class="fa fa-{{icon}}"></i>{%- endif -%}{{block.settings.title}}{%- if label != blank and block.settings.color != blank -%}<span class="menu-item-tag menu-item-tag-{{ label | handleize}}">{{label}}</span>{%- endif -%}</a>
+                </li>
+                {%- if label != blank and block.settings.color != blank -%}<style type="text/css">.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}{ background-color: {{block.settings.color}} }.menu-item-{{block.id}} >a>.menu-item-tag-{{label | handleize}}:after{ color: {{block.settings.color}} }</style>{%- endif -%}
+              {%- endif -%}
+          {%- endcase -%}
+       {%- endfor -%}
+    </ul>
+   {%- if section.settings.label_1 != blank or section.settings.label_2 != blank or section.settings.label_3 != blank or section.settings.label_4 != blank or section.settings.label_5 != blank -%}
+    <style type="text/css">
+    {%- capture min_css -%}
+       {%- for i in (1..5) -%}
+       {%- assign label = 'label_' | append:i -%}
+       {%- assign color = 'color_' | append:i -%}
+       {%- assign label_id = section.settings[label] -%}
+       {%- assign color_id = section.settings[color] -%}
+          {%- if label_id != blank and color_id != blank -%}
+          .vertical-menu .nt-menu-label.nt-menu-label-{{label_id | handleize }} {background-color: {{color_id}}}
+          {%- endif -%}
+       {%- endfor -%}
+    {%- endcapture -%}
+    {{min_css | strip_newline | remove: " " }}
+    </style>
+    {%- endif -%}
+ {%- endif -%}
+ {%- if section.blocks.size == 0 -%}<h5 class="mg__0">Create your first navigation menu sidebar using the sidebar.</h5>{%- endif -%}
+ </div>
+{%- schema -%}
+{
+  "name": "Vertical Menu",
+  "class": "vertical-menu pr menu-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by Categories"
+    },
+    {
+      "type": "select",
+      "id": "hover",
+      "options": [
+        {
+          "value": "hover_ver_up",
+          "label": "Hover Slide Up"
+        },
+        {
+          "value": "hover_fade_ver",
+          "label": "Hover Fade In"
+        }
+      ],
+      "label": "Hover effect:",
+      "default": "hover_ver_up"
+    },
+    {
+      "type": "header",
+      "content": "== Label menu Settings"
+    },
+    {
+      "type":"text",
+      "id":"label_1",
+      "label":"Menu label 1"
+    },
+    {
+      "type":"color",
+      "id":"color_1",
+      "label":"Label color 1"
+    },
+    {
+      "type":"text",
+      "id":"label_2",
+      "label":"Menu label 2"
+    },
+    {
+      "type":"color",
+      "id":"color_2",
+      "label":"Label color 2"
+    },
+    {
+      "type":"text",
+      "id":"label_3",
+      "label":"Menu label 3"
+    },
+    {
+      "type":"color",
+      "id":"color_3",
+      "label":"Label color 3"
+    },
+    {
+      "type":"text",
+      "id":"label_4",
+      "label":"Menu label 4"
+    },
+    {
+      "type":"color",
+      "id":"color_4",
+      "label":"Label color 4"
+    },
+    {
+      "type":"text",
+      "id":"label_5",
+      "label":"Menu label 5"
+    },
+    {
+      "type":"color",
+      "id":"color_5",
+      "label":"Label color 5"
+    }
+  ],
+  "blocks": [
+    {
+      "type":"simple",
+      "name":"Mega Menu Simple",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Simple",
+          "info": "Ex: Simple"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Add sub menu"
+        },
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Sub menu position",
+          "default": "nt_top",
+          "options": [
+            {
+              "value": "pr",
+              "label": "Left"
+            },
+            {
+              "value": "nt_top",
+              "label": "Top (Default)"
+            }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Banner Image",
+          "info": "250x435 recommend"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"dropdown",
+      "name":"Mega Menu Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "Dropdown",
+          "info": "Ex: Dropdown"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Add sub menu"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+       {
+          "type": "select",
+          "id": "position",
+          "label": "Sub menu position",
+          "default": "nt_top",
+          "options": [
+            {
+              "value": "pr",
+              "label": "Left"
+            },
+            {
+              "value": "nt_top",
+              "label": "Top (Default)"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type":"menu_item_no_children",
+      "name":"Menu item no children",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Navigation Title",
+          "default": "no child",
+          "info": "Ex: no child"
+        },
+        {
+          "id": "icon",
+          "type": "text",
+          "label": "Icon",
+          "info":"Ex:user [fontawesome icons](https://fontawesome.com/v4.7.0/icons/)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Navigation link"
+        },
+        {
+          "type":"text",
+          "id":"label",
+          "label":"Navigation label"
+        },
+        {
+          "type":"color",
+          "id":"color",
+          "label":"Navigation label color",
+          "default":"#F76B6A"
+        },
+        {
+          "type": "checkbox",
+          "id": "hidden_block",
+          "label": "Hidden block?",
+          "info": "if checked block will be set to hidden.",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

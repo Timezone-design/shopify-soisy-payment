@@ -1,0 +1,441 @@
+{%- include 'style_mp_section' -%}
+{%- assign countdown_timer_style = section.settings.countdown_style -%}
+{%- assign block_image = section.settings.image -%}
+{%- assign block_url = section.settings.url -%}
+<div class="nt_custom_{{section.id}} color-scheme-{{ section.settings.text_color }}{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+   <div class="row">
+     <div class="col-md-8 col-12 nt_slideshow">
+       {%- if section.blocks.size > 0 -%}
+       <div class="nt-carousel nt_slick_op" data-slick='{"slidesToShow": 1,"slidesToScroll": 1,"fade": true,"infinite": {{ section.settings.use_loop }},"slidesToScroll": 1,"rtl": {{ settings.use_rtl }},"autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"adaptiveHeight": {%- if section.settings.use_custom_img -%}false{%- else -%}true{%- endif -%},"arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}}'>
+          {%- for block in section.blocks -%}
+             <div class="slick-item-wrap" {{ block.shopify_attributes }}>
+                <div class="nt_banner_img pr oh bg_overlay_{{section.settings.overlay}}{%- if section.settings.use_custom_img %} lazyload nt_bg_lz{%- if forloop.first == false %} lazypreload{%- endif -%}{%- endif -%}"{%- if section.settings.use_custom_img and block.settings.image != blank %} data-bgset="{%- include 'bgset', image: block.settings.image -%}" data-sizes="auto" data-parent-fit="cover"{%- elsif section.settings.use_custom_img %} style="background-image: url(https://placehold.it/1920x1080/eee/999);"{%- endif -%}>
+                  <div class="div_overlay"></div>
+                   {%- assign image = block.settings.image -%}
+                   {%- if image != blank -%}
+                      {%- if section.settings.use_custom_img %}
+                         <img src="{{ image | img_url: '50x50' }}" class="op_0 w_100 ts__05 attachment-shop_catalog size-shop_catalog" alt="{{image.alt}}" >
+                      {%- else -%}
+                         {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                         <img src="{{ image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ image.aspect_ratio }}"  data-sizes="auto" class="w_100 ts__05 attachment-shop_catalog size-shop_catalog lazyload{%- if forloop.first == false %} lazypreload{%- endif -%}" alt="{{image.alt}}" >
+                         <div class="nt-wrap-lazy"></div>
+                         {%- endif -%}
+                   {%- else -%}
+                       <img src="https://placehold.it/781x571/eee/999" alt="placehold" class="ts__05 w_100{%- if section.settings.use_custom_img %} op_0{%- endif -%}">
+                  {%- endif -%}
+                </div>
+                <div class="pa-center container {{block.settings.alignment}}">
+                   {%- if block.settings.subheading != blank -%}<h5 class="tu color-scheme-{{ block.settings.text_color }}">{{block.settings.subheading}}</h5>{%- endif -%}
+                   {%- if block.settings.title != blank -%}<h2 class="mb__30 color-scheme-{{ block.settings.text_color }}">{{block.settings.title}}</h2>{%- endif -%}
+                   {%- if block.settings.btn_title != blank and block.settings.link != blank -%}<a href="{{block.settings.link}}" target="_blank" class="button {%- if block.settings.style_btn == '2' %} button_before{%- else %} nasa-button-banner{%- endif -%}">{{block.settings.btn_title}}</a>{%- endif -%} 
+                </div>
+             </div>
+          {%- endfor -%}
+       </div>
+       {%- endif -%}
+       {%- if section.blocks.size == 0 -%}
+          <div class="tc placeholder-noblocks">
+             {{ 'homepage.onboarding.no_content' | t }}
+          </div>
+       {%- endif -%}
+     </div>
+     <div class="col-md-4 col-12">
+         <a class="db nt-grid-item nt-promotion oh pr bottom tc"{%- if block_url != blank %} href="{{block_url}}"{%- endif -%}>
+             <div class="nt_banner_img">
+                {%- if block_image != blank -%}
+                {%- assign img_url = block_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                <img src="{{ block_image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block_image.aspect_ratio }}"  data-sizes="auto" class="w_100 lazyload ts__05 attachment-shop_catalog size-shop_catalog" alt="{{block_image.alt}}" >
+                <div class="nt-wrap-lazy"></div>
+                {%- else -%}
+                <img src="https://placehold.it/381x571/eee/999" alt="placehold" class="ts__05 w_100">
+               {%- endif -%}
+             </div>
+             <div class="pa w_100">
+                <h5 class="mb__20">{{section.settings.title}}</h5>
+                {%- if section.settings.timer != blank -%}
+                {%- if section.settings.timer contains ',' -%}
+                   {%- assign list_countdown = section.settings.timer | replace: ' ,', ',' | replace: ', ', ',' | replace: ' , ', ',' | split: ',' -%}
+                   {%- assign year_now = "now" | date: "%Y" | plus:0 -%}
+                   {%- assign month_now_text = "now" | date: "%m" | downcase -%}
+                   {%- assign month_now = "now" | date: "%m" | plus:0 -%}
+                   {%- assign day_now = "now" | date: "%e" | plus:0 -%}
+                   {%- assign day_now_text = "now" | date: "%e" | downcase -%}
+                   {%- for list in list_countdown -%}
+                        {%- assign countdown = list | split: ' ' | first | replace: ' /', '/' | replace: '/ ', '/' | replace: ' / ', '/' | split: '/' -%}
+                        {%- assign year = countdown[0] | plus:0 -%}
+                       {%- assign month = countdown[1] | plus:0 -%}
+                        {%- assign day = countdown[2] | plus:0 -%}
+                        {%- if year >= year_now and month >= month_now and day >= day_now -%}
+                            {%- assign user_countdown = list -%}
+                            {%- break -%}
+                        {%- endif -%}
+                   {%- endfor -%}
+                {%- else -%}
+                   {%- assign user_countdown = section.settings.timer -%}
+                {%- endif -%}
+                {%- include 'nt_count_down' with user_countdown -%}
+             {%- endif -%}
+             </div>
+          </a>
+     </div>
+   </div>
+</div>
+{%- if section.settings.use_custom_img %}
+<style>
+   .nt_custom_{{section.id}} .nt_slideshow .nt_banner_img {background-position: top;background-repeat: no-repeat;background-size: cover; height:{{section.settings.desktop}} }
+   @media (max-width: 1024px) {.nt_custom_{{section.id}} .nt_slideshow .nt_banner_img{height:{{section.settings.notebook}} }}
+   @media (max-width: 778px) {.nt_custom_{{section.id}} .nt_slideshow .nt_banner_img{height:{{section.settings.tablet}} }}
+   @media (max-width: 480px) {.nt_custom_{{section.id}} .nt_slideshow .nt_banner_img{height:{{section.settings.mobile}} }}
+</style>
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Slideshow Banner",
+    "class": "nt-section nt_slideshow_banner",
+    "max_blocks": 10,
+    "settings": [
+      {
+       "type": "header",
+       "content": "== Settings Countdown"
+      },
+      {
+         "type": "image_picker",
+         "id": "image",
+         "label": "Image"
+       },
+       {
+        "label": "Link to",
+        "id": "url",
+        "type": "url"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Countdown Title",
+        "default": "Summer Dresse Sale Off 30%"
+      },
+      {
+        "type": "text",
+        "id": "timer",
+        "label": "Countdown timer",
+        "info":"2020/04/19",
+        "default": "2020/04/19"
+      },
+      {
+        "type": "select",
+        "id": "countdown_style",
+        "label": "Countdown style",
+        "default": "light",
+        "options": [
+          {
+            "value": "default",
+            "label": "Countdown timer default"
+          },
+          {
+            "value": "light",
+            "label": "Countdown timer light"
+          },
+          {
+            "value": "light_2",
+            "label": "Countdown timer light 2"
+          },
+          {
+            "value": "dark",
+            "label": "Countdown timer dark"
+          }
+        ]
+      },
+      {
+       "type": "header",
+       "content": "== Settings Slider"
+      },
+      {
+         "type": "select",
+         "id": "text_color",
+         "options": [
+          {
+             "value": "light",
+             "label": "Light"
+           },
+           {
+             "value": "dark",
+             "label": "Dark"
+           }
+         ],
+         "label": "== Color Scheme Slider",
+         "default": "dark"
+       },
+      {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Slider speed (second)",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Show pagination control?"
+      },
+       {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "default": false,
+        "label": "Show prev/next buttons?"
+      },
+       {
+        "type": "checkbox",
+        "id": "use_loop",
+        "default": true,
+        "label": "Slider loop?",
+        "info": "Enables loop mode."
+      },
+      {
+       "type": "checkbox",
+       "id": "use_autoplay",
+       "label": "Slider autoplay",
+       "info": "Enables autoplay mode.",
+       "default": true
+     },
+     {
+        "type": "header",
+        "content": "== Design Height Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_custom_img",
+        "label": "Use custom height image?",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "desktop",
+        "label": "Desktop Large",
+        "info": "475px",
+        "default": "475px"
+      },
+      {
+        "type": "text",
+        "id": "notebook",
+        "label": "Notebook (<= 1024px)",
+        "info": "485px",
+        "default": "485px"
+      },
+      {
+        "type": "text",
+        "id": "tablet",
+        "label": "Tablet (<= 778px)",
+        "info": "600px",
+        "default": "600px"
+      },
+      {
+        "type": "text",
+        "id": "mobile",
+        "label": "Mobile (<= 480px)",
+        "info": "600px",
+        "default": "600px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "overlay",
+        "label": "Background overlay",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "%"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image slide",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Text alignment",
+            "default": "tl",
+            "options": [
+              {
+                "value": "tl",
+                "label": "Left"
+              },
+              {
+                "value": "tc",
+                "label": "Center"
+              },
+              {
+                "value": "tr",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Looking for<br> the best price"
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "ELESSI STORE"
+          },
+          {
+             "type": "select",
+             "id": "text_color",
+             "options": [
+              {
+                 "value": "light",
+                 "label": "Light"
+               },
+               {
+                 "value": "dark",
+                 "label": "Dark"
+               }
+             ],
+             "label": "== Color Scheme",
+             "default": "dark"
+           },
+          {
+            "type": "text",
+            "id": "btn_title",
+            "label": "Slide button title",
+            "default":"SHOP NOW"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Slide link",
+            "default": "/"
+          },
+          {
+            "type": "select",
+            "id": "style_btn",
+            "label": "Button Style",
+            "default": "1",
+            "options": [
+              {
+                "value": "1",
+                "label": "Style 1"
+              },
+              {
+                "value": "2",
+                "label": "Style 2"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Slideshow Banner",
+      "category": "8. Slider",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }]
+  }
+{% endschema %}

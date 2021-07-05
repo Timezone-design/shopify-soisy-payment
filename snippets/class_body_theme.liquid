@@ -1,0 +1,33 @@
+{%- if settings.catalog_mode -%}{%- include 'catelog_mod' -%}{%- endif -%}
+{%- assign image_ck = '' -%}
+{%- capture class_body_theme -%}
+	{%- if settings.sticky_footer_enable %} footer_sticky{%- endif -%}
+	{%- if settings.body_bg_image != blank %} lazyload nt_bg_lz{%- endif -%}
+	{%- if settings.use_rtl %} rtl{%- endif -%}
+	{%- if customer %} logged-in{%- endif %}
+	{%- if checkout_active == false -%}catalog_mode_on{%- endif %}
+	{%- if settings.full_header_enable -%}header_full_width{%- endif %}
+	{%- if settings.sticky_header_enable -%}header_sticky_on{%- endif %}
+	{%- if settings.overlap_header_enable -%}header_transparent{%- endif %}
+	{%- if settings.top_bar_enable -%}top-bar-on{%- endif %}
+	{%- if settings.enable_header_banner -%}promo_bar_on{%- endif %}
+	{%- if settings.remove_price -%}remove_price{%- endif %}
+	{%- if settings.use_wishlist == false and pages['wishlist'].empty? != false -%}wishlist_off{%- endif %}
+	{%- if settings.shop_filters and settings.pop_style == 'pop_default' -%}side_fill_off{%- endif %}
+	{%- if settings.overlap_header_enable -%}
+	    {%- if template.name contains 'collection' -%}
+		    {%- assign image_ck = settings.collection_bg_image -%}
+		    {%- if collection.image != blank and settings.use_specify_image -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- endif -%}
+	    {%- if template.name == 'blog' and settings.blog_bg_image != blank -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- if template.name == 'article' -%}
+	         {%- if settings.blog_bg_image != blank or article.image != blank -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- endif -%}
+	    {%- if template.name == 'page' and settings.other_page_bg_image != blank -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- if template.name == 'cart' and settings.cart_bg_image != blank -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- if template.name == 'search' and settings.search_bg_image != blank -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- if template contains 'customers/' and template.name != 'register' and template.name != 'login' and settings.login_bg_image != blank -%}{%- assign image_ck = 'nt_has_img' -%}{%- endif -%}
+	    {%- if image_ck != blank -%}nt_has_img{%- endif -%}
+	{%- endif -%}
+{%- endcapture -%}
+{%- comment -%}use_animation{%- endcomment -%}

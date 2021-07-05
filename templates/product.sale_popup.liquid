@@ -1,0 +1,34 @@
+{%- layout none -%}
+{%- capture min_html -%}
+   {%- assign collection = collections[settings.collection_suggest] -%}
+	{%- assign first_available_variant = settings.first_available_variant -%}
+	{%- if product.selected_variant != blank and first_available_variant == false -%}
+	 {%- assign current_variant = product.selected_variant -%}
+	{%- elsif first_available_variant == false -%}
+	 {%- assign current_variant = product.variants.first -%}
+	{%- else -%}
+	 {%- assign current_variant = product.selected_or_first_available_variant -%}
+	{%- endif -%}
+	{%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+	{%- assign image_size = '90x' -%}
+	{%- if settings.show_close_suggest -%}<a class="suggest-close pa cusor_pointer"><span class="tooltip_bottom_left" aria-label="{{'general.layout.suggest.close' | t}}"><i class="pe-7s-close fwb"></i></span></a>{%- endif -%}
+	{%- if settings.show_qv_suggest -%}<a class="suggest-qv pa cusor_pointer open-qv-mpf tc" data-ajax="{{ product.url | within: collection}}/?view=quick_view_mpf"><span class="tooltip_top_left" aria-label="{{ 'products.grid_items.quick_view' | t }}"><i class="icon-eye icons fwb"></i></span></a>{%- endif -%}
+	<div class="table_suggest flex">
+		<a class="table-cell-top img flex c_center alin_center" href="{{ product.url | within: collection }}">
+	  	<img alt="{{featured_image.alt}}" class="w__100" src="{{ featured_image | img_url: image_size }}" srcset="{{ featured_image | img_url: image_size }} 1x, {{ featured_image | img_url: image_size, scale: 2 }} 2x">
+	   </a>
+	  <div class="table-cell-top infors">
+	    <span class="dib mb__5">{{'general.layout.suggest.title' | t}}</span>
+	    <a href="{{ product.url | within: collection }}" class="product-title mb__5">{{product.title}}</a>
+	    {%- if settings.use_suggest -%}
+	    <div class="minutes-ago mb__5">
+	      <span class="minute-number"></span> <span>{{'general.layout.suggest.minutes_ago' | t}}</span>
+	    </div>
+	    {%- endif -%}
+	    {%- if settings.use_fake_location and settings.fake_location != blank -%}
+	    <div class="from-ago">{{'general.layout.suggest.from' | t}} <span class="from"></span></div>
+	    {%- endif -%}
+	  </div>
+	</div>
+{%- endcapture -%}
+{{min_html | strip_newlines | remove: "  "}} 

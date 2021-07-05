@@ -1,0 +1,5 @@
+{%- layout none -%}
+{%- capture json_cart -%}
+   {%- include 'cart_body' -%}
+{%- endcapture -%}
+{{ json_cart | strip_newlines | remove:"  "}}

@@ -1,0 +1,111 @@
+<footer id="nt-footer" class="footer-{{settings.footer_design}} pr color-scheme-{{settings.footer_color_scheme}} {%- if settings.footer_accordions %} footer__collapsed{%- endif -%}">
+   <div class="footer__top pb__50 pt__80{%- if settings.footer_bg_image != blank %} lazyload nt_bg_lz lazypreload{%- endif -%}"{%- if settings.footer_bg_image != blank %} data-bgset="{%- include 'bgset', image: settings.footer_bg_image -%}" data-sizes="auto" data-parent-fit="cover" style="background-image: url('{{ settings.footer_bg_image | img_url: '50x50' }});"{%- endif -%}>
+      <div class="container">
+         {%- if settings.footer_design == '1' -%} {%- section 'footer_2' -%} {%- else -%}{%- section 'footer' -%} {%- endif -%} 
+         <!-- .row -->
+      </div>
+      <!-- .container -->
+   </div>
+   <!-- .footer__top -->
+   {%- if settings.bottom_menu != blank or settings.copyright_text != blank -%}
+      {%- case settings.copyrights_layout -%}
+        {%- when 'centered' -%}
+            {%- assign class = 'col-lg-12 col-12 tc' -%}
+            {%- assign class_2 = 'col-lg-12 col-12 tc' -%}
+        {%- else -%}
+            {%- assign class = 'col-lg-6 col-12' -%}
+            {%- assign class_2 = 'col-lg-6 col-12 tr' -%}
+      {%- endcase -%}
+      <div class="footer__bot">
+         <div class="container">
+            {%- assign ck_footer__bot = false -%}
+            {%- if settings.bottom_menu != blank and settings.copyright_text != blank -%}
+                {%- assign ck_footer__bot = true -%}
+            {%- elsif settings.copyright_text != blank and settings.footer_payment_image != blank and settings.payment_icons == '1' -%}
+                {%- assign ck_footer__bot = true -%}
+            {%- elsif settings.copyright_text != blank and shop.enabled_payment_types != blank and settings.payment_icons == '2' -%}
+                {%- assign ck_footer__bot = true -%}
+            {%- endif -%}
+            {%- if ck_footer__bot -%}
+            <div class="row">
+               {%- assign copyright_text = settings.copyright_text | split:'{{year}}' -%}
+               <div class="{{class}}">{{ copyright_text[0] }} {{'now' | date:'%Y'}} {{ copyright_text[1] }}</div>
+               <div class="{{class_2}}">
+                  {%- if settings.bottom_menu != blank -%}
+                     <ul id="nt-footer-menu" class="clearfix links">
+                        {%- for link in linklists[settings.bottom_menu].links -%}
+                           <li><a class="text-c" href="{{ link.url }}">{{ link.title | split: '[' | first  }}</a></li>
+                        {%- endfor -%}
+                     </ul>
+                  {%- elsif settings.footer_payment_image != blank and settings.payment_icons == '1' -%}
+                    {%- assign image = settings.footer_payment_image -%}
+                     <img src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: 'accept payment' }}">
+                  {%- elsif settings.payment_icons == '2' -%}
+                     <div class="site-footer__payment-icons">
+                      {%- unless shop.enabled_payment_types == empty -%}
+                        {%- assign payment_icons_available = 'amazon_payments,american_express,apple_pay,bitcoin,cirrus,dankort,diners_club,discover,dogecoin,dwolla,forbrugsforeningen,interac,jcb,klarna,litecoin,maestro,master,paypal,stripe,shopify_pay,visa' | split: ',' -%}
+                        <ul class="payment-icons db">
+                          {% for type in shop.enabled_payment_types %}
+                            {% if payment_icons_available contains type %}
+                               {%- if settings.style_payment == '1' -%}
+                                <li class="payment-icon dib">
+                                  <span class="icon-fallback-text">
+                                    <span class="icon icon-{{type}}" aria-hidden="true"></span>
+                                    <span class="fallback-text">{{ type | replace: '_', ' ' }}</span>
+                                  </span>
+                                </li>
+                              {%- else -%}
+                                <li class="payment-icon svg">
+                                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                                </li>
+                              {%- endif -%}
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
+                      {%- endunless -%}
+                     </div>
+                  {%- endif -%}
+               </div>
+            </div>
+            {%- elsif settings.bottom_menu != blank -%}
+               <ul id="nt-footer-menu" class="clearfix links tc">
+                  {%- for link in linklists[settings.bottom_menu].links -%}
+                     <li><a class="text-c" href="{{ link.url }}">{{ link.title | split: '[' | first  }}</a></li>
+                  {%- endfor -%}
+               </ul>
+            {%- elsif settings.copyright_text != blank -%}
+               {%- assign copyright_text = settings.copyright_text | split:'{{year}}' -%}
+               <div class="tc">{{ copyright_text[0] }} {{'now' | date:'%Y'}} {{ copyright_text[1] }}</div>
+            {%- elsif settings.footer_payment_image != blank and settings.payment_icons == '1' -%}
+              {%- assign image = settings.footer_payment_image -%}
+              <div class="tc"><img src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: 'accept payment' }}"></div>
+            {%- elsif settings.payment_icons == '2' -%}
+               <div class="site-footer__payment-icons tc">
+                {% unless shop.enabled_payment_types == empty %}
+                  {%- assign payment_icons_available = 'amazon_payments,american_express,apple_pay,bitcoin,cirrus,dankort,diners_club,discover,dogecoin,dwolla,forbrugsforeningen,interac,jcb,klarna,litecoin,maestro,master,paypal,stripe,shopify_pay,visa' | split: ',' -%}
+                  <ul class="payment-icons db">
+                    {% for type in shop.enabled_payment_types %}
+                      {% if payment_icons_available contains type %}
+                         {%- if settings.style_payment == '1' -%}
+                          <li class="payment-icon dib">
+                            <span class="icon-fallback-text">
+                              <span class="icon icon-{{type}}" aria-hidden="true"></span>
+                              <span class="fallback-text">{{ type | replace: '_', ' ' }}</span>
+                            </span>
+                          </li>
+                        {%- else -%}
+                          <li class="payment-icon svg">
+                            {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                          </li>
+                        {%- endif -%}
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% endunless %}
+               </div>
+            {%- endif -%}
+         </div>
+      </div><!-- .footer__bot -->
+   {%- endif -%}
+   <div class="nt_overlay_footer"></div>
+</footer>

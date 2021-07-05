@@ -1,0 +1,676 @@
+{%- if section.settings.logo != blank or section.settings.social or section.settings.newsletter -%}
+   <div class="col-12{%- if section.blocks.size > 0 %} mb__30{%- endif -%}"><div class="row alin_center">
+    {%- if section.settings.logo != blank -%}
+    <div class="col-12 col-md-6 col-lg-3 mb__30">
+       <div><a href="/">
+         {%- assign image = section.settings.logo -%}
+         {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          <img class="footer-logo w_100 lazyload lazypreload"
+            src="{{ image | img_url: '50x50' }}"
+            data-src="{{ img_url }}"
+            data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+            data-aspectratio="{{ image.aspect_ratio }}"
+            data-sizes="auto"
+            alt="{{ image.alt | default: shop.name }}"
+            style="opacity: 1;max-width: {{ section.settings.logo_max_width }}px;max-height: {{ section.settings.logo_max_height }}px">
+         </a>
+       </div>
+    </div>
+    {%- endif -%}
+    {%- if section.settings.social_enabled -%}
+    <div class="col-12 col-md-6 col-lg-3 mb__30">
+        {%- if section.settings.share_type == '1' -%}
+           {%- assign gl_follow_social = false -%}
+        {%- else -%}
+           {%- assign gl_follow_social = true -%}
+        {%- endif -%}
+        {%- include 'social-sharing', follow_social:gl_follow_social,gl_design:section.settings.footer_social_design,gl_size:section.settings.footer_social_size,nt_tooltip:true,,class_tooltip:'tooltip_top_right' -%}
+    </div>
+    {%- endif -%}
+      {%- if section.settings.newsletter and section.settings.use_newsletter_mailchimp and settings.mcsp_form_action != blank -%}
+        <div class="col-12 col-md-12 col-lg-6 mb__30">
+           <form id="mc4wp-form-{{section.id}}" role="form" action="{%- if section.settings.use_ajax_mailChimp -%}{{ settings.mcsp_form_action | replace: '/post?u', '/post-json?u' }}{%- else -%}{{ settings.mcsp_form_action }}{%- endif -%}" class="mc4wp-form mc4wp-form-{{section.id}}{%- if section.settings.use_ajax_mailChimp %} nt_ajax_mcsp{%- endif -%}" method="post">
+              <div class="mc4wp-form-fields">
+                 <h4 class="fwb fs__16 hide">{{section.settings.title}}</h4>
+                 <div class="signup-newsletter-form flex alin_center">
+                    <h4 class="fwb fs__16">{{section.settings.title}}</h4>
+                     <div class="w__100">
+                      <div class="flex">
+                       <input type="email" name="EMAIL" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"  value="{%- if customer -%}{{ customer.email }}{%- endif -%}" class="input-text" required="required">
+                       <div class="input-group-btn"><input type="submit" value="{{ 'general.newsletter_form.submit' | t }}" class="submit-btn{%- if settings.use_agree_checkbox_mail %} mail_agree{%- endif -%}"></div>
+                     </div>
+                     {%- if settings.use_agree_checkbox_mail -%}{%- include 'conditions_mail',html:'p',margin:'mt__5' -%}{%- endif -%}
+                     <div class="mc4wp-response"></div>
+                     </div>
+                 </div>
+              </div>
+           </form> <!-- / MailChimp for shopify Plugin -->
+        </div>
+      {%- elsif section.settings.newsletter -%}
+         <div class="col-12 col-md-12 col-lg-6 mb__30">
+         {%- form 'customer', class:'mc4wp-form' -%}
+            <div class="mc4wp-form-fields">
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              <h4 class="fwb fs__16 hide">{{section.settings.title}}</h4>
+              <div class="signup-newsletter-form flex alin_center">
+                 <h4 class="fwb fs__16">{{section.settings.title}}</h4>
+                 <div class="w__100">
+                  <div class="flex">
+                   <input type="email" name="contact[email]" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"  value="{%- if customer -%}{{ customer.email }}{%- endif -%}" class="input-text" required="required">
+                   <div class="input-group-btn"><input type="submit" value="{{ 'general.newsletter_form.submit' | t }}" class="submit-btn{%- if settings.use_agree_checkbox_mail %} mail_agree{%- endif -%}"></div>
+                 </div>
+                 {%- if settings.use_agree_checkbox_mail -%}{%- include 'conditions_mail',html:'p',margin:'mt__5' -%}{%- endif -%}
+                 <div class="mc4wp-response">
+                   {%- if form.posted_successfully? -%}<div class="shopify-message dib">{{ 'general.newsletter_form.confirmation' | t }}</div>{%- elsif form.errors -%}<div class="shopify-error dib">{{ form.errors | default_errors }}</div>{%- endif -%}
+                 </div>
+                 </div>
+              </div>
+             </div>
+          {%- endform -%}
+          </div>
+        {%- endif -%}
+      </div></div>
+{%- endif -%}
+{%- if section.blocks.size > 0 -%}
+      {%- assign footer_accordions = settings.footer_accordions -%}
+      {%- for block in section.blocks -%}
+         {%- case block.settings.width -%}
+           {%- when '16%' -%}
+             {%- assign block_width = 'col-lg-2' -%}
+           {%- when '25%' -%}
+             {%- assign block_width = 'col-lg-3' -%}
+           {%- when '33%' -%}
+             {%- assign block_width = 'col-lg-4' -%}
+           {%- when '50%' -%}
+             {%- assign block_width = 'col-lg-6' -%}
+           {%- when '66%' -%}
+             {%- assign block_width = 'col-lg-8' -%}
+           {%- when '75%' -%}
+             {%- assign block_width = 'col-lg-9' -%}
+           {%- when '100%' -%}
+             {%- assign block_width = 'col-lg-12' -%}
+         {%- endcase -%}
+         {%- case block.settings.width_tablet -%}
+           {%- when '16%' -%}
+             {%- assign block_width_tablet = 'col-md-2' -%}
+           {%- when '25%' -%}
+             {%- assign block_width_tablet = 'col-md-3' -%}
+           {%- when '33%' -%}
+             {%- assign block_width_tablet = 'col-md-4' -%}
+           {%- when '50%' -%}
+             {%- assign block_width_tablet = 'col-md-6' -%}
+           {%- when '66%' -%}
+             {%- assign block_width_tablet = 'col-md-8' -%}
+           {%- when '75%' -%}
+             {%- assign block_width_tablet = 'col-md-9' -%}
+           {%- when '100%' -%}
+             {%- assign block_width_tablet = 'col-md-12' -%}
+         {%- endcase -%}
+         {%- case block.settings.width_mobile -%}
+           {%- when '50%' -%}
+             {%- assign block_width_mobile = 'col-6' -%}
+           {%- when '100%' -%}
+             {%- assign block_width_mobile = 'col-12' -%}
+         {%- endcase -%}
+         <div class="{{ block_width }} {{block_width_tablet}} {{block_width_mobile}} mb__30">
+         {%- case block.type -%}
+         {%- when 'menu' -%}
+            <aside id="nav_menu-{{ block.id }}" class="widget widget_nav_menu{%- if footer_accordions and block.settings.title != blank %} footer-quick-links__collapsed sp-toogle{%- endif -%}">
+              {%- if block.settings.title != blank -%}<h3 class="pr tu widget-title fwsb fs__16 mb__20 tab-heading tab-heading"><i class="footer-quick-links__toggle-icon"></i>{{ block.settings.title }}</h3>{%- endif -%} 
+              <ul class="menu entry-content">
+                  {%- for link in linklists[block.settings.menu].links -%}
+                  <li{% if link.active %} class="current-menu-item"{% endif %}><a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+                  {%- else -%}
+                  {% capture theme_settings_footer_linklist_path %}<strong>Footer</strong> > <strong>Quick links link list</strong>{% endcapture %}
+                  {{ 'general.layout.footer.instructions_for_linklist_html' | t: theme_settings_link: theme_settings_link, theme_settings_footer_linklist_path: theme_settings_footer_linklist_path }}
+                {%- endfor -%}
+               </ul>
+            </aside>
+           {%- when 'html' -%}
+           <aside id="nav_menu-{{ block.id }}" class="widget widget_nav_menu{%- if footer_accordions and block.settings.title != blank %} footer-quick-links__collapsed sp-toogle{%- endif -%}">
+              {%- if block.settings.title != blank -%}<h3 class="pr tu widget-title fwsb fs__16 mb__20 tab-heading tab-heading"><i class="footer-quick-links__toggle-icon"></i>{{ block.settings.title }}</h3>{%- endif -%} 
+             <div class="nt_footer_content entry-content">{{block.settings.custom_html}}</div>
+            </aside>
+         {%- when 'text' -%}
+            <aside id="text-{{ block.id }}" class="widget widget_text{%- if footer_accordions and block.settings.title != blank %} footer-quick-links__collapsed sp-toogle{%- endif %}{%- if footer_accordions and block.settings.title_logo != blank %} footer-quick-links__collapsed sp-toogle{%- endif -%}">
+               {%- if block.settings.title != blank -%}<h3 class="pr tu widget-title fwsb fs__16 mb__20 tab-heading tab-heading"><i class="footer-quick-links__toggle-icon"></i>{{ block.settings.title }}</h3>{%- endif -%}
+              <div class="textwidget entry-content">
+                  <div class="footer-contact">
+                       <div class="nt_footer_content entry-content">
+                           {{ block.settings.textarea }}
+                       </div>
+                     {%- if block.settings.enabled_payment_types and block.settings.footer_payment_image != blank and block.settings.payment_icons == '1' -%}
+                      {%- assign image = block.settings.footer_payment_image -%}
+                       <div class="mg__0 mt__15 tr"><img src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: 'accept payment' }}"></div>
+                       {%- elsif block.settings.enabled_payment_types and block.settings.payment_icons == '2' -%}
+                       <div class="site-footer__payment-icons tr">
+                        {%- unless shop.enabled_payment_types == empty -%}
+                          {%- assign payment_icons_available = 'amazon_payments,american_express,apple_pay,bitcoin,cirrus,dankort,diners_club,discover,dogecoin,dwolla,forbrugsforeningen,interac,jcb,klarna,litecoin,maestro,master,paypal,stripe,shopify_pay,visa' | split: ',' -%}
+                          <ul class="payment-icons db mt__15">
+                            {%- for type in shop.enabled_payment_types %}
+                              {%- if payment_icons_available contains type -%}
+                                {%- if block.settings.style == '1' -%}
+                                  <li class="payment-icon dib">
+                                    <span class="icon-fallback-text">
+                                      <span class="icon icon-{{type}}" aria-hidden="true"></span>
+                                      <span class="fallback-text">{{ type | replace: '_', ' ' }}</span>
+                                    </span>
+                                  </li>
+                                {%- else -%}
+                                  <li class="payment-icon svg">
+                                    {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                                  </li>
+                                {%- endif -%}
+                              {%- endif -%}
+                            {%- endfor -%}
+                          </ul>
+                        {%- endunless -%}
+                      </div>
+                       {%- endif -%}
+                  </div>
+               </div>
+            </aside>
+         {%- endcase -%}
+         </div>
+      {%- endfor -%}
+{%- endif -%}
+{%- schema -%}
+  {
+    "name": "Footer Multiple Columns",
+    "class": "row sp-toogles",
+    "max_blocks": 6,
+     "settings": [
+      {
+        "type": "header",
+        "content": "== Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Custom logo",
+        "info": "199px wide .png recommended"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width",
+        "label": "___ Logo image maximum width",
+        "info": "Set maximum width for logo image in the header. In pixels, min-width:50px, max-width:600px",
+        "default": "200"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_height",
+        "label": "___ Logo image maximum height",
+        "info": "Set maximum height for logo image in the header.",
+        "default": "95"
+      },       
+      {
+        "type": "header",
+        "content": "== Newsletter signup"
+      },
+       {
+         "type": "paragraph",
+         "content": "Use Default Shopify: Any customers who sign up will have an account created for them in Shopify. [View customers](\/admin\/customers?query=&accepts_marketing=1)"
+       },
+       {
+         "type": "checkbox",
+         "id": "newsletter",
+         "label": "Show newsletter?",
+         "default": true
+       },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default":"Newsletter"
+      },
+       {
+         "type": "checkbox",
+         "id": "use_newsletter_mailchimp",
+         "label": "Use Mailchimp?",
+         "info": "\"MailChimp form action URL\" You can find in tab \"General\"",
+         "default": true
+       },
+       {
+         "type": "checkbox",
+         "id": "use_ajax_mailChimp",
+         "label": "Use Ajax Mailchimp?",
+         "default": true
+       },
+      {
+        "type": "header",
+        "content": "== Social"
+      },
+      {
+        "type": "checkbox",
+        "id": "social_enabled",
+        "label": "Show social media icons",
+        "default": true,
+        "info": "Add accounts in Social media section"
+      },
+      {
+        "type": "radio",
+        "id": "share_type",
+        "default":"2",
+        "options": [
+          {
+            "value": "1",
+            "label": "Share"
+          },
+          {
+            "value": "2",
+            "label": "Follow"
+          }
+        ],
+        "label": "== Share buttons type"
+      },
+      {
+         "type": "paragraph",
+         "content": "Edit your social settings and accounts in General settings"
+       },
+       {
+        "type": "select",
+        "id": "footer_social_design",
+        "options": [
+          {
+            "value": "design-default",
+            "label": "Default"
+          },
+          {
+            "value": "icons-design-circle",
+            "label": "Circle"
+          },
+          {
+            "value": "icons-design-colored",
+            "label": "Colored"
+          },
+          {
+            "value": "icons-design-colored-alt",
+            "label": "Colored Alt"
+          }
+        ],
+        "label": "___ Social buttons design",
+        "default": "design-default"
+      },
+      {
+        "type": "select",
+        "id": "footer_social_size",
+        "options": [
+          {
+            "value": "icons-size-small",
+            "label": "Small"
+          },
+          {
+            "value": "icons-size-default",
+            "label": "Medium"
+          },
+          {
+            "value": "icons-size-large",
+            "label": "Large"
+          }
+        ],
+        "label": "___ Social buttons size",
+        "default": "icons-size-default"
+      }
+     ],
+    "blocks": [
+      {
+        "type": "menu",
+        "name": "Add Menu",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },
+          {
+            "type": "link_list",
+            "id": "menu",
+            "label": "Add menu"
+          },
+          {
+            "type": "select",
+            "id": "width",
+            "label": "Container width",
+            "default": "16%",
+            "options": [
+              {
+                "value": "16%",
+                "label": "16%"
+              },
+              {
+                "value": "25%",
+                "label": "25%"
+              },
+              {
+                "value": "33%",
+                "label": "33%"
+              },
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "66%",
+                "label": "66%"
+              },
+              {
+                "value": "75%",
+                "label": "75%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width_tablet",
+            "label": "Container width tablet",
+            "default": "50%",
+            "options": [
+              {
+                "value": "16%",
+                "label": "16%"
+              },
+              {
+                "value": "25%",
+                "label": "25%"
+              },
+              {
+                "value": "33%",
+                "label": "33%"
+              },
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "66%",
+                "label": "66%"
+              },
+              {
+                "value": "75%",
+                "label": "75%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width_mobile",
+            "label": "Container width mobile",
+            "default": "100%",
+            "options": [
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "Custom html",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },
+         {
+            "type": "html",
+            "id": "custom_html",
+            "label": "Text",
+            "default": "<p><i class=\"icon-location-pin icons\"> <\/i>451 Wall Street, USA, New York<\/p>\n<p><i class=\"icon-envelope icons\"><\/i><span> <a href=\"mailto:youremail@site.com\">youremail@site.com<\/a><\/span><\/p>\n<p><i class=\"icon-phone icons\"><\/i> <span>+01 23456789 <\/span><\/p>"
+         },
+          {
+            "type": "select",
+            "id": "width",
+            "label": "Container width",
+            "default": "16%",
+            "options": [
+              {
+                "value": "16%",
+                "label": "16%"
+              },
+              {
+                "value": "25%",
+                "label": "25%"
+              },
+              {
+                "value": "33%",
+                "label": "33%"
+              },
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "66%",
+                "label": "66%"
+              },
+              {
+                "value": "75%",
+                "label": "75%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width_tablet",
+            "label": "Container width tablet",
+            "default": "50%",
+            "options": [
+              {
+                "value": "16%",
+                "label": "16%"
+              },
+              {
+                "value": "25%",
+                "label": "25%"
+              },
+              {
+                "value": "33%",
+                "label": "33%"
+              },
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "66%",
+                "label": "66%"
+              },
+              {
+                "value": "75%",
+                "label": "75%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width_mobile",
+            "label": "Container width mobile",
+            "default": "100%",
+            "options": [
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Get in touch",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },  
+          {
+            "type": "textarea",
+            "id": "textarea",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your brand with your customers.</p>",
+            "info": "[Copy + Edit code](http:\/\/codepen.io\/sarus\/pen\/WpePKe)"
+          },
+         {
+           "type": "checkbox",
+           "id": "enabled_payment_types",
+           "label": "Show image payment",
+            "default": true
+         },
+         {
+          "type": "radio",
+          "id": "payment_icons",
+          "options": [
+            {
+              "value": "1",
+              "label": "Upload Image"
+            },
+            {
+              "value": "2",
+              "label": "Auto Payment"
+            }
+          ],
+          "label": "Payment icons"
+        },
+         {
+           "type": "image_picker",
+           "id": "footer_payment_image",
+           "label": "upload image payment"
+         },
+         {
+            "type": "select",
+            "id": "style",
+            "label": "Style Auto Payment",
+            "default": "2",
+            "options": [
+              {
+                "value": "1",
+                "label": "Style 1"
+              },
+              {
+                "value": "2",
+                "label": "Style 2"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width",
+            "label": "Container width",
+            "default": "25%",
+            "options": [
+              {
+                "value": "16%",
+                "label": "16%"
+              },
+              {
+                "value": "25%",
+                "label": "25%"
+              },
+              {
+                "value": "33%",
+                "label": "33%"
+              },
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "66%",
+                "label": "66%"
+              },
+              {
+                "value": "75%",
+                "label": "75%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width_tablet",
+            "label": "Container width tablet",
+            "default": "50%",
+            "options": [
+              {
+                "value": "16%",
+                "label": "16%"
+              },
+              {
+                "value": "25%",
+                "label": "25%"
+              },
+              {
+                "value": "33%",
+                "label": "33%"
+              },
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "66%",
+                "label": "66%"
+              },
+              {
+                "value": "75%",
+                "label": "75%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "width_mobile",
+            "label": "Container width mobile",
+            "default": "100%",
+            "options": [
+              {
+                "value": "50%",
+                "label": "50%"
+              },
+              {
+                "value": "100%",
+                "label": "100%"
+              }
+            ]
+          }
+        ]
+      }
+   ]
+  }
+{% endschema %}

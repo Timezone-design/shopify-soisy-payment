@@ -1,0 +1,534 @@
+{%- if section.blocks.size > 0 -%}
+   <div class="{{section.settings.accordion_style}} nt_accordions_js w_100">
+      {%- if section.settings.designers_filters -%}
+      <div class="nt_filter_iso fwb tc tu mb__50">
+        <a data-filter="*" class="selected dib cg chp" href="javascript:void(0);">{{ 'blogs.portfolio.filter_all' | t }}</a>
+        {%- for block in section.blocks -%}
+        {%- assign link_list = block.settings.menu -%}
+        {%- if link_list != blank and linklists[link_list].links.size > 0 -%}
+        <a data-filter=".{{ block.type | handleize }}" class="dib cg chp" href="javascript:void(0);">{{ block.settings.title }}</a>
+        {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+      <div class="row nt-masonry" data-masonry='{"selector":".designer-item", "layoutMode":"masonry" ,"columnWidth":".designer-item"}'>
+      {%- for block in section.blocks -%}
+        {%- assign link_list = block.settings.menu -%}
+        {%- if link_list != blank and linklists[link_list].links.size > 0 -%}
+            <div class="designer-item col-6 col-md-6 col-lg-3 mb__30 {{ block.type | handleize }}">
+               <h2>{{block.settings.title}}</h2>
+               <ul>
+                  {%- for link in linklists[link_list].links -%}
+                  <li><a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+                  {%- endfor -%}
+               </ul>
+            </div>
+        {%- endif -%}
+      {%- endfor -%}
+      </div>
+    </div>
+{%- else -%}
+    <div class="text-center">{%- include 'no-blocks'-%}</div>   
+{%- endif -%}
+{%- schema -%}
+  {
+    "name": "Designers",
+    "class": "section_designers",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "designers_filters",
+        "label": "Show Designers filters?",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "123",
+        "name": "123",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "123"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "A",
+        "name": "A",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "A"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "B",
+        "name": "B",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "B"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "C",
+        "name": "C",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "C"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "D",
+        "name": "D",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "D"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "E",
+        "name": "E",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "E"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "F",
+        "name": "F",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "F"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "G",
+        "name": "G",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "G"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "H",
+        "name": "H",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "H"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "I",
+        "name": "I",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "I"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "J",
+        "name": "J",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "J"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "K",
+        "name": "K",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "K"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "L",
+        "name": "L",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "L"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "M",
+        "name": "M",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "M"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "N",
+        "name": "N",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "N"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "O",
+        "name": "O",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "O"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "P",
+        "name": "P",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "P"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "Q",
+        "name": "Q",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Q"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "R",
+        "name": "R",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "R"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "S",
+        "name": "S",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "S"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "T",
+        "name": "T",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "T"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "U",
+        "name": "U",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "U"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "V",
+        "name": "V",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "V"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "W",
+        "name": "W",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "W"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "X",
+        "name": "X",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "X"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "Y",
+        "name": "Y",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Y"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      },
+      {
+        "type": "Z",
+        "name": "Z",
+        "limit": 1,
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Z"
+            },
+            {
+              "type": "link_list",
+              "id": "menu",
+              "label": "Add menu"
+            }
+         ]
+      }
+    ]
+  }
+{% endschema %}

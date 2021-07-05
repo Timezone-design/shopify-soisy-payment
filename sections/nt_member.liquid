@@ -1,0 +1,140 @@
+{%- if section.settings.hidden_section -%}<style> #shopify-section-{{ section.id }} { display: none !important}</style>{%- endif -%}
+{%- assign grid_item_width = 'col-md-4' -%}
+{%- case section.blocks.size -%}
+{% when 1 %}
+{%- assign grid_item_width = 'col-md-12' -%}
+{% when 2 %}
+{%- assign grid_item_width = 'col-md-6' -%}
+{% when 4 %}
+{%- assign grid_item_width = 'col-md-3' -%}
+{%- endcase -%}
+{% for block in section.blocks %}
+<div class="{{ grid_item_width }} col-12">
+	<div class="nt-member tc pr">
+      {% if block.settings.image %}
+         
+            {%- assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <div class="pr db">
+               <img class="w__100 lazyload" src="{{ block.settings.image | img_url: '50x50' }}" alt="{{ block.settings.name }}" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block.settings.aspect_ratio }}" data-sizes="auto">
+               <div class="nt-wrap-lazy"></div>
+            </div>
+     {% else %}
+     {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+     {% endif %}
+     {% if block.settings.title %}
+     <h4 class="mt__15 fwsb fs__20">{{ block.settings.title }}</h4>
+     {% endif %}
+     {% if block.settings.position %}
+     <span>{{ block.settings.position }}</span>
+     {% endif %}
+     <div class="social pa w__100 ts__03">
+         {% if block.settings.facebook != blank %}<a class="facebook" href="{{ block.settings.facebook }}" target="_blank"><i class="fa fa-facebook"></i></a>{% endif %}
+         {% if block.settings.twitter != blank %}<a class="twitter" href="{{ block.settings.twitter }}" target="_blank"><i class="fa fa-twitter"></i></a>{% endif %}
+         {% if block.settings.dribbble != blank %}<a class="dribbble" href="{{ block.settings.dribbble }}" target="_blank"><i class="fa fa-dribbble"></i></a>{% endif %}
+         {% if block.settings.behance != blank %}<a class="behance" href="{{ block.settings.behance }}" target="_blank"><i class="fa fa-behance"></i></a>{% endif %}
+      </div>
+  </div>
+</div>
+{% endfor %}
+{%- if section.settings.padding != blank or section.settings.margin != blank -%}
+{% assign margin = section.settings.margin | remove: ' ' | split: '-' | join: ' ' %}
+{% assign padding = section.settings.padding | remove: ' ' | split: '-' | join: ' ' %}
+<style>
+  #shopify-section-{{ section.id }} { 
+    {%- if section.settings.margin != blank -%} margin: {{margin}};{%- endif -%}
+    {%- if section.settings.padding != blank -%}padding: {{padding}}{%- endif -%}
+   }
+</style>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Members",
+  "class": "row t_members",
+  "settings": [
+    {
+        "type": "header",
+        "content": "== Design settings"
+      },
+      {
+        "type": "paragraph",
+        "content": "To horizontally center a block element (like <div>), use margin: auto;"
+      },
+      {
+        "type": "text",
+        "id": "margin",
+        "label": "Margins ( top-right-bottom-left )",
+        "info": "60px-auto-60px-auto"
+      },
+      {
+        "type": "text",
+        "id": "padding",
+        "label": "Paddings Integer px ( top-right-bottom-left )",
+        "info": "60px-60px-0-60px"
+      },
+{
+  "type": "header",
+  "content": "== Elessi Extras"
+},
+{
+  "type": "checkbox",
+  "id": "hidden_section",
+  "label": "Disable Section?",
+  "info": "If checked the section won't be visible on the public side of your website. You can switch it back any time.",
+  "default": false
+}
+    ],
+  "blocks": [
+    {
+      "type": "memberss",
+      "name": "member",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image Avatar"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Add a name"
+        },
+        {
+          "type": "text",
+          "id": "position",
+          "label": "Position",
+          "default": "Developer"
+          },
+          {
+        "type": "header",
+        "content": "== social"
+      },
+      {
+          "type": "text",
+          "id": "facebook",
+          "label": "Facebook",
+          "info": "https:\/\/facebook.com\/shopify"
+        },
+        {
+          "type": "text",
+          "id": "twitter",
+          "label": "Twitter",
+          "info": "https:\/\/twitter.com\/shopify"
+        },
+        {
+          "type": "text",
+          "id": "dribbble",
+          "label": "Dribbble",
+          "info": "https:\/\/dribbble.com\/shopify"
+        },
+        {
+          "type": "text",
+          "id": "behance",
+          "label": "Behance",
+          "info": "https:\/\/behance.net\/user"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

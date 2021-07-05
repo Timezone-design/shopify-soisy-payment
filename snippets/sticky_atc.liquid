@@ -1,0 +1,93 @@
+{%- assign first_available_variant = settings.first_available_variant -%}
+{%- if product.selected_variant != blank and first_available_variant == false -%}
+ {%- assign current_variant = product.selected_variant -%}
+{%- elsif first_available_variant == false -%}
+ {%- assign current_variant = product.variants.first -%}
+{%- else -%}
+ {%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- endif -%}
+{%- assign remove_unavailable = true -%}
+{%- assign remove_soldout = settings.remove_sold_out -%}
+{%- assign on_sale = false -%}
+{%- if current_variant.compare_at_price > current_variant.price -%}
+   {%- unless product.tags contains 'notsale' -%}
+   {%- assign on_sale = true -%}
+   {%-endunless-%}
+{%- endif -%}
+{%- if product.metafields.external -%}
+  {%- assign check = product.metafields.external | first | last -%}
+  {%- if check contains 'https:' or check  contains 'http:' -%}{%- assign check_external = true -%}{%-else-%}{%- assign check_external = false -%}{%-endif-%}
+{%-endif-%}
+<div class="sticky-nt-atc pf {{settings.sticky_position}}{%- if product.variants.size > 1 %} sticky_variants{%- endif %}{%- if settings.show_sticky_add_mobile %} sticky_add_mobile{%- endif %}{%- if product.has_only_default_variant %} default_variant{%- endif -%}">
+   <div class="container">
+      <div id="callBackVariantsticky" class="nt_{{current_variant.option1 | handleize}} nt_{{current_variant.option2 | handleize}} nt_{{current_variant.option3 | handleize}}">
+         {%- form 'product', product, id: "cart-form-sticky", class: "nt_cart_form variations_form variations_form_sticky product-form nt_cart clearfix" -%}
+            <select name="id" id="product-selectsticky" class="product-select_pr product-form__variants hide hidden">
+               {%- for variant in product.variants -%}
+                   {%- if variant.available -%}
+                     <option {% if variant.id == current_variant.id %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}" class="{{variant.option1 | handleize }} {{variant.option2 | handleize }} {{variant.option3 | handleize }}">{{ variant.title | handle}}</option>
+                   {%- else -%}
+                     <option value="{{ variant.id }}"{%- if remove_soldout %} disabled="disabled"{%- endif %} class="nt_sold_out {{variant.option1 | handleize }} {{variant.option2 | handleize }} {{variant.option3 | handleize }}">{{ variant.title | handleize }}</option>
+                   {%- endif -%}
+                 {%- endfor -%}
+            </select>
+            {%- if product.variants.size > 1 -%}
+               <div class="swatch_title_price">
+                  <button type="button" class="cart-drawer__close-button btn--clear btn--square close-sticky"><svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 16.8 16.8"><path fill="#444" d="M16.8 1.5L15.4.1 8.4 7l-7-7L0 1.4l7 7-7 7 1.4 1.4 7-7 7 7 1.4-1.4-7-7z"></path></svg></button>
+                  {%- include settings.swatch_design,class_input:'pr',select_id:'nt_select_sticky' -%}
+                  <div class="shopify-variation-price price_varies entry-summary">
+                     <span class="price productPrice" id="productPricesticky">
+                       {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+                       {%- else -%}
+                       <span id="product-pricesticky">{{ current_variant.price | money }}</span> 
+                       {%- endif -%}
+                     </span>
+                  </div>
+               </div>
+            {%- endif -%}
+            <div class="sticky-nt-atc_inner">
+               <span class="product_title fs__14 tu db pr__15">{{product.title}}</span>
+               {%- if product.variants.size > 1 -%}
+                  <button class="button btn_primary toogle_sticky_add" id="nt_sticky_toogle" type="button">{{ 'products.product.select_option' | t }}</button>
+                  <div id="group_sticky" class="flex alin_center mobile_flex{%- if settings.show_pr_quantity == false %} hide_qty{%- endif -%}" style="display:none">
+                     <div id="shopify_quantity_sticky" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+                        <input type="button" value="-" class="minus">
+                        <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+                        <input type="button" value="+" class="plus">
+                     </div>
+                     {%- if check_external -%}
+                        <a href="{{ check }}" id="nt_sticky_add" rel="nofollow" class="shopify_add_to_cart btn_primary single_add_to_cart_button button btn_external{%- if settings.enable_payment_button %} mr__15{%- endif -%}">{{ product.metafields.external | first | first }}</a>
+                     {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+                        <button type="submit" id="nt_sticky_add" class="shopify_add_to_cart btn_primary ajax_form_cart single_add_to_cart_button button btn--loader{%- if settings.enable_payment_button %} mr__15{%- endif -%}"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+                     {%- else -%}
+                        <button type="submit" id="nt_sticky_add" class="shopify_add_to_cart btn_primary ajax_form_cart single_add_to_cart_button button btn--loader{%- if settings.enable_payment_button %} mr__15{%- endif -%}"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+                     {%- endif -%} 
+                     <p class="stock out-of-stock" id="nt_outstock_sticky" style="display:none">{{ 'products.product.outofstock' | t }}</p>
+                     {%- if settings.enable_payment_button -%}
+                       {{ form | payment_button }}
+                     {%- endif -%} 
+                  </div>
+               {%- else -%}
+                  <div class="flex alin_center mobile_flex{%- if settings.show_pr_quantity == false %} hide_qty{%- endif -%}">
+                     <div id="shopify_quantity_sticky" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+                           <input type="button" value="-" class="minus">
+                           <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+                           <input type="button" value="+" class="plus">
+                     </div>
+                     {%- if check_external -%}
+                        <a href="{{ check }}" id="nt_sticky_add" rel="nofollow" class="shopify_add_to_cart btn_primary single_add_to_cart_button button btn_external{%- if settings.enable_payment_button %} mr__15{%- endif -%}">{{ product.metafields.external | first | first }}</a>
+                     {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+                        <button type="submit" id="nt_sticky_add" class="shopify_add_to_cart btn_primary ajax_form_cart single_add_to_cart_button button btn--loader{%- if settings.enable_payment_button %} mr__15{%- endif -%}"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+                     {%- else -%}
+                        <button type="submit" id="nt_sticky_add" class="shopify_add_to_cart btn_primary ajax_form_cart single_add_to_cart_button button btn--loader{%- if settings.enable_payment_button %} mr__15{%- endif -%}"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+                     {%- endif -%} 
+                     {%- if settings.enable_payment_button -%}
+                       {{ form | payment_button }}
+                     {%- endif -%} 
+                  </div>
+               {%- endif -%}
+            </div>
+         {%- endform -%}
+      </div>
+   </div>
+</div>

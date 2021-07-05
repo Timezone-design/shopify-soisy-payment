@@ -1,0 +1,206 @@
+{%- include 'style_mp_section' -%}
+{%- assign image_size = '117x' -%}
+{%- if section.blocks.size > 0 -%}
+  {%- case section.blocks.size -%}
+      {%- when 1 -%}
+        {%- assign class_col = 'col-md-6 col-12' -%}
+      {%- when 2 -%}
+        {%- assign class_col = 'col-md-6 col-12' -%}
+      {%- when 3 -%}
+        {%- assign class_col = 'col-lg-4 col-md-6 col-12' -%}
+      {%- when 6 -%}
+        {%- assign class_col = 'col-lg-2 col-md-6 col-12' -%}
+       {%- else -%}
+        {%- assign class_col = 'col-lg-3 col-md-6 col-12' -%}
+    {%- endcase -%}
+<div class="row nt_custom_{{section.id}}">
+  {%- for block in section.blocks -%}
+  <div class="{{class_col}} col-12 mt__30 widget widget_products clearfix widget_products__{{ block.id }}" {{ block.shopify_attributes }}>
+    <h4 class="widget-title mb__30 pr">{{ block.settings.title }}</h4>
+    {%- if block.settings.featured_product_list_collection == blank -%}
+    <p class="mg__0 mb__30">{{ 'homepage.onboarding.no_content' | t }}</p>
+    {%- else -%}
+    <ul class="product_list_widget">
+      {%- for product in collections[block.settings.featured_product_list_collection].products limit:block.settings.featured_product_limit_all -%}
+         {%- assign on_sale = false -%}
+         {%- if product.compare_at_price_min > product.price_min -%}
+           {%- assign on_sale = true -%}
+         {%- endif -%}
+         {%- assign c = block.settings.featured_product_list_collection -%}
+         <li>
+            <a href="{{product.url | within: collection}}" title="{{ product.title }}">
+               {%- assign image = product.images[0] -%}
+            {%- if image != blank -%}
+            {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img src="{{ image | img_url: '50x' }}"
+                                data-src="{{ img_url }}"
+                                data-widths="[80, 120, 160]"
+                                data-aspectratio="{{ image.aspect_ratio }}"
+                                data-sizes="auto" class="w__100 lazyload attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">    
+            {%- endif -%}
+            </a>
+            <div class="pr_w_infors">
+               <div class="product-title"><a href="{{product.url | within: collection}}">{{ product.title }}</a></div>
+               <span class="price db mt__5">
+               {%- if product.price_varies -%}
+               {{ product.price_min | money }}–{{ product.price_max | money }}
+               {%- elsif on_sale -%}<ins>{{ product.price | money }}</ins> <del>{{ product.compare_at_price  | money }}</del>
+               {%- else -%}
+               {{ product.price | money }}
+               {%- endif -%}
+               </span>
+            </div>
+         </li>
+      {%- endfor -%}
+    </ul>
+    {%- endif -%}
+  </div>
+  {%- endfor -%}
+</div>
+{%- endif -%}
+{%- if section.blocks.size == 0 -%}
+  {%- include 'no-blocks' -%} 
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Product Group",
+    "class": "nt-section nt_product_group container",
+    "max_blocks": 10,
+    "settings": [
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Featured Products",
+        "settings": [
+          {
+          "type":"text",
+          "id":"title",
+          "label":"Title",
+          "default":"Sale Products"
+          },
+          {
+           "type": "collection",
+           "id": "featured_product_list_collection",
+           "label": "Collection to use"
+         },
+          {
+           "type": "text",
+           "id": "featured_product_limit_all",
+           "label": "Number of products to show",
+           "default": "3"
+         }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection Group",
+        "category": "1. Collections",
+        "blocks": [
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

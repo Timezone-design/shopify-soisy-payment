@@ -1,0 +1,46 @@
+{%- layout none -%}
+{%- comment -%}6 column{%- endcomment -%}
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+{%- assign limit = settings.products_per_page | plus:0 -%}
+{%- assign grid_columns = '2' -%}
+{%- assign class_md = '4' -%}
+{%- assign class_xs = settings.grid_column_mobile -%}
+{%- assign settings_pr_img_size = settings.use_eq_height -%}
+{%- assign show_vendor = settings.show_vendor -%}
+{%- assign coll_style = settings.collection_style -%}
+{%- assign use_pagination = settings.use_pagination -%}
+{%- assign section_settings_countdown = settings.sale_countdown -%}
+{%- assign countdown_timer_style = settings.collection_countdown_style -%}
+{%- assign array_metro = ',2,10,19,27,37,45,54,63,71,80,89,98' -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- capture min_html -%}
+{%- paginate collection.products by limit -%}
+<div class="nt-products-element">
+   <div class="products elements-grid row nt-products-holder pagination-arrows" id="nt_data_products">
+    {%- for product in collection.products -%}
+      {%- if coll_style == 'metro' -%}
+         {%- assign index = forloop.index | plus:paginate.current_offset | append:',' | prepend:',' -%}
+         {%- if array_metro contains index -%}
+	            {%- assign grid_columns = '6 metro-item' -%}
+	            {%- assign settings_metro_img_size = true -%}
+	      {%- else -%}
+	          {%- assign grid_columns = '2' -%}
+	          {%- assign settings_metro_img_size = false -%}
+         {%- endif -%}
+      {%- else -%}
+         {%- assign grid_columns = '2' -%}
+      {%- endif -%}
+      {%- include 'nt_product_loop' -%}
+   {%- endfor -%}
+   </div>
+   <div id="shopify_result_count">{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = collection.products.size | plus:paginate.current_offset -%}{%- if current_tags == blank -%}{%- if limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{{ 'collections.general.results_with_count' | t:count:1,curent_count:current_product_size,pr_count:collection.all_products_count }}{%- endif -%}{%- elsif limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = collection.products.size | plus:paginate.current_offset -%}{{ 'collections.general.results_with_count' | t:count:1,curent_count:current_product_size,pr_count:paginate.items }}{%- endif -%}</div>
+   {%- if paginate.pages > 1 -%}
+   <div class="products-footer" id="nt_data_arrow" data-status="{%- if paginate.next.is_link -%}have-posts{%- else -%}no-more-posts{%- endif -%}">
+      <a id="nt_section_previous" href="{%- if paginate.previous.is_link -%}{{ paginate.previous.url }}{%- else -%}javascript:void(0);{%- endif -%}" class="btn jas-products-load-prev{% unless paginate.previous.is_link %} disabled{% endunless %}">Load previous products</a>
+      <a id="nt_section_next" href="{%- if paginate.next.is_link -%}{{ paginate.next.url }}{%- else -%}javascript:void(0);{%- endif -%}" class="btn jas-products-load-next{% unless paginate.next.is_link %} disabled{% endunless %}">Load next products</a>
+   </div>
+   {%- endif -%}
+</div>
+{%- endpaginate -%}
+{%- endcapture -%}
+{{min_html | strip_newlines | remove: "  "}} 

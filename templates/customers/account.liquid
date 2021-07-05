@@ -1,0 +1,133 @@
+{%- assign image = settings.login_bg_image -%}
+{%- assign color_scheme = settings.login_color -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.login_overlay}} pr oh{%- if settings.use_parallax_login %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{ 'customer.account.title' | t }}</h1>
+      </div>
+   </div>
+</div>
+<div class="container">
+   <div class="row">
+      <div class="col-12 mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+         <div class="shopify">
+            <nav class="shopify-MyAccount-navigation">
+               <ul>
+                  <li class="shopify-MyAccount-navigation-link shopify-MyAccount-navigation-link--dashboard is-active">
+                     <a href="/account">{{ 'customer.account.dashboard' | t }}</a>
+                  </li>
+                  <li class="shopify-MyAccount-navigation-link shopify-MyAccount-navigation-link--edit-address">
+                     <a href="/account/addresses">{{ 'customer.addresses.title' | t }} ({{ customer.addresses_count }})</a>
+                  </li>
+                  {%- if settings.use_wishlist and pages['wishlist'].empty? != true -%}
+                  {%- include 'nitro-wishlist' -%}
+                  <li class="shopify-MyAccount-navigation-link shopify-MyAccount-navigation-link--wishlist">
+                     <a href="/pages/wishlist">{{ 'customer.account.wishlist' | t }} ({{ NITRO_WISHLIST_COUNT }})</a>
+                  </li>
+                  {%- endif -%}
+                  <li class="shopify-MyAccount-navigation-link shopify-MyAccount-navigation-link--customer-logout">
+                     {{ 'customer.account.log_out' | t | customer_logout_link }}
+                  </li>
+               </ul>
+            </nav>
+            <div class="shopify-MyAccount-content">
+               <p>{{ 'customer.account.hello' | t }} <strong>{%- if customer.name != blank -%}{{customer.name}}{%-else-%}{{customer.email}}{%-endif-%}</strong> (not <strong>{%- if customer.name != blank -%}{{customer.name}}{%-else-%}{{customer.email}}{%-endif-%}</strong>? <a href="/account/logout">{{ 'customer.account.sign_out' | t }}</a>)</p>
+               <p><strong>{{ 'customer.orders.title' | t }}</strong></p>
+               {%- if customer.orders.size != 0 -%}
+                  {%- paginate customer.orders by 20 -%}
+                  <div class="responsive-table">
+                     <div class="responsive-table">
+                        <table class="nt-shopify-table shopify-orders-table shopify-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table">
+                           <thead>
+                             <tr>
+                               <th>{{ 'customer.orders.order_number' | t }}</th>
+                               <th>{{ 'customer.orders.date' | t }}</th>
+                               <th>{{ 'customer.orders.payment_status' | t }}</th>
+                               <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                               <th>{{ 'customer.orders.total' | t }}</th>
+                                <th>{{ 'customer.orders.actions' | t }}</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {%- for order in customer.orders -%}
+                               <tr>
+                                 <td data-title="{{ 'customer.orders.order_number' | t }}">
+                                   <a href="{{ order.customer_url }}">{{ order.name }}</a>
+                                 </td>
+                                 <td data-title="{{ 'customer.orders.date' | t }}">{{ order.created_at | date: format: 'month_day_year' }}</td>
+                                 <td data-title="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
+                                 <td data-title="{{ 'customer.orders.fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                                 <td data-title="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</td>
+                                 <td data-title="{{ 'customer.orders.actions' | t }}"><a href="{{ order.customer_url }}" class="btn_dark shopify-button button view">{{ 'customer.orders.view' | t }}</a></td>
+                               </tr>
+                             {%- endfor -%}
+                           </tbody>
+                         </table>
+                     </div>
+                  </div>
+                  {%- if paginate.pages > 1 -%}
+                     <div class="clear"></div>
+                     <div class="nathan-pagination">{%- include 'pagination' -%}</div>
+                  {%- endif -%}
+                  {%- endpaginate -%}
+               {%- else -%}
+                  <div class="shopify-error">
+                     {{ 'customer.orders.none' | t }}   
+                  </div>
+               {%- endif -%}
+               <p><strong>{{ 'customer.account.details' | t }}</strong></p>
+               <div class="responsive-table">   
+                  <table class="nt-shopify-table responsive-table gl_infor_account">
+                    <tbody>
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.name' | t }}</strong></td>
+                        <td>{{ customer.name }}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.email' | t }}</strong></td>
+                        <td>{{ customer.email }}</td>
+                      </tr>
+                      
+                      {%- if customer.default_address != nil -%}
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.address' | t }}</strong></td>
+                        <td>{{ customer.default_address.address1 }}</td>
+                      </tr>
+                      {%- if customer.default_address.address2 != "" -%}
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.address_2' | t }}</strong></td>
+                        <td>{{ customer.default_address.address2 }}</td>
+                      </tr>
+                      {%- endif -%}
+                      {%- if customer.default_address.city != blank -%}
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.country' | t }}</strong></td>
+                        <td>{{ customer.default_address.city}}, {% if address.province_code %}{{customer.default_address.province_code}}, {% endif %}{{customer.default_address.country}}</td>
+                      </tr>
+                      {%- endif -%}
+                      {%- if customer.default_address.zip != blank -%}
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.zip' | t }}</strong></td>
+                        <td>{{ customer.default_address.zip }}</td>
+                      </tr>
+                      {%- endif -%}
+                      {%- if customer.default_address.phone != blank -%}
+                      <tr>
+                        <td class="text-left"><strong>{{ 'customer.account.phone' | t }}</strong></td>
+                        <td>{{ customer.default_address.phone }}</td>
+                      </tr>
+                      {%- endif -%}
+                      {%- endif -%}
+                    </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- $classes -->
+   </div>
+   <!-- .jas-row -->
+</div>
+
+

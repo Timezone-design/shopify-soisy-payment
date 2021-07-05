@@ -1,0 +1,491 @@
+{%- include 'style_mp_section' -%}
+{%- case section.settings.photo_per_row-%}
+      {%- when 1 -%}{%- assign col = '12' -%}
+      {%- when 2 -%}{%- assign col = '6' -%}
+      {%- when 3 -%}{%- assign col = '4' -%}
+      {%- when 4 -%}{%- assign col = '3' -%}
+      {%- when 5 -%}{%- assign col = '15' -%}
+      {%- else -%}{%- assign col = '2' -%}
+{%- endcase -%}
+<div class="{% if section.settings.use_zigzac %}zigzac_layout{% endif %} {% if section.settings.use_container %} container{% else %} nt-full{% endif %} nt_custom_{{section.id}} nt-full oh nt_ins_section {{section.settings.image_size}} {{section.settings.image_ratio}} position_{{section.settings.image_position}} equal-nt" data-id='{{section.id}}' data-col='{{col}}' data-getBy='{{section.settings.get_by}}' data-accessToken='{{section.settings.access_token | default:'no_user_name_xxx' }}' data-username='{{section.settings.username | default:'no_user_name_xxx' }}' data-limit='{{section.settings.limit }}' data-lmacc='{{section.settings.limit }}' data-target='{{section.settings.open_link}}'>
+   {%- assign sett_title = section.settings.title -%}
+   {%- assign sett_sub_title = section.settings.sub_title -%}
+   {%- assign style_title = section.settings.style_title -%}
+   {%- include 'nt_section_title' with style_title -%}
+   {%- assign view = section.settings.photo_design -%}
+   <div class="row nt-sc-instagram mt__10 columns-{{section.settings.photo_per_row}} {{view}} {{section.settings.data_grid }} instagram-with-spaces-{{section.settings.space_categories}}{%- if section.settings.rounded_section %} instagram-rounded{%- endif -%}"{%- if view == 'ins-nt-carousel' %} data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'{%- endif -%}>{%- if section.settings.username != 'no_user_name_xxx' -%}<div class="lds-ellipsis center"><div></div><div></div><div></div><div></div></div>{%- endif -%}</div>
+</div>
+{%- schema -%}
+  {
+    "name": "Instagram",
+    "class": "nt-section nt_instagram",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+	  {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Follow us on Instagram"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title",
+        "default": "shop our instagram"
+      },
+      {
+        "type": "select",
+        "id": "style_title",
+        "options": [
+         {
+            "value": "type-simple",
+            "label": "Style 1"
+         },
+         {
+            "value": "hr-type-simple",
+            "label": "Style 2"
+          }
+        ],
+        "label": "Style title"
+      },
+      {
+        "type": "select",
+        "id": "get_by",
+        "options": [
+          {
+            "value": "1",
+            "label": "Username"
+          },
+         {
+            "value": "2",
+            "label": "Access Token"
+          }
+        ],
+        "label": "Instagram get by"
+      },
+      {
+        "type": "text",
+        "id": "username",
+        "label": "Username Instagram",
+        "default": "ilovestreetstyle",
+         "info":"Ex: https://www.instagram.com/asos/, please enter:asos"
+      },
+      {
+        "type": "text",
+        "id": "access_token",
+        "label": "Access Token",
+        "info": "[Get Your Instagram Access Token](https:\/\/instagram.pixelunion.net)"
+      },
+      {
+        "type": "range",
+        "id": "limit",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "unit": "img",
+        "label": "Number of photos",
+        "default": 12
+      },
+      {
+        "type": "select",
+        "id": "open_link",
+        "options": [
+          {
+            "value": "_self",
+            "label": "Current window (_self)"
+          },
+         {
+            "value": "_blank",
+            "label": "New window (_blank)"
+          }
+        ],
+        "label": "Open link in",
+        "default": "_self"
+      },
+      {
+        "type": "select",
+        "id": "photo_design",
+        "options": [
+         {
+            "value": "grid",
+            "label": "Grid"
+         },
+         {
+            "value": "ins-nt-carousel",
+            "label": "Slider"
+          }
+        ],
+        "label": "Design",
+        "default": "ins-nt-carousel"
+      },
+      {
+        "type": "range",
+        "id": "photo_per_row",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "Photos per row",
+        "info":"Number of photos per row for grid design",
+        "default": 6
+      },
+      {
+       "type": "select",
+       "id": "space_categories",
+       "options": [
+         {
+           "value": "10",
+           "label": "10"
+         },
+         {
+           "value": "6",
+           "label": "6"
+         },
+         {
+           "value": "3",
+           "label": "3"
+         },
+         {
+           "value": "0",
+           "label": "0"
+         }
+       ],
+       "label": "spaces between photos",
+       "default": "0"
+     },
+      {
+        "type": "checkbox",
+        "id": "rounded_section",
+        "label": "Rounded corners for images?",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "== Design Instagram Image"
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio1_1",
+        "options": [
+          {
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "value": "ratio4_3",
+            "label": "4:3 (Landscape)"
+          },
+          {
+            "value": "ratio1_1",
+            "label": "1:1 (Square)"
+          },
+          {
+            "value": "ratio_nt",
+            "label": "Ratio ASOS"
+          },
+          {
+            "value": "ratio2_3",
+            "label": "2:3 (Portrait)"
+          },
+          {
+            "value": "ratio1_2",
+            "label": "1:2"
+          },
+          {
+            "value": "ratio_cus1",
+            "label": "Ratio Custom 1"
+          },
+          {
+            "value": "ratio_cus2",
+            "label": "Ratio Custom 2"
+          },
+          {
+            "value": "ratio_cus3",
+            "label": "Ratio Custom 3"
+          },
+          {
+            "value": "ratio_cus4",
+            "label": "Ratio Custom 4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "default": "nt_cover",
+        "options": [
+          {
+            "value": "nt_cover",
+            "label": "Full"
+          },
+          {
+            "value": "nt_contain",
+            "label": "Auto"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "info":"The first value is the horizontal position and the second value is the vertical.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "1",
+            "label": "Left Top"
+          },
+          {
+            "value": "2",
+            "label": "Left Center"
+          },
+          {
+            "value": "3",
+            "label": "Left Bottom"
+          },
+          {
+            "value": "4",
+            "label": "Right Top"
+          },
+          {
+            "value": "5",
+            "label": "Right Center"
+          },
+          {
+            "value": "6",
+            "label": "Right Bottom"
+          },
+          {
+            "value": "7",
+            "label": "Center Top"
+          },
+          {
+            "value": "8",
+            "label": "Center Center"
+          },
+          {
+            "value": "9",
+            "label": "Center Bottom"
+          }
+        ],
+        "label": "Image Position",
+        "default": "8"
+      },
+      {
+       "type": "header",
+       "content": "== settings Slider ( Only for Carousel layout )"
+      },
+	  {
+        "type": "checkbox",
+        "id": "use_zigzac",
+        "label": "Use zigzac layout?",
+        "default": false
+      },
+	  {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": false
+      },
+{
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 4
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Instagram",
+        "category": "5. Instagram"
+      }
+    ]
+  }
+{% endschema %}

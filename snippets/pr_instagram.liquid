@@ -1,0 +1,5 @@
+<div class="instagram product-extra mt__60">
+  <h3 class="nt_title divider pr"> {%- if product.metafields.meta.hashtag -%}{{ 'products.product.instagram_intro_html' | t: has_tag: product.metafields.meta.hashtag }}{%-else-%}{{ 'products.product.instagram_intro_html' | t: has_tag: product.metafields.meta.username }}{%-endif-%}</h3>
+  <div class="lds-ellipsis center mt__20"><div></div><div></div><div></div><div></div></div>
+  <div class="row nt-sc-instagram instagram-pics instagram-with-spaces-0 mt__20"></div>
+</div>

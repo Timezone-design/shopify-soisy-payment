@@ -1,0 +1,53 @@
+{%- assign class = 'color-scheme-light' -%}
+{%- if image == blank -%}{%- assign class = 'color-scheme-dark' -%}<style type="text/css">.nt_has_img.header_transparent .fixed_spacing{display: block}</style>{%- endif -%}
+<div class="cat-shop container pr tc {{class}} mt__10">
+	<a href="javascript:void(0);" class="show-cat">{{ 'collections.general.categories' | t }}</a>
+	<ul class="cat_shopify">
+		{%- case settings.top_categories_source -%}
+   	   {%- when 'top_categories_show_all' -%}
+   	      {%- if collections.size > 0 -%}
+	   	      {%- for category in collections -%}
+	   	         {%- if category.products.size > 0 -%}
+		               <li class="pr cat-item{%- if collection.handle == category.handle %} current-cat{%- endif -%}"><a href="{{ category.url }}">{{category.title}}</a></li>
+		            {%- endif -%}
+	            {%- endfor -%}
+            {%- endif -%}
+        {%- else -%}
+            {%- assign top_link_list = settings.top_categories_link_list -%}
+            {%- for link in linklists[top_link_list].links -%}
+                {%- if link.type == 'collection_link' or link.type == 'catalog_link' -%}
+	                {%- assign child_list_handle = link.title | handleize -%}
+	                {%- if linklists[child_list_handle].links != blank -%}
+                       <li class="pr cat-item{%- if link.active %} current-cat{%- endif -%}">
+                       	  <a href="{{ link.url }}">{{link.title}}</a>
+                       	  <ul class="sub-menu">
+                       	  	   {%- for child_link in linklists[child_list_handle].links -%}
+                       	  	      {%- if child_link.type == 'collection_link' or child_link.type == 'catalog_link' or link.type == 'collections_link' -%}
+                       	  	      <li class="cat-item{%- if child_link.active %} current-cat{%- endif -%}">
+                       	  	      	<a href="{{ child_link.url }}">{{child_link.title}}</a>
+                       	  	      </li>
+                       	  	      {%- endif -%}
+                       	  	   {%- endfor -%}
+                       	  </ul>
+                       	</li>
+                    {%- elsif link.links != blank -%}
+                          <li class="pr menu_nested cat-item{%- if link.active %} current-cat{%- endif -%}">
+	                       	  <a href="{{ link.url }}">{{link.title}}</a>
+	                       	  <ul class="sub-menu">
+	                       	  	   {%- for child_link in link.links -%}
+	                       	  	      {%- if child_link.type == 'collection_link' or child_link.type == 'catalog_link' -%}
+	                       	  	      <li class="cat-item{%- if child_link.active %} current-cat{%- endif -%}">
+	                       	  	      	<a href="{{ child_link.url }}">{{child_link.title}}</a>
+	                       	  	      </li>
+	                       	  	      {%- endif -%}
+	                       	  	   {%- endfor -%}
+	                       	  </ul>
+	                       	</li>
+                    {%- else -%}
+                       <li class="pr cat-item{%- if link.active %} current-cat{%- endif -%}"><a href="{{ link.url }}">{{link.title}}</a></li>
+                    {%- endif -%}
+                {%- endif -%}
+            {%- endfor -%}
+      {%- endcase -%}
+	</ul>
+</div>

@@ -1,0 +1,109 @@
+<div class="nathan-action">
+   {%- if settings.nt_search_widget != 'disable' -%}
+   <div class="nt_header_search pr nt_search_{{settings.nt_search_widget}}">
+      <a class="pr dib" href="javascript:void(0);"><i class="pe-7s-search"></i></a>
+       {%- if settings.nt_search_widget == 'dropdown' -%}
+      <div class="nt_search_wrapper color-scheme-dark">
+         <div class="nt_search_inner">
+            <form role="search" method="get" class="pr searchform{%- if settings.ajax_search %} nt-ajax-search{%- endif -%}" action="/search">
+               <div>
+                  <input type="text" class="search-field" placeholder="{{ 'general.search.placeholder' | t }}" value="{{ search.terms | escape }}" name="q" autocomplete="off">
+                  {%- if settings.only_search_products -%}<input type="hidden" name="type" value="product" />{%- endif -%}
+                  <button type="submit" class="searchsubmit"><i class="icon-magnifier"></i></button>
+               </div>
+            </form>
+            <div class="search-suggestions-wrapp w_100 pr oh"><div class="nt_search_results"><ul class="tl ui-autocomplete autocomplete-suggestions"></ul></div></div>
+         </div>
+      </div>
+      {%- endif -%}
+   </div>
+   {%- endif -%}
+   {%- if settings.top_bar_enable == false and check_curency_lang -%}
+   <div class="nathan_my-account nt-settings nt-has-children pr">
+      <a href="javascript:void(0);"><i class="pe-7s-config"></i></a>
+      <div class="nav_dropdown color-scheme-dark text-center">
+         <div class="setting-content text-left">
+            <div class="select-currency currencies clearfix">
+              <div class="currency-title">{{ 'general.homepage.currency' | t }}</div>
+              <div class="currency-topbar">                                                
+                  <div class="currency-list currency-lists">
+                     {%- include 'currency-picker',currency_header:true -%}
+                  </div>
+               </div>
+            </div>
+            {%- if settings.show_language_currencies and settings.language_link_list != blank -%}
+               <div class="select-currency jas_lang clearfix">
+                 <div class="currency-title">{{ 'general.homepage.language' | t }}</div>
+                 <div class="currency-topbar">                                                
+                     <div class="currency-list currency-lists">
+                        {%- include 'preview_lang',currency_header:true -%}
+                     </div>
+                  </div>
+               </div>
+            {%- endif -%}
+            {%- if shop.customer_accounts_enabled and settings.account_header_enable -%}
+               <ul class="clearfix">
+                  {%- if customer -%}
+                  <li><a class="pr" href="/account">{{ 'general.layout.customer.dashboard' | t }}</a></li>
+                  <li><a class="pr" href="/account/logout">{{ 'general.layout.customer.log_out' | t }}</a></li>
+                  {%- else -%}
+                  <li><a class="pr{%- if customer == blank and settings.login_side %} login_side_open{%- endif -%}" href="/account/login">{{ 'general.layout.customer.log_in' | t }}</a></li>
+                   {%- endif -%}
+               </ul>
+            {%- endif -%}
+         </div>
+      </div>
+   </div>
+   {%- elsif shop.customer_accounts_enabled and settings.account_header_enable -%}
+   <div class="nathan_my-account nt-has-children pr">
+      <a class="{%- if customer == blank and settings.login_side -%}login_side_open{%- endif -%}" href="/account"><i class="pe-7s-user"></i></a>
+      {%- if customer and settings.login_side -%}
+      <div class="nav_dropdown color-scheme-dark text-center">
+         <div>
+            <ul class="sub-menu color-scheme-dark">
+               {%- if customer -%}
+               <li class="menu-item"><a class="pr" href="/account">{{ 'general.layout.customer.dashboard' | t }}</a></li>
+               <li class="menu-item"><a class="pr" href="/account/logout">{{ 'general.layout.customer.log_out' | t }}</a></li>
+               {%- endif -%}
+            </ul>
+         </div>
+      </div>
+      {%- elsif settings.login_side == false -%}
+      <div class="nav_dropdown color-scheme-dark text-center">
+         <div>
+            <ul class="sub-menu color-scheme-dark">
+               {%- if customer -%}
+               <li class="menu-item"><a class="pr" href="/account">{{ 'general.layout.customer.dashboard' | t }}</a></li>
+               <li class="menu-item"><a class="pr" href="/account/logout">{{ 'general.layout.customer.log_out' | t }}</a></li>
+               {%- else -%}
+               <li class="menu-item"><a class="pr" href="/account/login">{{ 'general.layout.customer.log_in' | t }}</a></li>
+               {%- endif -%}
+            </ul>
+         </div>
+      </div>
+      {%- endif -%}
+   </div>
+   {%- endif -%}
+   {%- if settings.display_wishlist_icon and settings.use_wishlist and pages['wishlist'].url != blank -%}
+   {%- include 'nitro-wishlist' -%}
+   <div class="nathan_wishlist">
+      <a href="/pages/wishlist"><span class="nt_count_wishlist{%- if NITRO_WISHLIST_COUNT > 0 %} active{%- endif -%}">{{ NITRO_WISHLIST_COUNT }}</span></a>
+   </div>
+   {%- endif -%}
+   {%- if settings.cart_design != 'disable' or settings.catalog_mode == false -%}
+   <div class="style_cart_{{settings.cart_design}} nathan-cart-icon{%- if settings.cart_position == 'side' and template.name != 'cart' %} ajax-cart__toggle{%- elsif template.name != 'cart' %} nt-has-children{%- endif %}{%- if settings.shopping_icon_alt %} desgin_cart_2{%- endif -%}">
+      <a href="/cart">
+         <span class="nt_header_cart">
+            <span class="cartCount{%- if cart.item_count > 0 %} active{%- endif -%}">{{ cart.item_count }}</span>
+            {%- if settings.cart_design != '3' -%}
+            <span class="nt_header_cart_divider">/</span> 
+            <span class="nt_header_cart_subtotal nathan-cart-subtotal"><span class="shopify-Price-amount amount">{{ cart.total_price | money }}</span></span>
+            {%- endif -%}
+         </span>
+      </a>
+      {%- if settings.cart_position == 'dropdown' -%}
+      <div class="dropdown-wrap-cat pa drawer--active widget_shopping_cart_content">{%- include 'cart_body' -%}</div>
+      {%- endif -%}
+   </div>
+   {%- endif -%}
+</div>

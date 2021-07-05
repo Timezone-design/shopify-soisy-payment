@@ -1,0 +1,93 @@
+{%- if settings.currency_type == '1'-%}
+  {%- if shop.enabled_currencies.size > 1 -%}
+    {%- if currency_header -%}
+     <ul class="shopify_currencies">
+       {%- if linklists.currency-the4.links.size > 0 -%}{%- assign cart_iso_code = cart.currency.iso_code -%}
+         {%- for link in linklists.currency-the4.links -%}{%- assign iso_code = link.url |remove:'#'|remove:' ' -%}
+          <li><a data-currency="{{iso_code}}" class="currency-item chp{% if iso_code == cart_iso_code %} selected{%- endif -%}" href="javascript:void(0);">{{ link.title|strip_html }}</a></li>
+          {%- endfor -%}
+       {%- else -%}
+         {%- for currency in shop.enabled_currencies -%}
+          <li><a data-currency="{{currency.iso_code}}" class="currency-item chp{% if currency == cart.currency %} selected{%- endif -%}" href="javascript:void(0);">{{ currency.iso_code }}</a></li>
+          {%- endfor -%}
+       {%- endif -%}
+     </ul>
+    {%- else -%}
+      <li id="nt_currency" class="currencies currency menu-item menu-item-top nt-has-children">
+        {%- if linklists.currency-the4.links.size > 0 -%}
+          {%- assign cart_iso_code = cart.currency.iso_code -%}
+          {%- assign ck_iso_code = '#'|append:cart_iso_code -%}
+          {%- assign links_cur = linklists.currency-the4.links | where: "url", ck_iso_code -%}
+        {%- endif -%}
+         <a href="javascript:void(0);" class="value current-currency selected-currency">{{ links_cur.first.title|default:cart.currency.iso_code }}</a>
+         <div class="nav_dropdown color-scheme-dark">
+            <div>
+               <ul class="sub-menu color-scheme-dark">
+               {%- if cart_iso_code != blank -%}
+                 {%- for link in linklists.currency-the4.links -%}{%- assign iso_code = link.url |remove:'#'|remove:' ' -%}
+                    <li class="menu-item"><a data-currency="{{iso_code}}" class="link-cur currency-item {{top_color}} chp{%- if iso_code == cart_iso_code %} selected{%- endif -%}" href="javascript:void(0);">{{ link.title|strip_html }}</a></li>
+                  {%- endfor -%}
+               {%- else -%}
+                  {%- for currency in shop.enabled_currencies -%}
+                    <li class="menu-item"><a data-currency="{{currency.iso_code}}" class="currency-item {{top_color}} chp{%- if currency == cart.currency %} selected{%- endif -%}" href="javascript:void(0);">{{ currency.iso_code }}</a></li>
+                  {%- endfor -%}
+               {%- endif -%}
+               </ul>
+            </div>
+         </div>
+      </li>
+    {%- endif -%}
+  {%- endif -%}
+{%- else -%}
+    {%- assign supported_codes = settings.supported_currencies | split: '|' -%}
+    {%- assign codes = 'USD,EUR,GBP,CAD,ARS,AUD,BBD,BDT,BSD,BHD,BRL,BOB,BND,BGN,ILS,MMK,KYD,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,XPF,FJD,GHS,GTQ,GYD,GEL,HKD,HUF,ISK,INR,IDR,NIS,JMD,JPY,JOD,KZT,KES,KWD,LVL,LTL,MXN,MYR,MUR,MDL,MAD,MNT,MZN,ANG,NZD,NGN,NOK,OMR,PKR,PYG,PEN,PHP,PLN,QAR,RON,RUB,SAR,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TRY,UAH,AED,UYU,VEB,VND,ZMK' | split: ',' -%}
+    {%- assign check = true -%}
+    {%- unless currency_header -%}
+    {%- assign currency_header = false -%}
+    {%- endunless -%}
+    {%- for code in supported_codes -%}
+      {%- assign array_money = code | split: '-' -%}
+      {%- assign data_currency = array_money | first | upcase | strip -%}
+      {%- assign name_money = array_money | last | strip -%}
+      {%- if data_currency == shop.currency and codes contains data_currency -%}
+         {%- assign check = false -%}
+         {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if currency_header -%}
+    <ul>
+       {%- if check and codes contains shop.currency -%}
+           <li><a data-currency="{{ shop.currency }}" class="currency-item selected" href="javascript:void(0);">{{ shop.currency }}</a></li>
+        {%- endif -%}
+        {%- for code in supported_codes -%}
+             {%- assign array_money = code | split: '-' -%}
+             {%- assign data_currency = array_money | first | upcase | strip -%}
+             {%- assign name_money = array_money | last | strip -%}
+             {%- if codes contains data_currency -%}
+              <li><a data-currency="{%- if data_currency contains 'EUR' -%}EUR{%- else -%}{{data_currency}}{%- endif -%}" class="currency-item chp{%- if shop.currency == data_currency %} selected{%- endif -%}" href="javascript:void(0);">{{ name_money }}</a></li>
+             {%- endif -%}
+        {% endfor %}
+     </ul>
+    {%- else -%}
+      <li id="nt_currency" class="currencies currency menu-item menu-item-top nt-has-children">
+         <a href="javascript:void(0);" class="value current-currency selected-currency">{{ shop.currency }}</a>
+         <div class="nav_dropdown color-scheme-dark">
+            <div>
+               <ul class="sub-menu color-scheme-dark">
+                  {%- if check and codes contains shop.currency -%}
+                     <li class="menu-item"><a data-currency="{{ shop.currency }}" class="currency-item selected" href="javascript:void(0);">{{ shop.currency }}</a></li>
+                  {%- endif -%}
+                  {%- for code in supported_codes -%}
+                       {%- assign array_money = code | split: '-' -%}
+                       {%- assign data_currency = array_money | first | upcase | strip -%}
+                       {%- assign name_money = array_money | last | strip -%}
+                       {%- if codes contains data_currency -%}
+                        <li class="menu-item"><a data-currency="{%- if data_currency contains 'EUR' -%}EUR{%- else -%}{{data_currency}}{%- endif -%}" class="currency-item{%- if shop.currency == data_currency %} selected{%- endif -%}" href="javascript:void(0);">{{ name_money }}</a></li>
+                       {%- endif -%}
+                  {%- endfor -%}
+               </ul>
+            </div>
+         </div>
+      </li>
+    {%- endif -%}
+{%- endif -%}

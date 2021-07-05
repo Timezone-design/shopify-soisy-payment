@@ -1,0 +1,527 @@
+{%- if collection == blank and product.collections.first != blank -%}{%- assign collection = product.collections.first -%}{%- endif -%}
+{%- case settings.design_products -%}
+  {%- when '2' -%}
+    {%- assign singles_wc = 'nt-single-2' -%}
+  {%- when '3' -%}
+    {%- assign singles_wc = 'nt-single-3' -%}
+  {%- else -%}
+    {%- assign singles_wc = 'nt-single-1' -%}
+ {%- endcase -%}
+ {%- case settings.size_img_pr -%}
+     {% when '1' %}
+       {%- assign class_images = 'col-lg-4' -%}
+       {%- assign class_summary = 'col-lg-8' -%}
+     {% when '2' %}
+       {%- assign class_images = 'col-md-6' -%}
+       {%- assign class_summary = 'col-md-6' -%}
+     {% when '3' %}
+       {%- assign class_images = 'col-lg-7' -%}
+       {%- assign class_summary = 'col-lg-5' -%} 
+{%- endcase -%}
+ {%- assign page_pr_img_size = settings.use_eq_thumb_height -%}
+ {%- assign nav_pr_img_size = settings.use_eq_nav_height -%}
+ {%- assign has_size_guide = false -%}
+{%- assign btn_atc_full = settings.btn_atc_full -%}
+  {%- assign nt_suffix = 'group_images' -%}
+
+{%- assign no_sold_out = product.available -%}
+{%- if no_sold_out -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+
+{%- if settings.pr_curent == '2' -%}{%- assign current_variant = product.selected_variant |default: product.variants.first -%}
+    {%- if current_variant.available == false and remove_soldout and no_sold_out -%}{%- assign current_variant = product.first_available_variant -%}{%- endif -%}
+{%- else -%}{%- assign current_variant = product.selected_or_first_available_variant -%}{%- endif -%}
+
+{%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+{%- assign product_image_zoom_size = 'master' -%}
+{%- assign product_image_scale = '2' -%}
+{%- assign cv_color = 'nt-p-item' -%}
+{%- assign nt_carousel = 'nt-carousel' -%}
+{%- assign nt_masonry = 'nt-masonry' -%}
+{%- include 'nt_check_label' -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- if product.metafields.external -%}
+  {%- assign check = product.metafields.external | first | last -%}
+  {%- if check contains 'https:' or check  contains 'http:' -%}{%- assign check_external = true -%}{%-else-%}{%- assign check_external = false -%}{%-endif-%}
+{%-endif-%}
+{%- if settings.show_share_btn and settings.share_type == '1' -%}
+   {%- assign gl_follow_social = false -%}
+{%- elsif settings.show_share_btn and settings.share_type == '2' -%}
+   {%- assign gl_follow_social = true -%}
+{%- endif -%}
+  {%- assign stock_countdow = true -%}
+{%- if settings.gecko_stock_countdown == false -%}
+    {%- assign stock_countdow = true -%}
+{%- elsif settings.gecko_stock_countdown and settings.stock_message == blank -%}
+    {%- assign stock_countdow = true -%}
+{%- endif -%}
+{%- assign estimateStartDate = settings.delivery_start -%}
+{%- assign estimateEndDate = settings.delivery_end -%}
+{%- if product.metafields.meta.estimateStartDate != blank -%}
+  {%- assign estimateStartDate = product.metafields.meta.estimateStartDate | plus:0 -%} 
+{%- endif -%}
+{%- if product.metafields.meta.estimateEndDate != blank -%}
+   {%- assign estimateEndDate = product.metafields.meta.estimateEndDate | plus:0 -%}
+{%- endif -%}
+{%- assign remove_unavailable = true -%}
+{%- if product.has_only_default_variant == false and product.images.size > 1 -%}
+  {%- for option in product.options_with_values -%}
+     {%- if settings.color_name_check != blank -%}{%- assign _gl_color_name = settings.color_name_check | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}{%- assign gl_color_name = _gl_color_name | downcase -%}{%-else-%}{%- assign gl_color_name = '\nathan_dt\' -%}{%-endif-%}
+      {%- assign downcased_option = option.name | downcase -%}
+      {%- assign downcased_option_check = downcased_option | prepend: '"' | append: '"' | strip -%} 
+      {%- if downcased_option == 'color' or downcased_option == 'couleur' or downcased_option == 'colour' or gl_color_name contains downcased_option_check -%}
+        {%- assign po_position = option.position -%}
+        {%- assign nt_carousel = 'nt-group-carousel' -%}{%- assign nt_masonry = 'nt-masonry nt-group-masonry' -%}
+        {%- case po_position -%}
+           {%- when 1 -%}{%- assign cv_color = current_variant.option1 | handleize -%}
+           {%- when 2 -%}{%- assign cv_color = current_variant.option2 | handleize -%}
+           {%- else -%}{%- assign cv_color = current_variant.option3 | handleize -%}
+        {%- endcase -%}
+        {%- break -%}
+    {%- endif -%}   
+   {%- endfor -%}
+{%- endif -%}
+
+{%- assign ck_inventory = settings.ck_inventory -%} 
+<div class="single-breadcrumbs-wrapper bgbl lh__1 pt__5 pb__5 {{settings.product_sidebar}}">
+   <div class="container flex">
+   	<nav class="shopify-breadcrumb alin_center flex"><a href="/">{{ 'general.breadcrumbs.home' | t }}</a>{%- if template contains 'product' and collection.url -%}<a href="{{ collection.url }}">{{ collection.title  }}</a>{%- endif -%}<span class="breadcrumb-last">{{ product.title  }}</span></nav>
+      {%- if settings.show_back_next_pr -%}
+      {%- if collection.next_product or collection.previous_product -%}
+         {%- assign image_size = '80x' -%}
+         <div class="back_next_pr">
+            {%- if collection.previous_product -%}
+            <div class="product-btn pr previous_product tl">
+               <a href="{{ collection.previous_product.url }}"><i class="fa fa-caret-left pr fs__14" aria-hidden="true"></i></a>
+               <div class="nav_pr">
+                  <div class="product_infors">
+                     {%- if collection.previous_product.images.size > 0 -%}
+                     <a href="{{collection.previous_product.url}}" class="product-thumb">
+                        <img src="{{ collection.previous_product.featured_image | img_url: image_size }}" srcset="{{ collection.previous_product.featured_image | img_url: image_size }} 1x, {{ collection.previous_product.featured_image | img_url: image_size, scale: 2 }} 2x" class="attachment-shop_thumbnail size-shop_thumbnail sp-post-image" alt="{{ collection.previous_product.title | escape  }}"> 
+                     </a>
+                     {%- endif -%}
+                     <a href="{{ collection.previous_product.url }}" class="product-title">{{collection.previous_product.title}}</a>
+                     <span class="price">
+                         {%- if collection.previous_product.price_varies -%}
+                         {{ collection.previous_product.price_min | money }} – {{ collection.previous_product.price_max | money }}
+                         {%- elsif collection.previous_product.compare_at_price > collection.previous_product.price -%}<del>{{ collection.previous_product.compare_at_price  | money }}</del> <ins>{{ collection.previous_product.price | money }}</ins>
+                         {%- else -%}
+                         {{ collection.previous_product.price | money }}
+                         {%- endif -%}
+                     </span>
+                  </div>
+               </div>
+            </div>
+            {%- endif -%}
+            {%- if collection.next_product -%}
+            <div class="product-btn pr next_product tr">
+               <a href="{{collection.next_product.url}}"><i class="fa fa-caret-right pr fs__14" aria-hidden="true"></i></a>
+               <div class="nav_pr">
+                  <div class="product_infors">
+                     {%- if collection.next_product.images.size > 0 -%}
+                     <a href="{{collection.next_product.url}}" class="product-thumb">
+                        <img src="{{ collection.next_product.featured_image | img_url: image_size }}" srcset="{{ collection.next_product.featured_image | img_url: image_size }} 1x, {{ collection.next_product.featured_image | img_url: image_size, scale: 2 }} 2x" class="attachment-shop_thumbnail size-shop_thumbnail sp-post-image" alt="{{ collection.next_product.title | escape  }}"> 
+                     </a>
+                     {%- endif -%}
+                     <a href="{{collection.next_product.url}}" class="product-title">{{collection.next_product.title}}</a>
+                     <span class="price">
+                        {%- if collection.next_product.price_varies -%}
+                        {{ collection.next_product.price_min | money }} – {{ collection.next_product.price_max | money }}
+                        {%- elsif collection.next_product.compare_at_price > collection.next_product.price -%}<del>{{ collection.next_product.compare_at_price  | money }}</del> <ins>{{ collection.next_product.price | money }}</ins>
+                        {%- else -%}
+                        {{ collection.next_product.price | money }}
+                        {%- endif -%}
+                     </span>
+                  </div>
+               </div>
+            </div>
+            {%- endif -%}
+         </div>
+      {%- endif -%}
+      {%- endif -%}
+   </div>
+</div>
+<div id="product-{{product.id}}" class="mt__50 mb__50 product single-product-content {{singles_wc}} nt_des_{{settings.description_products}} {{settings.product_sidebar}}{%- if settings.use_sticky_des %} pr_info_sticky{%- endif %}{%- if linklists[product.handle].links.size > 0 %} nt_pr_grouped{%- endif %}">
+	<div class="container">
+		<div class="row">
+			<div class="product-image-summary col-12 mb__60">
+				<div class="row">
+					<div class="col-12 {{class_images}} product-images">
+						<div class="theiaStickySidebar inner-product-images">
+							<div class="row">
+								{%- assign ck_thumb = false -%}{%- if nt_suffix == 'group_images' and cv_color != 'nt-p-item' -%}{%- assign ck_thumb = true -%}{%- endif -%}
+								{%- case settings.design_products -%}
+								     {%- when '1' -%}
+								        {%- include 'product_layout_1' -%}
+								     {%- when '2' -%}
+								        {%- include 'product_layout_2' -%}
+								     {%- when '3' -%}
+								        {%- include 'product_layout_3' -%}
+								     {%- when '4' -%}
+								        {%- include 'product_thumb_bottom' -%}
+								     {%- else -%}
+								        {%- include 'product_thumb_right' -%}
+								{%- endcase -%}
+							</div>
+						</div>
+					</div>
+					<div class="col-12 {{class_summary}} product-infors infors_single_nt">
+						<div class="summary entry-summary{%- if singles_wc == 'nt-single-3' and product.images.size > 1 %} nt-sidebar-sticky theiaStickySidebar{%- elsif settings.use_sticky_des %} nt-scroll{%- endif -%}">
+							{%- if settings.use_sticky_des and singles_wc != 'nt-single-3' -%}<div class="nt-scroll-content">{%- endif -%} 
+							<h1 class="product_title entry-title">{{ product.title }}</h1>
+							{%- if settings.use_flash_sold and product.available -%}
+							<div class="nt_flash_sold cd fwsb fs__16">
+						        {%- if settings.flash_sold_img != blank -%}
+						        <span class="nt_flash_icon dib mr__10"><img src="{{ settings.flash_sold_img | img_url: '15x' }}" srcset="{{ settings.flash_sold_img | img_url:'15x' }} 1x, {{ settings.flash_sold_img | img_url:'15x', scale: 2 }} 2x" alt="{{settings.flash_sold_img.alt | default:'flash sale' }}"></span>
+						        {%- endif -%}
+						        <span class="nt_flash_total_day"></span> {{ 'products.nt_extra.flash_sold' | t }} <span class="nt_flash_in_hour"></span> {{ 'products.nt_extra.flash_hours' | t }}
+						      </div>
+						    {%- endif -%}
+							{%- if settings.show_product_page_rating -%}
+						   <a href="#shopify-section-product-page-description" class="shopify-product-rating dib">
+						     {%- if settings.app_review == '1' -%}
+						         <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+                              {%- elsif settings.app_review == '2' -%}
+                                 <div class="review-widget"><ryviu-widget-total reviews_data="{{product.metafields.ryviu.product_reviews_info  | escape  }}" product_id="{{product.id}}" handle="{{product.handle}}"></ryviu-widget-total></div>
+						      {%- else -%}
+						         <div product-id="{{ product.id }}" class="alr-display-review-badge"></div>
+						      {%- endif -%}
+						   </a>
+						   {%- endif -%}
+                          
+                          {%- assign link_size = linklists[product.handle].links.size -%}
+                          {%- if link_size == 0 and current_variant.unit_price_measurement -%}
+                             <div>
+                                <p class="price productPrice">{%- if on_sale -%}<del>{{ current_variant.compare_at_price  | money }}</del> <ins>{{ current_variant.price | money }}</ins>{%- else -%}{{ current_variant.price | money }}{%- endif -%}</p>
+                                {%- capture unit_price_base_unit -%}
+                                  <span class="unit_base">
+                                      {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                                        {{- current_variant.unit_price_measurement.reference_value -}}
+                                      {%- endif -%}
+                                      {{ current_variant.unit_price_measurement.reference_unit -}}
+                                  </span>
+                                {%- endcapture -%}
+                                <span class="pr_unit_price db"><span class="unit_price">{{ current_variant.unit_price | money }}</span><span>/</span>{{- unit_price_base_unit -}}</span>
+                             </div>
+                          {%- elsif link_size == 0 -%}
+                             {%- if product.price_varies -%}
+                                <p class="price">
+                                  {%- if settings.price_format == '1' -%}
+                                      {{ product.price_min | money }} – {{ product.price_max | money }}
+                                   {%- else -%}
+                                      <small><em>{{ 'products.product.from' | t }}</em></small> {{ product.price_min | money }}
+                                   {%- endif -%}
+                                </p>
+                             {%- else -%}
+                                <p class="price productPrice">
+                                    {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+                                    {%- else -%}
+                                    <span>{{ current_variant.price | money }}</span> 
+                                    {%- endif -%}
+                                </p>
+                             {%- endif -%}
+                          {%- else -%}
+                              <p class="price">{%- if settings.price_format == '1' -%}{{ product.price | money }}{%- if product.compare_at_price != blank -%} – {{ product.compare_at_price | money }}{%- endif -%}{%- else -%}<small><em>{{ 'products.product.from' | t }}</em></small> {{ product.price | money }}{%- endif -%}</p>
+                          {%- endif -%}
+
+						   {%- if settings.use_description_excerpt -%}
+								{%- assign _prodcut_excerpt_length = settings.prodcut_excerpt_length | plus:0 -%}
+								{%- assign prodcut_excerpt_length = _prodcut_excerpt_length | default: 31 -%}
+								<div class="Shopify-product-details__short-description">
+									<p class="p_des_ex mg__0">
+								      {%- if product.metafields.meta.description_excerpt -%}
+								       {{  product.metafields.meta.description_excerpt }}
+							        {%- elsif product.metafields.global.description -%}
+							           {{ product.metafields.global.description }}
+								     {% elsif product.description contains  '[' %}
+								       {% assign pr_des = product.description | split: '[' %}
+								       {% assign pr_des = pr_des[1] | split: ']' | first | append:']' | prepend:'[' %}
+								       {{ product.description | remove: pr_des | strip_html | truncatewords: prodcut_excerpt_length }}
+								     {%-else-%}
+								       {{ product.description | strip_html | truncatewords: prodcut_excerpt_length }}
+								     {%-endif-%}
+								   </p>
+								</div>
+							{%- endif -%}
+							{%- if product.available -%}
+							  {%- if settings.show_countdown or settings.gecko_stock_countdown -%}{%- include 'nt_countdow_page' -%}{%- endif -%}
+							{%- endif -%}
+	                  <div class="btn-atc atc-popup {{settings.btn_atc_style}}{%- if btn_atc_full %} btn_atc_full{%- endif -%}">
+	                  	{%- if linklists[product.handle].links.size == 0 -%}
+	                  	   {%- if product.has_only_default_variant == false and product.variants.size > 1 -%}
+	                  	      <div id="callBackVariant" class="nt_{{current_variant.option1 | handleize}} nt1_{{current_variant.option2 | handleize}} nt2_{{current_variant.option3 | handleize}}">
+		                           {%- form 'product', product, id: "cart-form", class: "nt_cart_form variations_form product-form nt_cart clearfix" -%}
+									         <select name="id" id="product-select" class="product-select_pr product-form__variants hide hidden">
+									            {%- for variant in product.variants -%}
+									                <option{% if variant.id == current_variant.id %} selected="selected"{% endif %}{% if variant.available == false and remove_soldout %} disabled="disabled"{% endif %} value="{{ variant.id }}" class="nt_{{variant.option1 | handleize }} nt1_{{variant.option2 | handleize }} nt2_{{variant.option3 | handleize }}">{{ variant.title | handle}}</option>
+									              {%- endfor -%}
+												</select>
+												{%- include settings.swatch_design,class_input:'pr' -%}
+                                                
+                                                {%- unless link_size == 0 and current_variant.unit_price_measurement -%}
+                                                    {%- if product.price_varies -%}
+                                                        <div class="shopify-variation-price price_varies mb__25">
+                                                          <span class="price productPrice" id="productPrice">
+                                                            {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+                                                            {%- else -%}
+                                                            <span id="product-price">{{ current_variant.price | money }}</span> 
+                                                            {%- endif -%}
+                                                          </span>
+                                                        </div>
+                                                    {%- endif -%}
+                                                 {%- endunless -%}
+                                
+												{%- if settings.product_quantity_message and stock_countdow -%}<div id="variantQuantity" class="variantQuantity variant-quantity mb__25 tu"></div>{%- endif -%}
+									         <div class="single_variation_wrap">
+									         	<div id="shopify_quantity" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+			                                 <input type="button" value="-" class="minus">
+			                                 <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+			                                 <input type="button" value="+" class="plus">
+			                              </div>
+								               {%- if settings.use_notify_me == false -%}<p class="stock out-of-stock mg__0 nt_outstock" id="nt_outstock" style="display:none">{{ 'products.product.outofstock' | t }}</p>{%- endif -%}
+			                              {%- if check_external -%}
+			                                 <a href="{{ check }}" id="shopify_add_to_cart" rel="nofollow" class="shopify_add_to_cart add_to_cart_button single_add_to_cart_button button btn_external">{{ product.metafields.external | first | first }}</a>
+			                              {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+		                                    <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+		                                 {%- else -%}
+		                                    <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+		                                 {%- endif -%}   
+									         </div>
+									         {%- if settings.enable_payment_button and check_external == false -%}
+                                            <div class="checkout_divide mt__10 fs__16 tc shopify-payment-button">{{ 'products.product.or' | t }}</div>
+						                    {{ form | payment_button }}
+						                  {%- endif -%} 
+								         {%- endform -%}
+								      </div>
+								      {%- if settings.use_notify_me -%}
+						               <p class="stock out-of-stock mg__0 mb__20 nt_outstock" id="nt_outstock" style="display:none">{{ 'products.product.outofstock' | t }}</p>
+						               <div class="form-notify single_variation_wrap w_100 mb__20 frm_notify_pr" id="frm_notify_pr" style="display:none">
+						                  {%- form 'contact',class:'frm_notify w_100' -%}
+						                  {%- assign formId = 'ContactForm' | append:current_variant.id -%}
+						                  {%- include 'form-status', formId,notify_me:'1' -%}
+						                  <p class="cd fwsb mb__10 fs__16">{{ 'products.product.title_notify_me' | t }}</p>
+						                  <div class="row">
+						                    {%- if customer and customer.name != blank -%}
+						                    <div class="col-12 mb__20 hide hidden">
+						                      <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+						                      <input type="text" id="{{ formId }}-name" name="contact[name]" value="{{ customer.name }}">
+						                    </div>
+						                    {%- endif -%}
+						                    <div class="col-12 mb__20">
+						                      <label for="{{ formId }}-email">{{ 'contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+						                      <input
+						                             required="required"
+						                             type="email"
+						                             id="{{ formId }}-email"
+						                             name="contact[email]"
+						                             autocorrect="off"
+						                             autocapitalize="off"
+						                             value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+						                             aria-required="true"
+						                             {%- if form.errors contains 'email' -%}
+						                             class="input--error"
+						                             aria-invalid="true"
+						                             aria-describedby="{{ formId }}-email-error"
+						                             {%- endif -%}
+						                             >
+						                    </div>
+						                    <input type="hidden" name="challenge" value="false">
+						                    <div class="col-12 mb__20 hide hidden">
+						                      <label for="{{ formId }}-message">{{ 'contact.form.message' | t }}</label>
+						                      <textarea rows="10" id="{{ formId }}-message" name="contact[body]">
+						                        {{ 'products.product.please_notify_me' | t: title:product.title,variant:'current_variant_title',url:'current_variant_title_url' }}
+						                      </textarea>
+						                    </div>
+						                  </div>
+						                  <input type="submit" class="add_to_cart_button" value="{{ 'products.product.send_notify_me' | t }}">
+						                  {%- endform -%}
+						               </div>
+						            {%- endif -%}
+	                  	   {%- else -%}
+		                        {%- if current_variant.inventory_management and settings.product_quantity_message and stock_countdow -%}
+							            {%- if current_variant.inventory_quantity < ck_inventory and current_variant.inventory_quantity > 0 -%}
+							               <div id="variantQuantity" class="variant-quantity mb__25 tu">{{ 'products.product.only_left' | t: count: current_variant.inventory_quantity }}</div>
+							            {%- elsif current_variant.inventory_quantity <= 0 and current_variant.incoming -%}
+							               {%- assign next_incoming_date = current_variant.next_incoming_date | date: format: 'month_day_year' -%}
+							               <div id="variantQuantity" class="variant-quantity mb__25 tu">{{ 'products.product.will_not_ship_until' | t: date:next_incoming_date }}</div>
+							            {%- endif -%}
+							         {%- endif -%}
+							         {%- if sold_out -%}
+							            {%- if settings.use_notify_me -%}
+							               <div class="form-notify single_variation_wrap w_100 mb__20">
+							                  {%- form 'contact',class:'frm_notify w_100' -%}
+							                  <p class="cd fwsb mb__10 fs__16">{{ 'products.product.title_notify_me' | t }}</p>
+							                  {%- assign formId = 'ContactForm' -%}
+							                  {%- include 'form-status', formId,notify_me:'1' -%}
+							                  {%- if form.posted_successfully?  == false -%}
+							                  <div class="row">
+							                    {%- if customer and customer.name != blank -%}
+							                    <div class="col-12 mb__20 hide hidden">
+							                      <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+							                      <input type="text" id="{{ formId }}-name" name="contact[name]" value="{{ customer.name }}">
+							                    </div>
+							                    {%- endif -%}
+							                    <div class="col-12 mb__20">
+							                      <label for="{{ formId }}-email">{{ 'contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+							                      <input
+							                             required="required"
+							                             type="email"
+							                             id="{{ formId }}-email"
+							                             name="contact[email]"
+							                             autocorrect="off"
+							                             autocapitalize="off"
+							                             value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+							                             aria-required="true"
+							                             {%- if form.errors contains 'email' -%}
+							                             class="input--error"
+							                             aria-invalid="true"
+							                             aria-describedby="{{ formId }}-email-error"
+							                             {%- endif -%}
+							                             >
+							                    </div>
+							                    <input type="hidden" name="challenge" value="false">
+							                    <div class="col-12 mb__20 hide hidden">
+							                      <label for="{{ formId }}-message">{{ 'contact.form.message' | t }}</label>
+							                      <textarea rows="10" id="{{ formId }}-message" name="contact[body]">
+							                        {%- assign url_js = shop.url | append:'/' | append:product.url -%}
+							                        {{ 'products.product.please_notify_me' | t: title:product.title,variant:'current_variant_title',url:url_js | remove: ' - current_variant_title'}}
+							                      </textarea>
+							                    </div>
+							                  </div>
+							                  <input type="submit" class="add_to_cart_button" value="{{ 'contact.form.submit' | t }}">
+							                  {%- endif -%}
+							                  {%- endform -%}
+							               </div>
+						               {%- else -%}
+						                  <p class="stock out-of-stock mb__20 nt_outstock" id="nt_outstock">{{ 'products.product.outofstock' | t }}</p>
+						               {%- endif -%}
+							         {%- else -%}
+								         <div id="callBackVariant">{%- form 'product', product, id: "cart-form", class: "nt_cart_form variations_form product-form nt_cart clearfix" -%}
+									         <input name="id" value="{{ current_variant.id }}" class="product-select_pr product-form__variants hide hidden" type="hidden">
+										    {%- if product.variants.size == 1 and product.has_only_default_variant == false -%}{%- include settings.swatch_design,class_input:'pr',cl_selected:'is-selected' -%}{%- endif -%}
+									         <div class="single_variation_wrap">
+									         	<div id="shopify_quantity" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+                                                   <input type="button" value="-" class="minus">
+                                                   <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+                                                   <input type="button" value="+" class="plus">
+                                                </div>
+                                                {%- if check_external -%}
+                                                   <a href="{{ check }}" id="shopify_add_to_cart" rel="nofollow" class="shopify_add_to_cart add_to_cart_button single_add_to_cart_button button btn_external">{{ product.metafields.external | first | first }}</a>
+                                                {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+                                                  <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+                                               {%- else -%}
+                                                  <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+                                               {%- endif -%}   
+									         </div>
+									         {%- if settings.enable_payment_button and check_external == false -%}
+                                            <div class="checkout_divide mt__10 fs__16 tc shopify-payment-button">{{ 'products.product.or' | t }}</div>
+						                    {{ form | payment_button }}
+						                  {%- endif -%} 
+                                           {%- endform -%}</div>
+							         {%- endif -%} 
+	                  	   {%- endif -%}
+	                  	{%- else -%}
+	                  	   <form action="/cart" method="post" class="cart group_table" id="cart-form">
+								      <table cellspacing="0" class="group_table shop_table">
+								        <tbody>
+								          {%- include 'product_group' -%}
+								        </tbody>
+								      </table>
+								      <div class="mt__20 single_variation_wrap">
+									      {%- if check_external == false -%}
+							               <button type="submit" id="multi-variant-add" class="add_to_cart_button single_add_to_cart_button button alt btn--loader"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+							            {%- else -%}
+							               <a href="{{ check }}" rel="nofollow" class="single_add_to_cart_button button alt btn_external">{{ product.metafields.external | first | first }}</a>
+							            {%- endif -%}
+								      </div>
+								   </form>
+								   {%- assign has_size_guide = true -%}
+	                  	{%- endif -%}  
+							</div>
+					      {%- if settings.enable_delivery_order and product.available -%}
+							<div class="product_delivery cd fwsb fs__16">
+								{%- if settings.delivery_order_img != blank -%}
+						      <span class="nt_flash_icon dib mr__10"><img src="{{ settings.delivery_order_img | img_url: '15x' }}"  srcset="{{ settings.delivery_order_img | img_url:'15x' }} 1x, {{ settings.delivery_order_img | img_url:'15x', scale: 2 }} 2x" alt="{{settings.delivery_order_img.alt | default:'delivery order' }}"></span>
+						      {%- endif -%}
+							   {{ 'products.nt_extra.estimateTimer_1' | t }} <span id="nt_product_delivery"></span> {{ 'products.nt_extra.estimateTimer_2' | t }} <span class="date_end_delivery" data-deliveryend="{{ estimateEndDate }}"></span>
+							</div>
+							{%- endif -%}
+			                {%- if settings.show_real_time_visitor -%}<div class="counter_real_time cd fwsb fs__16" style="display:none">{{settings.text_real}} <span id="number_counter"><span>94</span></span> {{settings.text_visitor}}</div>{%- endif -%}
+							{%- if settings.product_img_trust_seal and settings.img_trust_seal != blank -%}
+							{%- assign image = settings.img_trust_seal -%}
+			                  {%- assign image_size = '550x' -%}
+			                  <div class="trust_img"><img alt="{{image.alt}}" src="{{ image | img_url: image_size }}" srcset="{{ image | img_url: image_size }} 1x, {{ image | img_url: image_size, scale: 2 }} 2x"></div>
+			                {%- endif -%}
+							<div class="extra-link fwsb">
+								{%- if pages[settings.delivery_return].content != blank -%}
+								<a class="nt-wc-help cd chp mr__25 shipping-return" data-effect="{{settings.ani_return}}" href="#delivery-return">{{ 'products.product.delivery_return' | t }}</a>
+								{%- endif -%}
+								{%- if has_size_guide and settings.size_chart -%}
+									{%- if product.metafields.meta.image_size_chart != blank or collection.metafields.meta.image_size_chart != blank or settings.image_size_chart != blank %}
+										<a class="cd chp nt-magnific-image" data-effect="{{settings.ani_size}}" href="{%- if product.metafields.meta.image_size_chart != blank -%}{{product.metafields.meta.image_size_chart}}{%- elsif collection.metafields.meta.image_size_chart != blank-%}{{collection.metafields.meta.image_size_chart}}{%- else -%}{{ settings.image_size_chart | img_url: '1x1' | replace: '_1x1', ''  }}{%- endif -%}">{{ 'products.product.product_size_guide' | t }}</a>
+									{%- endif -%}
+							   {%- endif -%}
+							</div>
+			                {%- if settings.show_share_btn -%}
+							<table class="product_meta w_100">
+							   <tbody>
+							      <tr class="share_on">
+							         <td class="label">{{ 'products.product.product_share' | t }}</td>
+							         <td class="value">
+							         	{%- include 'social-sharing', follow_social:gl_follow_social,nt_tooltip:true,class_tooltip:'tooltip_top_right' -%}
+							         </td>
+							      </tr>
+							   </tbody>
+							</table>
+							{%- endif -%}
+						   	{%- if settings.description_products == '3' -%}
+						   	<div class="row sidebar_accordions">{%- section 'product-page-description' -%}</div>
+			               {%- endif -%}
+			            {%- if settings.use_sticky_des and singles_wc != 'nt-single-3' -%}</div>{%- endif -%} 
+						</div>
+				   </div>
+				</div>
+			</div>
+			{%- if settings.description_products != '3' -%}
+			{%- section 'product-page-description' -%}
+			{%- endif -%}
+			{%- if collection.next_product or collection.previous_product -%}
+			<nav class="single-pr-nav post_navigation flex alin_center c_between col-12">
+			   <a class="post_prev{%- if collection.previous_product.url == blank %} op_0{%- endif -%}" href="{{ collection.previous_product.url }}" rel="prev">{{ 'products.product.previous_product' | t }}</a>
+			   <a class="post_blog" href="{{ collection.url }}">{{ 'products.product.back_cat' | t }}</a>
+			   <a class="post_next{%- if collection.next_product.url == blank %} op_0{%- endif -%}" href="{{ collection.next_product.url }}" rel="next">{{ 'products.product.next_product' | t }}</a>
+			</nav>
+			{%- endif -%}
+		</div>
+		{%- assign ck_meta = false -%}
+        {%- capture meta -%}
+	        {%- if settings.show_pr_vendor and product.vendor != blank -%} {%- assign ck_meta = true -%}
+	        <span class="vendor_wrapper"> <strong>{{ 'products.product.product_vendor' | t }}</strong> <span class="vendor value" id="product-vendor">{{ product.vendor | link_to_vendor }}</span></span>
+	        {%- endif -%}
+	        {%- if settings.show_sku -%} {%- assign ck_meta = true -%}
+	        <span class="sku_wrapper"> <strong>{{ 'products.product.product_sku' | t }}</strong> <span class="sku value" id="productSku">{%- if current_variant.sku != blank -%}{{current_variant.sku}}{%-else-%}{{ 'products.product.na' | t }}{%-endif-%}</span></span>
+	        {%- endif -%}
+	        {%- if settings.show_available -%} {%- assign ck_meta = true -%}
+	        <span class="available_wrapper"> <strong>{{ 'products.product.available' | t }}</strong> <span class="available value fwb {%- if sold_out %} value_out{%- else %} value_in{%- endif -%}" id="product-available">{%- if sold_out -%}{{ 'products.product.outofstock' | t }}{%- else -%}{{ 'products.product.in_stock' | t }}{%- endif -%}</span></span>
+	        {%- endif -%}
+	        {%- if product.collections.size > 0 and settings.show_category_product -%} {%- assign ck_meta = true -%}
+	        <span class="posted_in"> 
+	        <strong>{{ 'products.product.product_category' | t }}</strong>
+	        {% for collection in product.collections -%}{{ collection.title | link_to: collection.url }}{%- if forloop.last == false -%}, {% endif -%}{%- endfor -%}
+	        </span>
+	        {%- endif -%}
+	        {%- if product.tags.size > 0 and settings.show_tag_product and product.collections.size > 0 -%} {%- assign ck_meta = true -%}
+	        <span class="tagged_as"> <strong>{{ 'products.product.product_tag' | t }}</strong> 
+	         {% for tag in product.tags -%}
+	         <a href="{%- if collection != blank -%}{{ collection.url }}{%- else -%}{{ product.collections.first.url }}{%- endif -%}/{{ tag | handle }}">{{ tag | remove:'type ' | remove:'Type ' }}</a>{%- unless forloop.last -%}, {% endunless -%}
+	         {%- endfor -%}
+	        {%- endif -%}
+        {%- endcapture -%}
+	    {%- if ck_meta -%}<div class="product_meta mt__30">{{meta}}</div>{%- endif -%}
+        <hr class="mt__60">
+		{%- if settings.show_related_products -%}
+         {%- include 'related-products-sectioned' -%}
+      {%- endif -%}
+      {%- if settings.show_recently_products and pages['recently-viewed-products'].empty? != true -%}{%- include 'nt-recently-viewed' -%}{%-endif-%}
+      {%- if product.metafields.meta.hashtag != blank or product.metafields.meta.username != blank -%}{%- include 'pr_instagram' -%}{%-endif-%}
+	</div>
+</div><!-- product group -->

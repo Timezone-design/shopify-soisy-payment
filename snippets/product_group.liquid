@@ -1,0 +1,53 @@
+{%- for link in linklists[product.handle].links -%}
+{% if link.type == 'product_link' %}
+{% assign pr = link.object %}
+{%- assign image_size = '80x' -%}
+{%- assign sold_out = true -%}
+{%- if pr.available  -%}
+{%- assign sold_out = false -%}
+{%- endif -%}
+
+{%- if sold_out == false -%}
+   {%- assign current_variant = pr.selected_or_first_available_variant -%}
+   {%- assign image = current_variant.featured_image | default: pr.featured_image -%}
+   {%- assign on_sale = false -%}
+   {%- if current_variant.compare_at_price > current_variant.price -%}
+      {%- assign on_sale = true -%}
+   {%- endif -%}
+    <tr class="{%- cycle ' tr_table nt-table-odd', 'tr_table' -%}">
+      <td>
+         <div class="flex">
+            <div  class="grouped_img mr__20">
+               <img alt="{{image.alt | split:'|' | last | escape }}" src="{{ image | img_url: image_size }}" srcset="{{ image | img_url: image_size }} 1x, {{ image | img_url: image_size, scale: 2 }} 2x" class="attachment-shop_single size-shop_single">
+            </div>
+            <div  class="grouped_info">
+               <label for="product-{{ pr.id }}"><a href="{{  current_variant.url | within: collection }}">{{ pr.title }}</a></label>
+               {%- if pr.has_only_default_variant == false -%}
+               <select name="[]" class="product-form__variants product-form_group_variants">
+                 {%- for variant in pr.variants -%}
+                   {%- if variant.available -%}
+                     <option{%- if variant == current_variantt %} selected="selected"{%- endif %} value="{{ variant.id }}" data-onsale="{%- if variant.compare_at_price > variant.price -%}true{%- else -%}false{%- endif -%}" data-compare="{{ variant.compare_at_price }}" data-price="{{ variant.price }}" data-quantity="{%- if variant.inventory_management == blank or variant.inventory_policy == 'continue' -%}999{%- else -%}{{ variant.inventory_quantity }}{%- endif -%}" data-image="{{ variant.featured_image | default: pr.featured_image | img_url: product_image_size }}">{{ variant.title }}</option>
+                   {%- endif -%}
+                 {%- endfor -%}
+               </select>
+               {%- endif -%}
+               <div class="product-price price">
+                {%- if on_sale -%}<del class="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price" class="fs__18">{{ current_variant.price | money }}</ins>
+              {%- else -%}
+              <span>{{ current_variant.price | money }}</span> 
+              {%- endif -%}
+              </div>
+           </div>
+         </div>
+      </td>
+      <td class="td_quantity tc">
+        <div class="quantity">
+           <input type="button" value="-" class="minus">
+           <input type="number" step="1" min="0" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="updates[{{ current_variant.id }}]" data-variant-id="{{ current_variant.id }}" onfocus="this.select()" id="Quantity_{{ current_variant.id }}"" value="1" class="nt_group_quantity input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+           <input type="button" value="+" class="plus">
+         </div>
+      </td>
+    </tr>
+  {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

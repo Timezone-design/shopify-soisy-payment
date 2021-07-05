@@ -1,0 +1,50 @@
+<style>
+  .nt-member {
+	padding-bottom: 15px;
+}
+.nt-member:before {
+	content: '';
+	position: absolute;
+	background: rgba(246, 246, 246, .9);
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	transition: all .3s;
+	z-index: 1;
+}
+.nt-member:hover:before,
+.nt-member:hover .social {
+	opacity: 1;
+}
+.nt-member .social {
+	bottom: 30px;
+	opacity: 0;
+	z-index: 2;
+}
+.nt-member h4 {
+	font-weight: bold;
+}
+.nt-member .social a {
+	margin: 0 8px;
+}
+.nt-member .social i {
+	font-size: 20px;
+}
+</style>
+{%- assign image = settings.other_page_bg_image -%}
+{%- assign color_scheme = settings.other_page_color -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.other_overlay}} pr oh{%- if settings.use_parallax_other_page %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{page.title}}</h1>
+      </div>
+   </div>
+</div>
+<div class="container container_page mt__100 mb__100" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+  {%- section 'nt_text_about' -%} 
+  {%- section 'nt_member' -%} 
+  {%- section 'nt_testimonials' -%} 
+</div>

@@ -1,0 +1,517 @@
+{%- include 'style_mp_section' -%}
+{%- case section.settings.categories_layout -%}
+   {%- when 'default' -%}
+      {%- assign layout = "categories-style-default" -%}
+   {%- when 'masonry' -%}
+      {%- assign  layout = "categories-style-masonry categories-masonry" -%}
+   {%- when 'masonry_first' -%}
+      {%- assign layout = "categories-style-masonry-first categories-masonry" -%}
+   {%- when 'carousel' -%}
+      {%- assign layout = "categories-style-carousel" -%}
+{%- endcase -%}
+<div class="{% if block.settings.text_style == 'inside' %}inside{%- else -%}outside{% endif %} nt_custom_{{section.id}} nt-promo-banner{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+      {%- assign sett_title = section.settings.title -%}
+      {%- assign sett_sub_title = section.settings.sub_title -%}
+      {%- assign style_title = section.settings.style_title -%}
+      {%- include 'nt_section_title' with style_title -%}
+      <div class="row {{ layout }} categories-space-{{ section.settings.space_categories }}{%- if section.settings.categories_layout == 'carousel' %} nt-carousel{%- endif -%}"{%- if section.settings.categories_layout == 'carousel' %} data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "speed": {{ section.settings.speed }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'{%- endif -%}>
+         {%- if section.settings.categories_layout != 'carousel' %}<div class="col-lg-3 nt-item-category hide"></div>{%- endif -%}
+        {%- for block in section.blocks -%}
+         {%- assign block_image = block.settings.image -%}
+         {%- assign block_url = block.settings.url -%}
+         <div class="col-lg-{{block.settings.width}} col-md-{{block.settings.width}} col-{{block.settings.mobile_width}} {{ section.settings.categories_design }} nt-item-category spb_animate" {{ block.shopify_attributes }}>
+            <a class="db nt-promotion oh pr {{block.settings.hover_effect}} {{block.settings.vertical_align}} {{block.settings.horizontal_align}}{%- if block_url != blank %} cusor_pointer{%- endif -%}"{%- if block_url != blank %} href="{{block_url}}"{%- endif -%}>
+               <div class="nt_banner_img">
+                  {%- if block_image != blank -%}
+                  {%- assign img_url = block_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                  <img src="{{ block_image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block_image.aspect_ratio }}"  data-sizes="auto" class="w_100 lazyload ts__05 attachment-shop_catalog size-shop_catalog" alt="{{block_image.alt}}" >
+                  <div class="nt-wrap-lazy"></div>
+                  {%- else -%}
+                  <img src="https://placehold.it/700x500/eee/999" alt="placehold" class="ts__05 w_100">
+                 {%- endif -%}
+               </div>
+              
+              {%- if block.settings.text_style == 'inside' -%}
+               <div class="banner_title pa">{{block.settings.banner_content}}</div>
+              {%- else -%}
+               <div class="banner_title outside {{block.settings.horizontal_align}}">{{block.settings.banner_content}}</div>
+              {%- endif -%}
+            </a>
+         </div>
+         {%- endfor -%}
+      </div>
+   {%- if section.blocks.size == 0 -%}
+    {%- include 'no-blocks' -%}
+   {%- endif -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Promotion Banner",
+    "class": "nt-section nt_promo_banner",
+    "max_blocks": 30,
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title"
+      },
+      {
+        "type": "select",
+        "id": "style_title",
+        "options": [
+         {
+            "value": "type-simple",
+            "label": "Style 1"
+         },
+         {
+            "value": "hr-type-simple",
+            "label": "Style 2"
+          }
+        ],
+        "label": "Style title"
+      },
+      {
+        "type": "select",
+        "id": "categories_layout",
+        "options": [
+            {
+               "value": "default",
+               "label": "Default"
+             },
+             {
+               "value": "masonry",
+               "label": "Masonry"
+             },
+             {
+               "value": "masonry_first",
+               "label": "Masonry (with first wide)"
+             },
+             {
+               "value": "carousel",
+               "label": "Carousel"
+             }
+           ],
+           "label": "Layout",
+           "default": "default"
+         },
+         {
+           "type": "select",
+           "id": "space_categories",
+           "options": [
+            {
+               "value": "30",
+               "label": "30"
+             },
+             {
+               "value": "20",
+               "label": "20"
+             },
+             {
+               "value": "10",
+               "label": "10"
+             },
+             {
+               "value": "6",
+               "label": "6"
+             },
+             {
+               "value": "2",
+               "label": "2"
+             },
+             {
+               "value": "0",
+               "label": "0"
+             }
+           ],
+           "label": "Space between banner",
+           "default": "30"
+         },
+
+      {
+       "type": "header",
+       "content": "== settings Slider ( Only for Carousel layout )"
+      },
+      {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "speed",
+        "min": 100,
+        "max": 1000,
+        "step": 100,
+        "label": "Slide/Fade animation speed",
+        "default": 300
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 4
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "section_bg_color",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "promo_banner",
+        "name": "Promotion Banner",
+        "settings": [
+          {
+             "type": "image_picker",
+             "id": "image",
+             "label": "Image"
+           },
+           {
+            "label": "Link to",
+            "id": "url",
+            "type": "url"
+          },
+			{
+           "type": "select",
+           "id": "text_style",
+           "options": [
+            {
+               "value": "inside",
+               "label": "Inside Banner"
+             },
+             {
+               "value": "outside",
+               "label": "Outside Bottom"
+             }
+           ],
+           "label": "Text content style",
+           "default": "inside"
+          },
+          {
+           "type": "select",
+           "id": "hover_effect",
+           "options": [
+             {
+               "value": "nt_none_img_banner",
+               "label": "None"
+             },
+             {
+               "value": "nt_zoom_img_banner",
+               "label": "Zoom image"
+             },
+             {
+               "value": "nt_fade_img_banner",
+               "label": "Fade image"
+             },
+             {
+               "value": "nt_border_img_banner",
+               "label": "Bordered"
+             },
+             {
+               "value": "nt_zoom_dark_img_banner",
+               "label": "Zoom image dark"
+             }
+           ],
+           "label": "Hover effect",
+           "default": "nt_zoom_img_banner"
+         },
+          {
+           "type": "select",
+           "id": "vertical_align",
+           "options": [
+            {
+               "value": "top",
+               "label": "Top"
+             },
+             {
+               "value": "middle",
+               "label": "Middle"
+             },
+             {
+               "value": "bottom",
+               "label": "Bottom"
+             }
+           ],
+           "label": "Text vertical align",
+           "default": "middle"
+          },
+          {
+           "type": "select",
+           "id": "horizontal_align",
+           "options": [
+            {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "center",
+               "label": "Center"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "label": "Text horizontal align",
+           "default": "center"
+          },
+          {
+             "type": "textarea",
+             "id": "banner_content",
+             "label": "Banner content",
+             "info": "Add here few words to your banner image."
+           },
+          {
+           "type": "header",
+           "content": "not support for Carousel layout:"
+          },
+          {
+           "type": "select",
+           "id": "width",
+           "options": [
+            {
+               "value": "3",
+               "label": "25%"
+             },
+             {
+               "value": "4",
+               "label": "33.33333333%"
+             },
+             {
+               "value": "6",
+               "label": "50%"
+             },
+             {
+               "value": "8",
+               "label": "66.66666667%"
+             },
+             {
+               "value": "12",
+               "label": "100%"
+             }
+           ],
+           "label": "== Select column width",
+           "default": "3"
+         },
+         {
+           "type": "select",
+           "id": "mobile_width",
+           "options": [
+             {
+               "value": "6",
+               "label": "50%"
+             },
+             {
+               "value": "12",
+               "label": "100%"
+             }
+           ],
+           "label": "== Select column mobile width",
+           "default": "12"
+         }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Promotion Banner",
+        "category": "4. IMAGE",
+        "blocks": [
+          {
+            "type": "promo_banner"
+          },
+          {
+            "type": "promo_banner"
+          },
+          {
+            "type": "promo_banner"
+          },
+          {
+            "type": "promo_banner"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

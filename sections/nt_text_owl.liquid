@@ -1,0 +1,234 @@
+{%- include 'style_mp_section' -%}
+<div class="nt_custom_{{section.id}} nt-banner-parallax{%- if section.settings.use_background_overlay %} nt_background-overlay{%- endif %}{%- if section.settings.image != blank %} lazyload nt_bg_lz{%- endif %}"{%- if section.settings.image != blank %} data-bgset="{%- include 'bgset', image: section.settings.image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+   <div class="container clearfix nt-z-index_44">
+      <div class="row nt-carousel slick_static" data-slick='{"slidesToShow": 1,"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}} }'>
+         {%- if section.blocks.size > 0 -%}
+            {% for block in section.blocks %}
+               <div class="spb_animate col-12">
+                  <p class="text-center fwb mg__0" style="color: {{section.settings.text_color}};letter-spacing: 0.1em">{{block.settings.title}}</p>
+               </div>
+            {%- endfor -%}
+         {%- endif -%}
+         {%- if section.blocks.size == 0 -%}
+          {%- include 'no-blocks' -%}
+         {%- endif -%}
+      </div>
+   </div>
+</div>
+{% schema %}
+  {
+    "name": "Text Slider",
+    "class": "nt-section nt_text_owl",
+    "settings": [
+     {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text color",
+        "default": "#fff"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Background Image"
+      },
+      {
+        "type": "color",
+        "id": "section_bg_color",
+        "label": "Background color",
+        "default": "#f76b6a"
+      },
+      {
+       "type": "header",
+       "content": "== settings Slider"
+      },
+      {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": false
+      },
+     {
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "default":"15px",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "default":"15px",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      },
+      {
+        "type": "header",
+        "content": "== Elessi Extras"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_background_overlay",
+        "label": "Use background overlay?",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "Text Slider",
+        "settings": [
+            {
+               "type": "textarea",
+               "id": "title",
+               "label": "Heading",
+               "default": "UP TO 70% OFF THE ENTRIRE STORE! – MADE WITH LOVE by <span class=\"t-underline\">The4studio<\/span>"
+            }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Text Slider",
+        "category": "7. Text",
+        "blocks": [
+          {
+            "type": "text",
+            "settings": {
+              "title": "UP TO 70% OFF THE ENTRIRE STORE! – MADE WITH LOVE by <span class=\"t-underline\">The4studio<\/span>"
+            }
+          },
+          {
+            "type": "text",
+            "settings": {
+              "title": "UP TO 70% OFF THE ENTRIRE STORE! – MADE WITH LOVE by <span class=\"t-underline\">The4studio<\/span>"
+            }
+          },
+          {
+            "type": "text",
+            "settings": {
+              "title": "UP TO 70% OFF THE ENTRIRE STORE! – MADE WITH LOVE by <span class=\"t-underline\">The4studio<\/span>"
+            }
+          },
+          {
+            "type": "text",
+            "settings": {
+              "title": "UP TO 70% OFF THE ENTRIRE STORE! – MADE WITH LOVE by <span class=\"t-underline\">The4studio<\/span>"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

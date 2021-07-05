@@ -1,0 +1,288 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- include 'style_mp_section' -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = grid_columns -%}
+{%- assign class_xs = '12' -%}
+<div id="pin-{{section.id}}" class="pin__wrapper pr nt_custom_{{section.id}}">
+   <div class="pin__image">
+      {%- assign image = section.settings.banner_img -%}
+      {%- if image != blank -%}
+         {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+         <img 
+         src="{{ image | img_url: '50x50' }}"
+         data-src="{{ img_url }}"
+         data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" 
+         data-aspectratio="{{ image.aspect_ratio }}" 
+         data-sizes="auto"
+         class="db w_100 attachment-full size-full lazyload" alt="{{image.alt}}" >
+         <div class="nt-wrap-lazy"></div>
+      {%- else -%}
+         <img src="{{ 'no_bg_img.jpg' | asset_url }}" alt="no image">
+      {%- endif -%}
+   </div>
+   {%- for block in section.blocks -%}
+      {%- assign top_pin = block.settings.top_pin -%}
+      {%- assign left_pin = block.settings.left_pin -%}
+      {%- assign product = all_products[block.settings.product_id] -%}
+      {%- if product != blank and top_pin != blank and left_pin != blank -%}
+         <div class="{{block.settings.tooltip_design}} pa pin__type pin_{{block.id}} cusor_pointer" aria-label="{{product.title |strip_html}}" style="
+            background-color: {{block.settings.bg}};
+            width: {{block.settings.width}}px;
+            height: {{block.settings.height}}px;
+            top:{%- if top_pin == 100 -%}100%{%- else -%}{{top_pin}}.80886454085634%{%- endif -%};
+            left:{%- if left_pin == 100 -%}100%{%- else -%}{{left_pin}}.43785310734463%{%- endif -%}">
+            <span class="pin__title flex c_center alin_center">{{block.settings.title}}</span>
+            <a href="javascript void(0);" data-ajax="{{product.url}}/?view=quick_view_mpf" class="open-qv-mpf pin__title flex c_center alin_center">{{block.settings.title}}</a>
+            <div class="pin__popup pin__popup--{{block.settings.product_design}} pin__popup--fade">
+               <div class="popup__content popup__content--product">
+                  {%- include 'nt_product_loop' -%}
+               </div>
+            </div>
+         </div>
+      {%- endif -%}
+   {%- endfor -%}
+</div>
+{%- schema -%}
+  {
+    "name": "Products Lookbook",
+    "class": "nt-section type_nt_pin_lookbook spb_animate",
+    "max_blocks":20,
+    "settings": [
+      {
+         "type": "image_picker",
+         "id": "banner_img",
+         "label": "Banner image"
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [{
+       "type": "pin",
+       "name": "Pin",
+       "settings": [
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+           "default": "$59"
+         },
+         {
+           "type": "range",
+           "id": "top_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Top",
+           "default": 46
+         },
+         {
+           "type": "range",
+           "id": "left_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Left",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "width",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Width",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "height",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Height",
+           "default": 30
+         },
+         {
+           "type": "color",
+           "id": "bg",
+           "label": "__ Select Color",
+           "default": "#f76b6a"
+         },
+         {
+           "type": "select",
+           "id": "tooltip_design",
+           "options": [
+             {
+               "value": "tooltip_top",
+               "label": "Top"
+             },
+             {
+               "value": "tooltip_top_left",
+               "label": "Top Left"
+             },
+             {
+               "value": "tooltip_top_right",
+               "label": "Top Right"
+             },
+             {
+               "value": "tooltip_bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "tooltip_bottom_left",
+               "label": "Bottom Left"
+             },
+             {
+               "value": "tooltip_bottom_right",
+               "label": "Bottom Right"
+             },
+             {
+               "value": "tooltip_left",
+               "label": "Left"
+             },
+             {
+               "value": "tooltip_right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Tooltip",
+           "default": "tooltip_top"
+         },
+         {
+             "type":"product",
+             "id":"product_id",
+             "label":"Choose product"
+         },
+         {
+           "type": "select",
+           "id": "product_design",
+           "options": [
+             {
+               "value": "top",
+               "label": "Top"
+             },
+             {
+               "value": "bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Product",
+           "default": "top"
+         }
+       ]
+    }],
+    "presets": [
+      {
+        "name": "Lookbook Single",
+        "category": "2. Lookbook",
+        "blocks": [
+           {
+             "type": "pin"
+           }
+         ]
+      }
+    ]
+  }
+{% endschema %}

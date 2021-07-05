@@ -1,0 +1,571 @@
+{%- if section.blocks.size > 0 -%}
+   {%- assign on_active_first = true -%}
+   {%- if settings.description_products == '1' -%}
+      <ul class="tabs sp-tabs wc-tabs tabs sp_tab-uppercase sp_tab-{{section.settings.tab_style}} sp_tab-{{section.settings.tab_align}}{%- if section.settings.use_vertical %} sp_tab-vertical{%- endif -%}">
+         {%- for block in section.blocks -%}
+            {%- case block.type -%}
+               {%- when 'description' -%}
+                  <li class="description_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#tab-description" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}</a></li>
+               {%- when 'additional' -%}
+               {%- if product.has_only_default_variant == false -%}
+                  <li class="additional_information_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#{{block.id}}" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}</a></li>
+               {%- endif -%}
+               {%- when 'shipping' -%}
+                  <li class="jas_user_ship shipping_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#{{block.id}}" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}</a></li>
+               {%- when 'bundle' -%}
+                  {%- if product.metafields.nitro_bundle.bundle -%}{%- assign acct_tab = true -%}
+                     <li class="bundle_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#tab-bundle" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}</a></li>
+                  {%- endif -%}
+               {%- when 'review' -%}
+                  {%- if settings.show_product_page_rating -%}
+                     <li class="reviews_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#{{block.id}}" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}
+                     {%- if block.settings.use_count_reviews and none -%}
+                        {%- if settings.app_review == '1' and product.metafields.spr.reviews != blank -%}
+                           {%- assign ratingCount = product.metafields.spr.reviews | split: 'reviewCount" content="' | last | split: '"' |first | plus: 0 -%}
+                           {%- if ratingCount == 0-%}
+                              {%- assign ratingCount = product.metafields.spr.reviews | split: 'votes" content="' | last | split: '"' |first | plus: 0 -%}
+                           {%- endif -%}
+                           ({{ratingCount}})
+                        {%- elsif product.metafields.ryviu.reviews != blank -%}
+                           {%- assign kt_rv_count = product.metafields.ryviu.reviews | split: 'reviewCount" content="' | last | split: '"' |first | plus: 0 -%}
+                           ({{kt_rv_count}})
+                        {%- endif -%}
+                     {%- endif -%}
+                     </a></li>
+                  {%- endif -%}
+               {%- when 'html' -%}
+                  <li class="gecko_additional_tab_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#{{block.id}}" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}</a></li>
+               {%- when 'text' -%}
+                  <li class="gecko_additional_tab_tab{%- if forloop.first and on_active_first %} active{%- endif -%}"><a href="#{{block.id}}" class="cd f__16 tu f__mont chp ls__2">{{ block.settings.title }}</a></li>
+               {%- else -%}
+                   {%- assign ck_first = forloop.first -%}
+                  {%- assign block_title = block.settings.title -%}
+                  {%- for meta in product.metafields.additions -%}
+                     {%- if meta[0] == block_title -%}
+                        <li class="gecko_{{block_title | handleize}}_tab{%- if ck_first and on_active_first %} active{%- endif -%}"><a href="#{{block.id}}" class="cd f__16 tu f__mont chp ls__2">{{ block_title }}</a></li>
+                        {%- break -%}
+                     {%- endif -%}
+                  {%- endfor -%}
+            {%- endcase -%}
+         {%- endfor -%}
+        {%- comment -%} {%- for meta in product.metafields.additions -%}
+            <li class="{{meta[0] | handleize}}_tab{%- if section.blocks.size < 1 and forloop.first %} active{% endif %}">
+             <a class="cd f__16 tu f__mont chp ls__2" id="product_extra_tab_{{meta[0] | handleize}}" href="#tab{{meta[0] | handleize}}">{{meta[0]}}</a>
+            </li>
+         {%- endfor -%}{%- endcomment -%}
+      </ul>
+      <div class="tab-panels w_100">
+      {%- assign active_product = product -%}
+      {%- for block in section.blocks -%}
+         {% case block.type %}
+            {%- when 'description' -%}
+            <div class="sp-tabs-wrapper panel entry-content wc-tab sp-tab" id="tab-description">
+               <h2>{{ block.settings.title }}</h2>
+               <div class="shopify-Tabs-panel shopify-Tabs-panel--description panel entry-content">
+                  {%- include 'shortcode' load: product.description -%}
+               </div>
+            </div>
+            {%- when 'additional' -%}
+               {%- if active_product.has_only_default_variant == false -%}
+                  <div class="sp-tabs-wrapper panel entry-content wc-tab sp-tab" id="{{ block.id }}">
+                     <h2>{{ block.settings.title }}</h2>
+                     <div class="shopify-Tabs-panel shopify-Tabs-panel--additional_information panel entry-content">
+                        <table class="shop_attributes">
+                           <tbody>
+                              {% for option in active_product.options_with_values %}
+                              <tr class=">{{ option.name }}">
+                                 <th>{{ option.name }}</th>
+                                 <td><p>
+                                   {%- assign option_index = forloop.index -%}
+                                   {%- for value in option.values -%}
+                                   {%- assign variant_label_state = true -%}
+                                   {%- if active_product.options.size == 1 -%}
+                                   {%- unless active_product.variants[forloop.index0].available  -%}
+                                   {%- assign variant_label_state = false -%}
+                                   {%- endunless -%}
+                                   {%- endif -%} 
+                                     {{ value | capitalize }}{% unless forloop.last == true %}, {% endunless %}
+                                   {%- endfor -%}
+                                 </p></td>
+                              </tr>
+                              {% endfor %}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               {%- endif -%}
+            {%- when 'shipping' -%}
+               {%- assign estimateStartDate = settings.delivery_start -%}
+               {%- assign estimateEndDate = settings.delivery_end -%}
+               {%- if active_product.metafields.meta.estimateStartDate != blank -%}
+                 {%- assign estimateStartDate = active_product.metafields.meta.estimateStartDate | plus:0 -%}
+               {%- endif -%}
+               {%- if active_product.metafields.meta.estimateEndDate != blank -%}
+                  {%- assign estimateEndDate = active_product.metafields.meta.estimateEndDate | plus:0 -%}
+               {%- endif -%}
+               <div class="jas_user_ship panel entry-content wc-tab sp-tab" id="{{ block.id }}">
+                  <h2>{{ block.settings.title }}</h2>
+                  <div class="shopify-Tabs-panel shopify-Tabs-panel--additional_information panel entry-content">
+                     <table class="shop_attributes">
+                        <tbody>
+                          {%- if settings.shipping_text != blank and block.settings.title != blank -%}
+                           <tr class="shipping_user_header">
+                              <th>{% if block.settings.title != "" %}{{ block.settings.title }}{% else %}&nbsp;{% endif %}</th>
+                              <td><p>
+                                {% if settings.shipping_text != "" %}<span class="text_ship_fea">{{ settings.shipping_text }}&nbsp;</span>{% endif %}
+                              </p></td>
+                           </tr>
+                           {%- endif -%}
+                           {%- if settings.enable_delivery_option and active_product.available -%}
+                           <tr class="shipping_delivery_option">
+                              <th>{% if settings.delivery_text != "" %}{{ settings.delivery_text }}{% else %}&nbsp;{% endif %}</th>
+                              <td>
+                                    <p>{% if settings.delivery_text_1 != "" %}{{ settings.delivery_text_1 }}&nbsp;{% endif %}<span class="date_start_delivery" data-datestart="{{ estimateStartDate }}"></span> {{ settings.delivery_text_2 }} <span class="date_end_delivery" data-dateend="{{ estimateEndDate }}"></span></p>
+                                    {% if settings.delivery_info_text != "" %}<span class="sub-title">{{ settings.delivery_info_text }}</span>{% endif %}
+                              </td>
+                           </tr>
+                           {%- endif -%}
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            {%- when 'bundle' -%}
+               {%- if active_product.metafields.nitro_bundle.bundle -%}{%- assign acct_tab = true -%}
+                 <div class="panel entry-content wc-tab sp-tab" id="tab-bundle">
+                   <div class="shopify-Tabs-panel shopify-Tabs-panel--description panel entry-content">
+                   {%- include 'nitro-product-bundle' -%}
+                   </div>
+                 </div>
+           {%- endif -%}
+            {%- when 'review' -%}
+               {%- if settings.show_product_page_rating -%}
+               <div class="panel entry-content wc-tab sp-tab" id="{{ block.id }}">
+                  <h2>{{ block.settings.title }}</h2>
+                  <div class="shopify-Tabs-panel shopify-Tabs-panel--reviews panel entry-content">
+                     {%- if settings.app_review == '1' -%}
+                        <div id="shopify-product-reviews" data-id="{{active_product.id}}">{{ active_product.metafields.spr.reviews }}</div>
+                     {%- elsif settings.app_review == '2' -%}
+                        <div class="lt-block-reviews"><ryviu-widget handle="{{product.handle}}" title_product="{{product.title}}" total_meta="{{ product.metafields.ryviu.r_count }}" image_product="{{ product.featured_image.src | img_url: '800x' }}"></ryviu-widget></div>
+                    {%- elsif settings.app_review == '4' -%}
+                        <div id="looxReviews" data-product-id="{{product.id}}" >{{ product.metafields.loox.reviews }}</div>
+                    {%- else -%}
+                        <div id="shopify-ali-review" product-id="{{ product.id }}">{{ shop.metafields.review_collector.review_code }}</div>
+                     {%- endif -%}
+                  </div>
+               </div>
+               {%- endif -%}
+            {%- when 'html' -%}
+               <div class="panel entry-content wc-tab sp-tab tab_html" id="{{ block.id }}">
+                  <h2>{{ block.settings.title }}</h2>
+                  <div class="shopify-Tabs-panel shopify-Tabs-panel--reviews panel entry-content">{{block.settings.code}}</div>
+               </div>
+            {%- when 'text' -%}
+                  <div class="panel entry-content wc-tab sp-tab tab_text" id="{{ block.id }}">
+                     <h2>{{ block.settings.title }}</h2>
+                     <div class="shopify-Tabs-panel shopify-Tabs-panel--reviews panel entry-content"><div class="rte-setting">{{ block.settings.text }}</div></div>
+                  </div>
+               {%- else -%}
+                  {%- assign block_title = block.settings.title -%}
+                  {%- for meta in active_product.metafields.additions -%}
+                     {%- if meta[0] == block_title -%}
+                        <div class="panel entry-content wc-tab sp-tab tab_{{block_title | handleize}}" id="{{ block.id }}">
+                           <h2>{{ block_title }}</h2>
+                           <div class="shopify-Tabs-panel shopify-Tabs-panel--reviews panel entry-content">{{ meta[1] }}</div>
+                        </div>
+                        {%- break -%}
+                     {%- endif -%}
+                  {%- endfor -%}
+         {%- endcase -%}
+      {%- endfor -%}
+      </div>
+         {%- comment -%}{%- for meta in active_product.metafields.additions -%}
+          <div class="panel entry-content wc-tab sp-tab" id="tab{{meta[0] | handleize}}"><h2>{{meta[0]}}</h2><div class="shopify-Tabs-panel shopify-Tabs-panel--{{meta[0] | handleize}} panel entry-content">{{ meta[1] }}</div></div>
+         {%- endfor -%}{%- endcomment -%}
+   {%- else -%}{%- assign active_product = product -%}{%- assign on_active_first = section.settings.active_first -%}
+      <div class="{{section.settings.accordion_style}} nt_accordions_js w_100">
+         {%- for block in section.blocks -%}
+            {%- case block.type -%}
+               {%- when 'description' -%}
+                  <div class="description_tab sp-accordion{%- if forloop.first and on_active_first %} active first{%- endif -%}">
+                     <div class="heading">
+                        <a class="tab-heading db pr cd chp fwm" href="#tab-description">{{ block.settings.title }}</a>
+                     </div>
+                     <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="tab-description"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>{%- include 'shortcode' load: product.description -%}</div>
+                  </div>
+               {%- when 'additional' -%}
+                  {%- if active_product.has_only_default_variant == false -%}
+                     <div class="description_tab sp-accordion{%- if forloop.first and on_active_first %} active first{%- endif -%}">
+                        <div class="heading">
+                           <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}</a>
+                        </div>
+                        <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                           <table class="shop_attributes">
+                              <tbody>
+                                 {% for option in active_product.options_with_values %}
+                                 <tr class=">{{ option.name }}">
+                                    <th>{{ option.name }}</th>
+                                    <td><p>
+                                      {%- assign option_index = forloop.index -%}
+                                      {%- for value in option.values -%}
+                                      {%- assign variant_label_state = true -%}
+                                      {%- if active_product.options.size == 1 -%}
+                                      {%- unless active_product.variants[forloop.index0].available  -%}
+                                      {%- assign variant_label_state = false -%}
+                                      {%- endunless -%}
+                                      {%- endif -%} 
+                                        {{ value | capitalize }}{% unless forloop.last == true %}, {% endunless %}
+                                      {%- endfor -%}
+                                    </p></td>
+                                 </tr>
+                                 {% endfor %}
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  {%- endif -%}
+               {%- when 'shipping' -%}
+                  <div class="jas_user_ship shipping_tab sp-accordion{%- if forloop.first and on_active_first %} active first{%- endif -%}">
+                     <div class="heading">
+                        <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}</a>
+                     </div>
+                     {%- assign estimateStartDate = settings.delivery_start -%}
+                     {%- assign estimateEndDate = settings.delivery_end -%}
+                     {%- if active_product.metafields.meta.estimateStartDate != blank -%}
+                       {%- assign estimateStartDate = active_product.metafields.meta.estimateStartDate | plus:0 -%}
+                     {%- endif -%}
+                     {%- if active_product.metafields.meta.estimateEndDate != blank -%}
+                        {%- assign estimateEndDate = active_product.metafields.meta.estimateEndDate | plus:0 -%}
+                     {%- endif -%}
+                     <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                        <table class="shop_attributes">
+                          <tbody>
+                            {%- if settings.shipping_text != blank and block.settings.title != blank -%}
+                             <tr class="shipping_user_header">
+                                <th>{% if block.settings.title != "" %}{{ block.settings.title }}{% else %}&nbsp;{% endif %}</th>
+                                <td><p>
+                                  {% if settings.shipping_text != "" %}<span class="text_ship_fea">{{ settings.shipping_text }}&nbsp;</span>{% endif %}
+                                </p></td>
+                             </tr>
+                             {%- endif -%}
+                             {%- if settings.enable_delivery_option and active_product.available -%}
+                             <tr class="shipping_delivery_option">
+                                <th>{% if settings.delivery_text != "" %}{{ settings.delivery_text }}{% else %}&nbsp;{% endif %}</th>
+                                <td>
+                                      <p>{% if settings.delivery_text_1 != "" %}{{ settings.delivery_text_1 }}&nbsp;{% endif %}<span class="date_start_delivery" data-datestart="{{ estimateStartDate }}"></span> {{ settings.delivery_text_2 }} <span class="date_end_delivery" data-dateend="{{ estimateEndDate }}"></span></p>
+                                      {% if settings.delivery_info_text != "" %}<span class="sub-title">{{ settings.delivery_info_text }}</span>{% endif %}
+                                </td>
+                             </tr>
+                             {%- endif -%}
+                          </tbody>
+                       </table>
+                     </div>
+                  </div>
+               {%- when 'bundle' -%}
+                  {%- if active_product.metafields.nitro_bundle.bundle -%}{%- assign acct_tab = true -%}
+                     <div class="bundle_tab sp-accordion{%- if forloop.first and on_active_first %} active first{%- endif -%}">
+                        <div class="heading">
+                           <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}</a>
+                        </div>
+                        <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                           {%- include 'nitro-product-bundle' -%}
+                        </div>
+                     </div>
+                  {%- endif -%}
+               {%- when 'review' -%}
+                  {%- if settings.show_product_page_rating -%}
+                     <div class="reviews_tab sp-accordion{%- if forloop.first and on_active_first %} active first{%- endif -%}">
+                        <div class="heading"><a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}
+                           {%- if block.settings.use_count_reviews and none -%}
+                        {%- if settings.app_review == '1' and product.metafields.spr.reviews != blank -%}
+                           {%- assign ratingCount = product.metafields.spr.reviews | split: 'reviewCount" content="' | last | split: '"' |first | plus: 0 -%}
+                           {%- if ratingCount == 0-%}
+                              {%- assign ratingCount = product.metafields.spr.reviews | split: 'votes" content="' | last | split: '"' |first | plus: 0 -%}
+                           {%- endif -%}
+                           ({{ratingCount}})
+                        {%- elsif product.metafields.ryviu.reviews != blank -%}
+                           {%- assign kt_rv_count = product.metafields.ryviu.reviews | split: 'reviewCount" content="' | last | split: '"' |first | plus: 0 -%}
+                           ({{kt_rv_count}})
+                        {%- endif -%}
+                     {%- endif -%}
+                        </a></div>
+                        <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                             {%- if settings.app_review == '1' -%}
+                                <div id="shopify-product-reviews" data-id="{{active_product.id}}">{{ active_product.metafields.spr.reviews }}</div>
+                             {%- elsif settings.app_review == '2' -%}
+                                <div class="lt-block-reviews"><ryviu-widget handle="{{product.handle}}" title_product="{{product.title}}" total_meta="{{ product.metafields.ryviu.r_count }}" image_product="{{ product.featured_image.src | img_url: '800x' }}"></ryviu-widget></div>
+                             {%- elsif settings.app_review == '4' -%}
+                                <div id="looxReviews" data-product-id="{{product.id}}" >{{ product.metafields.loox.reviews }}</div>
+                             {%- else -%}
+                                <div id="shopify-ali-review" product-id="{{ product.id }}">{{ shop.metafields.review_collector.review_code }}</div>
+                             {%- endif -%}
+                        </div>
+                     </div>
+                  {%- endif -%}
+               {%- when 'html' -%}
+                  <div class="tab_html sp-accordion{%- if forloop.first and on_active_first %} active first{%- endif -%}">
+                     <div class="heading">
+                        <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}</a>
+                     </div>
+                     <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                        {{block.settings.code}}
+                     </div>
+                  </div>
+               {%- when 'text' -%}
+                  <div class="tab_text sp-accordion{%- if forloop.first and on_active_first %} active{%- endif -%}">
+                     <div class="heading">
+                        <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block.settings.title }}</a>
+                     </div>
+                     <div class="panel entry-content sp-accordion-content{%- if forloop.first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if forloop.first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                        {{ block.settings.text }}
+                     </div>
+                  </div>
+               {%- else -%}
+                  {%- assign ck_first = forloop.first -%}
+                  {%- assign block_title = block.settings.title -%}
+                  {%- for meta in active_product.metafields.additions -%}
+                     {%- if meta[0] == block_title -%}
+                        <div class="tab_{{block_title | handleize}} sp-accordion">
+                           <div class="heading">
+                              <a class="tab-heading db pr cd chp fwm" href="#{{block.id}}">{{ block_title }}</a>
+                           </div>
+                           <div class="panel entry-content sp-accordion-content{%- if ck_first == false or on_active_first == false %} sp_panel{%- endif -%}" id="{{block.id}}"{%- if ck_first == false or on_active_first == false %} style="display: none;"{%- endif -%}>
+                              {{ meta[1] }}
+                           </div>
+                        </div>
+                        {%- break -%}
+                     {%- endif -%}
+                  {%- endfor -%}
+            {%- endcase -%}
+         {%- endfor -%}
+      </div>
+   {%- endif -%}
+{%- else -%}
+<div class="text-center">{%- include 'no-blocks'-%}</div>   
+{%- endif -%}
+{%- schema -%}
+  {
+    "name": "Tab Descriptions",
+    "class": "shopify-tabs wc-tabs-wrapper col-12",
+    "settings": [
+      {
+        "type": "select",
+        "id": "tab_style",
+        "label": "Tabs style",
+        "info": "Only For Product Tab Description",
+        "default": "fill",
+        "options": [
+          {
+            "value": "fill",
+            "label": "Fill"
+          },
+          {
+            "value": "tabs",
+            "label": "Tabs"
+          },
+          {
+            "value": "pagination",
+            "label": "Pagination"
+          },
+          {
+            "value": "line-bottom",
+            "label": "Line-bottom"
+          },
+          {
+            "value": "line-grow",
+            "label": "Line-grow"
+          },
+          {
+            "value": "line",
+            "label": "Line"
+          },
+          {
+            "value": "box",
+            "label": "Box"
+          },
+          {
+            "value": "pills",
+            "label": "Pills"
+          },
+          {
+            "value": "outline",
+            "label": "Outline"
+          },
+          {
+            "value": "divided",
+            "label": "Divided"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "tab_align",
+        "label": "Tabs Align",
+        "info": "Only For Product Tab Description",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "use_vertical",
+        "label": "Use Tabs Vertical?",
+        "info": "Only For Product Tab Description",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "accordion_style",
+        "label": "Accordions style",
+        "info": "Only For Product Tab Accordions",
+        "default": "sp-accordions",
+        "options": [
+          {
+            "value": "sp-accordions",
+            "label": "Style 1"
+          },
+          {
+            "value": "sp-accordions_2",
+            "label": "Style 2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "active_first",
+        "label": "Enable first active?",
+        "info": "Only For Product Tab Accordions",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom Metafields (namespace: additions)"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "description",
+        "name": "Description",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Description"
+          }
+        ]
+      },
+      {
+        "type": "review",
+        "name": "Review",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Reviews"
+          }
+        ]
+      },
+      {
+        "type": "bundle",
+        "name": "Product Bundle",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Buy With Bundle"
+          }
+        ]
+      },
+      {
+        "type": "additional",
+        "name": "Additional Information",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Additional Information"
+          }
+        ]
+      },
+      {
+        "type": "shipping",
+        "name": "shipping Information",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Shipping"
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "Custom HTML",
+        "settings": [
+         {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Shipping & Delivery"
+          },
+          {
+            "type": "html",
+            "id": "code",
+            "label": "HTML"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Talk about your brand"
+            },
+            {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+            }
+         ]
+      },
+      {
+        "type": "meta",
+        "name": "metafields",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Meta Custom"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

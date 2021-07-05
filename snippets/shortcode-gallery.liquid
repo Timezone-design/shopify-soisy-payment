@@ -1,0 +1,79 @@
+{%- capture block_title -%}{%- include 'shortcode-render' render:'title' -%}{%- endcapture -%}
+{%- capture total -%}{%include 'shortcode-render' render:'total' default:'2' %}{%- endcapture -%}
+{%- assign total_num =  total | plus:0 -%}
+{%- capture space -%}{%- include 'shortcode-render' render:'space' -%}{%- endcapture -%}
+{%- capture layout -%}{%- include 'shortcode-render' render:'layout' -%}{%- endcapture -%}
+{%- capture design -%}{%- include 'shortcode-render' render:'design' -%}{%- endcapture -%}
+{%- if layout == 'carousel' -%}
+   {%- capture grid_columns -%}{%- include 'shortcode-render' render:'cols' -%}{%- endcapture -%}
+   {%- capture autoplay -%}{%- include 'shortcode-render' render:'autoplay' -%}{%- endcapture -%}
+   {%- capture autoplaySpeed -%}{%- include 'shortcode-render' render:'autoplaySpeed' -%}{%- endcapture -%}
+   {%- capture infinite -%}{%- include 'shortcode-render' render:'infinite' -%}{%- endcapture -%}
+   {%- capture arrows -%}{%- include 'shortcode-render' render:'arrows' -%}{%- endcapture -%}
+   {%- capture dots -%}{%- include 'shortcode-render' render:'dots' -%}{%- endcapture -%}
+   {%- capture t1024 -%}{%- include 'shortcode-render' render:'1024' -%}{%- endcapture -%}
+   {%- capture t600 -%}{%- include 'shortcode-render' render:'600' -%}{%- endcapture -%}
+   {%- capture t480 -%}{%- include 'shortcode-render' render:'480' -%}{%- endcapture -%}
+   {%- assign use_autoplay = false -%}
+   {%- assign use_loop = false -%}
+   {%- assign use_arrows = false -%}
+   {%- assign use_dots = false -%}
+   {%- if infinite == 'true' -%}{%- assign use_autoplay = true -%}{%- endif -%}
+   {%- if arrows == 'true' -%}{%- assign use_arrows = true -%}{%- endif -%}
+   {%- if dots == 'true' -%}{%- assign use_dots = true -%}{%- endif -%}
+   {%- if infinite == 'true' -%}{%- assign use_loop = true -%}{%- endif -%}
+{%- endif -%}
+{%- case layout -%}
+   {%- when 'default' -%}
+      {%- assign layout = "categories-style-default" -%}
+   {%- when 'masonry' -%}
+      {%- assign  layout = "categories-style-masonry categories-masonry" -%}
+   {%- when 'masonry_first' -%}
+      {%- assign layout = "categories-style-masonry-first categories-masonry" -%}
+   {%- when 'carousel' -%}
+      {%- assign layout = "categories-style-carousel" -%}
+{%- endcase -%}
+{%- if block_title != blank -%}
+<div class="mt__50 mb__40 nt_separator nt_separator_align_center nt_sep_width_100 nt_sep_double nt_sep_pos_align_center nt_sep_color_grey nt_custom_1479922305779 nt_separator-has-text">
+   <span class="nt_sep_holder nt_sep_holder_l"><span class="nt_sep_line"></span></span>
+   <h4>{{ block_title }}</h4>
+   <span class="nt_sep_holder nt_sep_holder_r"><span class="nt_sep_line"></span></span>
+</div>
+{%- endif -%}
+<div class="nt_custom_{{section.id}} nt-sc-wc-categories none_container">
+      <div class="SlickPhotoswipGallery row {{ layout }} categories-space-{{ space }}{%- if layout == 'carousel' %} nt-carousel{%- endif -%}"{%- if layout == 'carousel' %} data-slick='{"slidesToShow": {{ grid_columns }},"slidesToScroll": 1, "autoplay": {{use_autoplay}}, "autoplaySpeed": {{ autoplaySpeed | plus: 0 }},"rtl": {{ settings.use_rtl }}, "infinite": {{use_loop}}, "arrows": {{use_arrows}},"dots": {{use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ t1024 | plus: 0 }} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ t600 | plus: 0 }} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ t480 | plus: 0 }} }}]}'{%- endif -%}>
+        {%- for index in (1..total_num) -%}
+          {%- assign gird_current = 'gird' | append: index -%}
+          {%- assign md_current = 'md' | append: index -%}
+          {%- assign xs_current = 'xs' | append: index -%}
+          {%- assign src_current = 'src' | append: index -%}
+          {%- assign img_url_current = 'img_url' | append: index -%}
+          {%- assign current_aspectratio =  'aspectratio' | append: index -%}
+          {%- assign current_alt =  'alt' | append: index -%}
+          {%- assign current_url =  'url' | append: index -%}
+          {%- assign current_size =  'size' | append: index -%}
+          {%- capture gird -%}{%- include 'shortcode-render' render:gird_current -%}{%- endcapture -%}
+          {%- capture md -%}{%- include 'shortcode-render' render:md_current -%}{%- endcapture -%}
+          {%- capture xs -%}{%- include 'shortcode-render' render:xs_current -%}{%- endcapture -%}
+          {%- capture image -%}{%- include 'shortcode-render' render:src_current -%}{%- endcapture -%}
+          {%- capture img_url -%}{%- include 'shortcode-render' render:img_url_current -%}{%- endcapture -%}
+          {%- capture ratio -%}{%- include 'shortcode-render' render:current_aspectratio -%}{%- endcapture -%}
+          {%- capture alt -%}{%- include 'shortcode-render' render:current_alt -%}{%- endcapture -%}
+          {%- capture url -%}{%- include 'shortcode-render' render:current_url -%}{%- endcapture -%}
+          {%- capture size -%}{%- include 'shortcode-render' render:current_size -%}{%- endcapture -%}
+          {%- if image != blank -%}
+          <figure data-src="{{ url }}" data-size="{{size}}" class="col-lg-{{gird}} col-md-{{md}} col-{{xs}} {{ design }} nt-item-category spb_animate">
+            <div class="nt-cat-content">
+             <a href="javascript:void(0);" class="nt-cat-url">
+                 <div class="nt-cat-thumb">
+                   <img src="{{ image }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ ratio }}"  data-sizes="auto" class="lazyload w__100 attachment-shop_catalog size-shop_catalog" alt="{{alt}}" >
+                   <div class="nt-wrap-lazy"></div>
+                 </div>
+              </a>
+           </div>
+         </figure>
+         {%- endif -%}
+         {%- endfor -%}
+         {%- if layout != 'carousel' and layout != 'default' %}<div class="col-lg-3 nt-item-category hide"></div>{%- endif -%}
+      </div>
+</div>

@@ -1,0 +1,220 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = '12' -%}
+{%- assign class_xs = '12' -%}
+{%- assign image = section.settings.banner_img -%}
+{%- assign sett_title = section.settings.title -%}
+<h3 class="pr">Code:</h3>
+{%- capture html -%}
+  {%- assign index = 0 -%}
+  {%- for block in section.blocks -%}
+    {%- assign top_pin = block.settings.top_pin -%}
+    {%- assign left_pin = block.settings.left_pin -%}
+    {%- assign product = all_products[block.settings.product_id] -%}
+    {%- if product != blank and top_pin != blank and left_pin != blank -%}
+      {%- assign index = index | plus:1 -%}
+      top{{index}}="{{top_pin}}" left{{index}}="{{left_pin}}" product{{index}}="{{block.settings.product_id}}" bg{{index}}="{{block.settings.bg}}" w{{index}}="{{block.settings.width}}" h{{index}}="{{block.settings.height}}" title{{index}}="{{block.settings.title}}" design{{index}}="{{block.settings.product_design}}" tooltip{{index}}="{{block.settings.tooltip_design}}"
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if image != blank -%}
+{%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+{%- endif -%}
+<code>
+  <!-- Shortcode lookbook --> 
+[lookbook title="{{sett_title}}" total="{{index}}"{%- if image != blank %} src50="{{image | img_url: '50x50'}}" img_url="{{img_url}}" aspectratio="{{image.aspect_ratio}}" alt="{{ image.alt | default:shop.name }}"{%- endif %} {{html | strip_newlines | remove: "  "}} ]
+ <!-- / Shortcode lookbook -->
+</code>
+<h3 class="mt__30 pr">Demo:</h3>
+{%- if sett_title != blank -%}
+<div class="mt__50 mb__40 nt_separator nt_separator_align_center nt_sep_width_100 nt_sep_double nt_sep_pos_align_center nt_sep_color_grey nt_custom_1479922305779 nt_separator-has-text">
+   <span class="nt_sep_holder nt_sep_holder_l"><span class="nt_sep_line"></span></span>
+   <h4>{{ sett_title }}</h4>
+   <span class="nt_sep_holder nt_sep_holder_r"><span class="nt_sep_line"></span></span>
+</div>
+{%- endif -%}
+<div id="pin-{{section.id}}" class="pin__wrapper pr nt_custom_{{section.id}}">
+   <div class="pin__image">
+      {%- if image != blank -%}
+         {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+         <img 
+         src="{{ image | img_url: '50x50' }}"
+         data-src="{{ img_url }}"
+         data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" 
+         data-aspectratio="{{ image.aspect_ratio }}" 
+         data-sizes="auto"
+         class="db w_100 attachment-full size-full lazyload" alt="{{image.alt}}" >
+         <div class="nt-wrap-lazy"></div>
+      {%- else -%}
+         <img src="{{ 'no_bg_img.jpg' | asset_url }}" alt="no image">
+      {%- endif -%}
+   </div>
+   {%- for block in section.blocks -%}
+      {%- assign top_pin = block.settings.top_pin -%}
+      {%- assign left_pin = block.settings.left_pin -%}
+      {%- assign product = all_products[block.settings.product_id] -%}
+      {%- if product != blank and top_pin != blank and left_pin != blank -%}
+         <div class="{{block.settings.tooltip_design}} pa pin__type pin_{{block.id}} cusor_pointer" aria-label="{{product.title |strip_html}}" style="
+            background-color: {{block.settings.bg}};
+            width: {{block.settings.width}}px;
+            height: {{block.settings.height}}px;
+            top:{%- if top_pin == 100 -%}100%{%- else -%}{{top_pin}}.80886454085634%{%- endif -%};
+            left:{%- if left_pin == 100 -%}100%{%- else -%}{{left_pin}}.43785310734463%{%- endif -%}">
+            <span class="pin__title flex c_center alin_center">{{block.settings.title}}</span>
+            <a href="javascript void(0);" data-ajax="{{product.url}}/?view=quick_view_mpf" class="open-qv-mpf pin__title flex c_center alin_center">{{block.settings.title}}</a>
+            <div class="pin__popup pin__popup--{{block.settings.product_design}} pin__popup--fade">
+               <div class="popup__content popup__content--product">
+                  {%- include 'nt_product_loop' -%}
+               </div>
+            </div>
+         </div>
+      {%- endif -%}
+   {%- endfor -%}
+</div>
+{%- schema -%}
+  {
+    "name": "3. Products Lookbook",
+    "class": "nt-section type_nt_pin_lookbook spb_animate",
+    "max_blocks":20,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Lookbook"
+      },
+      {
+         "type": "image_picker",
+         "id": "banner_img",
+         "label": "Banner image"
+      }
+    ],
+    "blocks": [{
+       "type": "pin",
+       "name": "Pin",
+       "settings": [
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+           "default": "$59"
+         },
+         {
+           "type": "range",
+           "id": "top_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Top",
+           "default": 46
+         },
+         {
+           "type": "range",
+           "id": "left_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Left",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "width",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Width",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "height",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Height",
+           "default": 30
+         },
+         {
+           "type": "color",
+           "id": "bg",
+           "label": "__ Select Color",
+           "default": "#f76b6a"
+         },
+         {
+           "type": "select",
+           "id": "tooltip_design",
+           "options": [
+             {
+               "value": "tooltip_top",
+               "label": "Top"
+             },
+             {
+               "value": "tooltip_top_left",
+               "label": "Top Left"
+             },
+             {
+               "value": "tooltip_top_right",
+               "label": "Top Right"
+             },
+             {
+               "value": "tooltip_bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "tooltip_bottom_left",
+               "label": "Bottom Left"
+             },
+             {
+               "value": "tooltip_bottom_right",
+               "label": "Bottom Right"
+             },
+             {
+               "value": "tooltip_left",
+               "label": "Left"
+             },
+             {
+               "value": "tooltip_right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Tooltip",
+           "default": "tooltip_top"
+         },
+         {
+             "type":"product",
+             "id":"product_id",
+             "label":"Choose product"
+         },
+         {
+           "type": "select",
+           "id": "product_design",
+           "options": [
+             {
+               "value": "top",
+               "label": "Top"
+             },
+             {
+               "value": "bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Product",
+           "default": "top"
+         }
+       ]
+    }]
+  }
+{% endschema %}

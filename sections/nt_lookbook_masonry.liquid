@@ -1,0 +1,1888 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- include 'style_mp_section' -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = grid_columns -%}
+{%- assign class_xs = '12' -%}
+{%- assign check = true -%}
+<div id="pin-{{section.id}}" class="nt_custom_{{section.id}}{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+   <div class="row categories-style-masonry-first categories-masonry categories-space-{{ section.settings.space_categories }}">
+      <div class="col-lg-3 nt-item-category hide"></div>
+	   {%- for i in (1..15) -%}
+         {%- assign cat_id = 'cat_' | append:i -%}
+         {%- assign img_id = 'image_' | append:i -%}
+         {%- assign width = 'width_' | append:i -%}
+         {%- assign tablet_width = 'tablet_width_' | append:i -%}
+         {%- assign mobile_width = 'mobile_width_' | append:i -%}
+         {%- assign cat = section.settings[cat_id] -%}
+         {%- assign collection = collections[cat] -%}
+         {%- assign image = section.settings[img_id] -%}
+         {%- if image != blank -%}
+            {%- assign check = false -%}
+            <div id="pin-{{section.id}}-{{i}}" class="nt_cat_default nt-item-category col-lg-{{section.settings[width]}} col-md-{{section.settings[tablet_width]}} col-{{section.settings[mobile_width]}} pin__wrapper pr">
+               <div class="pin__image db pr oh">
+                     {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                     <img src="{{ image | img_url: '50x50' }}"
+                     data-src="{{ img_url }}"
+                     data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" 
+                     data-aspectratio="{{ image.aspect_ratio }}" 
+                     data-sizes="auto"
+                     class="db w_100 attachment-full size-full lazyload" alt="{{image.alt}}" >
+                     <div class="nt-wrap-lazy"></div>
+               </div>
+               {%- if collection != blank -%}
+               <div class="hover-wrap">
+                  <a href="{{collection.url}}" class="nt-cat-url-overlay"></a>
+                  <h3>{{ collection.title }}</h3>
+               </div>
+               {%- endif -%}
+               {%- for block in section.blocks -%}
+                  {%- assign banner_id = block.settings.banner_id | plus:0 -%}
+                  {%- assign top_pin = block.settings.top_pin -%}
+                  {%- assign left_pin = block.settings.left_pin -%}
+                  {%- assign product = all_products[block.settings.product_id] -%}
+                  {%- if banner_id == i and top_pin != blank and left_pin != blank and product != blank -%}
+                     <div class="{{block.settings.tooltip_design}} pa pin__type pin_{{block.id}} cusor_pointer" aria-label="{{product.title |strip_html}}" style="
+                        background-color: {{block.settings.bg}};
+                        width: {{block.settings.width}}px;
+                        height: {{block.settings.height}}px;
+                        top:{%- if top_pin == 100 -%}100%{%- else -%}{{top_pin}}.80886454085634%{%- endif -%};
+                        left:{%- if left_pin == 100 -%}100%{%- else -%}{{left_pin}}.43785310734463%{%- endif -%}">
+                        <span class="pin__title flex c_center alin_center">{{block.settings.title}}</span>
+                        <a href="javascript void(0);" data-ajax="{{product.url}}/?view=quick_view_mpf" class="open-qv-mpf pin__title flex c_center alin_center">{{block.settings.title}}</a>
+                        <div class="pin__popup pin__popup--{{block.settings.product_design}} pin__popup--fade">
+                           <div class="popup__content popup__content--product">
+                              {%- include 'nt_product_loop' -%}
+                           </div>
+                        </div>
+                     </div>
+                  {%- endif -%}
+               {%- endfor -%}
+            </div>
+         {%- endif -%}
+      {%- endfor-%}
+	</div>
+   {%- if check -%}{%- include 'no-blocks' -%}{%- endif -%}
+</div>
+{%- schema -%}
+  {
+    "name": "Products Lookbook Masonry",
+    "class": "nt-section nt_lookbook_masonry spb_animate",
+    "max_blocks":20,
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "select",
+        "id": "space_categories",
+        "options": [
+         {
+            "value": "30",
+            "label": "30"
+          },
+          {
+            "value": "20",
+            "label": "20"
+          },
+          {
+            "value": "10",
+            "label": "10"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          },
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "0",
+            "label": "0"
+          }
+        ],
+        "label": "Space between categories",
+        "default": "30"
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      },
+      {
+       "type": "header",
+       "content": "== Settings Collections"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #1"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_1",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_1",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_1",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_1",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_1",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #2"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_2",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_2",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_2",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_2",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_2",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #3"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_3",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_3",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_3",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_3",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_3",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #4"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_4",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_4",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_4",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_4",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_4",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #5"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_5",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_5",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_5",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_5",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_5",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #6"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_6",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_6",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_6",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_6",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_6",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #7"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_7",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_7",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_7",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_7",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_7",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #8"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_8",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_8",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_8",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_8",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_8",
+        "label": "Banner image"
+      },
+            {
+        "type": "paragraph",
+        "content": "___ Collection #9"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_9",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_9",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_9",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_9",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_9",
+        "label": "Banner image"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #10"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_10",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_10",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_10",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_10",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_10",
+        "label": "Banner image"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #11"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_11",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_11",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_11",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_11",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_11",
+        "label": "Banner image"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #12"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_12",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_12",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_12",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_12",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_12",
+        "label": "Banner image"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #13"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_13",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_13",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_13",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_13",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_13",
+        "label": "Banner image"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #14"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_14",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_14",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_14",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_14",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_14",
+        "label": "Banner image"
+      },
+      {
+        "type": "paragraph",
+        "content": "___ Collection #15"
+      },
+      {
+         "label": "Collection",
+         "id": "cat_15",
+         "type": "collection"
+       },
+      {
+        "type": "select",
+        "id": "width_15",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column width",
+        "default": "3"
+      },
+      {
+        "type": "select",
+        "id": "tablet_width_15",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column tablet width",
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "mobile_width_15",
+        "options": [
+         {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33.33333333%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "8",
+            "label": "66.66666667%"
+          },
+          {
+            "value": "12",
+            "label": "100%"
+          }
+        ],
+        "label": "== Select column mobile width",
+        "default": "6"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_15",
+        "label": "Banner image"
+      }
+    ],
+    "blocks": [{
+       "type": "pin",
+       "name": "Pin",
+       "settings": [
+         {
+           "type": "select",
+           "id": "banner_id",
+           "options": [
+             {
+               "value": "1",
+               "label": "#1"
+             },
+             {
+               "value": "2",
+               "label": "#2"
+             },
+             {
+               "value": "3",
+               "label": "#3"
+             },
+             {
+               "value": "4",
+               "label": "#4"
+             },
+             {
+               "value": "5",
+               "label": "#5"
+             },
+             {
+               "value": "6",
+               "label": "#6"
+             },
+             {
+               "value": "7",
+               "label": "#7"
+             },
+             {
+               "value": "8",
+               "label": "#8"
+             },
+             {
+               "value": "9",
+               "label": "#9"
+             },
+             {
+               "value": "10",
+               "label": "#10"
+             },
+             {
+               "value": "11",
+               "label": "#11"
+             },
+             {
+               "value": "12",
+               "label": "#12"
+             },
+             {
+               "value": "13",
+               "label": "#13"
+             },
+             {
+               "value": "14",
+               "label": "#14"
+             },
+             {
+               "value": "15",
+               "label": "#15"
+             }
+           ],
+           "label": "Collection ID",
+           "default": "1"
+         },
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+           "default": "$59"
+         },
+         {
+           "type": "range",
+           "id": "top_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Top",
+           "default": 46
+         },
+         {
+           "type": "range",
+           "id": "left_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Left",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "width",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Width",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "height",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Height",
+           "default": 30
+         },
+         {
+           "type": "color",
+           "id": "bg",
+           "label": "__ Select Color",
+           "default": "#f76b6a"
+         },
+         {
+           "type": "select",
+           "id": "tooltip_design",
+           "options": [
+             {
+               "value": "tooltip_top",
+               "label": "Top"
+             },
+             {
+               "value": "tooltip_top_left",
+               "label": "Top Left"
+             },
+             {
+               "value": "tooltip_top_right",
+               "label": "Top Right"
+             },
+             {
+               "value": "tooltip_bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "tooltip_bottom_left",
+               "label": "Bottom Left"
+             },
+             {
+               "value": "tooltip_bottom_right",
+               "label": "Bottom Right"
+             },
+             {
+               "value": "tooltip_left",
+               "label": "Left"
+             },
+             {
+               "value": "tooltip_right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Tooltip",
+           "default": "tooltip_top"
+         },
+         {
+             "type":"product",
+             "id":"product_id",
+             "label":"Choose product"
+         },
+         {
+           "type": "select",
+           "id": "product_design",
+           "options": [
+             {
+               "value": "top",
+               "label": "Top"
+             },
+             {
+               "value": "bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Product",
+           "default": "top"
+         }
+       ]
+    }],
+    "presets": [
+      {
+        "name": "Lookbook Masonry",
+        "category": "2. Lookbook",
+        "blocks": [
+           {
+             "type": "pin"
+           }
+         ]
+      }
+    ]
+  }
+{% endschema %}

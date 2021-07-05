@@ -1,0 +1,74 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = '12' -%}
+{%- assign class_xs = '12' -%}
+{%- capture image -%}{%- include 'shortcode-render' render:'src50' -%}{%- endcapture -%}
+{%- capture img_url -%}{%- include 'shortcode-render' render:'img_url' -%}{%- endcapture -%}
+{%- capture ratio -%}{%- include 'shortcode-render' render:'aspectratio' -%}{%- endcapture -%}
+{%- capture block_title -%}{%- include 'shortcode-render' render:'title' -%}{%- endcapture -%}
+{%- capture alt -%}{%- include 'shortcode-render' render:'alt' -%}{%- endcapture -%}
+{%- capture total -%}{%include 'shortcode-render' render:'total' default:'2' %}{%- endcapture -%}
+{%- assign total_num =  total | plus:0 -%}
+{%- assign settings_pr_img_size = false -%}
+{%- if block_title != blank -%}
+<div class="mt__50 mb__40 nt_separator nt_separator_align_center nt_sep_width_100 nt_sep_double nt_sep_pos_align_center nt_sep_color_grey nt_custom_1479922305779 nt_separator-has-text">
+   <span class="nt_sep_holder nt_sep_holder_l"><span class="nt_sep_line"></span></span>
+   <h4>{{ block_title }}</h4>
+   <span class="nt_sep_holder nt_sep_holder_r"><span class="nt_sep_line"></span></span>
+</div>
+{%- endif -%}
+<div class="nt-section type_nt_pin_lookbook spb_animate">
+  <div id="pin-{{section.id}}" class="pin__wrapper pr nt_custom_{{section.id}}">
+     <div class="pin__image">
+        {%- if image != blank -%}
+           <img 
+           src="{{ image }}"
+           data-src="{{ img_url }}"
+           data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" 
+           data-aspectratio="{{ ratio }}" 
+           data-sizes="auto"
+           class="db w_100 attachment-full size-full lazyload" alt="{{alt}}" >
+           <div class="nt-wrap-lazy"></div>
+        {%- else -%}
+           <img src="{{ 'no_bg_img.jpg' | asset_url }}" alt="no image">
+        {%- endif -%}
+     </div>
+     {%- for index in (1..total_num) -%}
+        {%- assign top_current = 'top' | append: index -%}
+        {%- assign left_current = 'left' | append: index -%}
+        {%- assign product_current = 'product' | append: index -%}
+        {%- capture handle_pr -%}{%- include 'shortcode-render' render:product_current -%}{%- endcapture -%}
+        {%- capture top_pin -%}{%- include 'shortcode-render' render:top_current -%}{%- endcapture -%}
+        {%- capture left_pin -%}{%- include 'shortcode-render' render:left_current -%}{%- endcapture -%}
+        {%- assign product = all_products[handle_pr] -%}
+        {%- if product != blank and top_pin != blank and left_pin != blank -%}
+          {%- assign bg_current = 'bg' | append: index -%}
+          {%- assign w_current = 'w' | append: index -%}
+          {%- assign h_current = 'h' | append: index -%}
+          {%- assign title_current = 'title' | append: index -%}
+          {%- assign design_current = 'design' | append: index -%}
+          {%- assign tooltip_current = 'tooltip' | append: index -%}
+          {%- capture bg -%}{%- include 'shortcode-render' render:bg_current -%}{%- endcapture -%}
+          {%- capture w -%}{%- include 'shortcode-render' render:w_current -%}{%- endcapture -%}
+          {%- capture h -%}{%- include 'shortcode-render' render:w_current -%}{%- endcapture -%}
+          {%- capture title -%}{%- include 'shortcode-render' render:title_current -%}{%- endcapture -%}
+          {%- capture design -%}{%- include 'shortcode-render' render:design_current -%}{%- endcapture -%}
+          {%- capture tooltip -%}{%- include 'shortcode-render' render:tooltip_current -%}{%- endcapture -%}
+           <div class="{{tooltip}} pa pin__type pin_{{block.id}} cusor_pointer" aria-label="{{product.title |strip_html}}" style="
+              background-color: {{bg}};
+              width: {{w}}px;
+              height: {{h}}px;
+              top:{%- if top_pin == 100 -%}100%{%- else -%}{{top_pin}}.80886454085634%{%- endif -%};
+              left:{%- if left_pin == 100 -%}100%{%- else -%}{{left_pin}}.43785310734463%{%- endif -%}">
+              <span class="pin__title flex c_center alin_center">{{title}}</span>
+              <a href="javascript void(0);" data-ajax="{{product.url}}/?view=quick_view_mpf" class="open-qv-mpf pin__title flex c_center alin_center">{{title}}</a>
+              <div class="pin__popup pin__popup--{{design}} pin__popup--fade">
+                 <div class="popup__content popup__content--product">
+                    {%- include 'nt_product_loop' -%}
+                 </div>
+              </div>
+           </div>
+        {%- endif -%}
+     {%- endfor -%}
+  </div>
+</div>

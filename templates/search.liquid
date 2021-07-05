@@ -1,0 +1,120 @@
+{%- assign limit = settings.products_per_page_search | plus:0 -%}
+{%- assign grid_columns = settings.grid_column_search -%}
+{%- assign class_md = '4' -%}
+{%- assign class_xs = settings.grid_column_mb_search -%}
+{%- assign settings_pr_img_size = settings.use_eq_height_search -%}
+{%- assign show_vendor = settings.show_vendor_search -%}
+{%- assign shop_sidebar = settings.shop_sidebar -%}
+{%- assign coll_style = settings.search_style -%}
+{%- assign use_pagination = settings.use_pagination_search -%}
+{%- assign section_settings_countdown = settings.sale_countdown_search -%}
+{%- assign countdown_timer_style = settings.search_countdown_style -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- assign class_gl = '12' -%}
+{%- assign image = settings.search_bg_image -%}
+{%- assign color_scheme = settings.search_color -%}
+{%- assign no_sidebar = true -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.search_overlay}} pr oh{%- if settings.use_parallax_search %} ntparallax{%- endif %}{%- if image %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif %}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image %}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         {%- if search.performed == false -%}
+           <h1 class="page-title">{{ 'general.search.title' | t }}</h1>
+        {%- else -%}
+           <h1 class="page-title">{{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}</h1>
+        {%- endif -%}
+      </div>
+   </div>
+</div>
+<div class="container container_cat mb__60 grid_mobile_{{class_xs}}">
+  {%- paginate search.results by limit -%}
+  <div class="row">
+    <div class="shop-content-area col-12 flex c_between alin_center">
+      {%- if settings.shop_show_per_page -%}
+      <div class="result-count-order dib nt_hidden-xs{%- if search.results_count == 0 %} op_0{%- endif -%}">
+        <div class="sp_result_html tu dib fs__12">{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = search.results.size | plus:paginate.current_offset -%}{%- if current_tags == blank -%}{%- if limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{{ 'collections.general.results_with_count' | t:count:current_offset,curent_count:current_product_size,pr_count:search.results_count }}{%- endif -%}{%- elsif limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = search.results.size | plus:paginate.current_offset -%}{{ 'collections.general.results_with_count' | t:count:current_offset,curent_count:current_product_size,pr_count:paginate.items }}{%- endif -%}</div>
+      </div>
+      {%- endif %}
+      {%- if settings.show_column_switch -%}
+      <div class="sp-col-switch flex">
+        <a rel="nofollow" href="javascript:void(0);" class="one" data-col="12"><div class="icon_columnnt"></div></a>
+        <a rel="nofollow" href="javascript:void(0);" class="two{%- if grid_columns == '6' %} active{%- endif -%}" data-col="6"><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+        <a rel="nofollow" href="javascript:void(0);" class="nt_hidden-xs three{%- if grid_columns == '4' %} active{%- endif -%}" data-col="4"><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+        <a rel="nofollow" href="javascript:void(0);" class="hidden-sm four{%- if grid_columns == '3' %} active{%- endif -%}" data-col="3"><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+          {%- if no_sidebar -%}
+          <a rel="nofollow" href="javascript:void(0);" class="hidden-sm five{%- if grid_columns == '15' %} active{%- endif -%}" data-col="15"><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+          {%- endif -%}
+      </div>
+      {%- endif -%}
+    </div>
+    <div class="col-12"><div class="hr shop_separator"></div></div>
+  </div>
+  <div class="nt-shop-loader"></div>
+    <div class="row">
+      <div class="col-lg-{{class_gl}} col-12">
+        <div class="yit-wcan-container">
+          {%- if search.performed and search.results_count > 0 -%}
+          <div class="products nt-products-holder row {{pr_style}} {{coll_style}} {{settings.image_size_search}} nt-masonry {{settings.image_ratio_search}} position_{{settings.image_position_search}}{%- if settings_pr_img_size and search.results_count > 0 %} equal-nt{%- endif -%}" data-masonry='{"selector":".product","layoutMode":"{%- if coll_style == 'fitRows' -%}fitRows{%- else -%}masonry{%- endif -%}"{%- if coll_style == 'metro' -%},"columnWidth":".product"{%- endif -%}}'>
+             {%- for item in search.results -%}
+               {%- if item.object_type == 'product' -%}
+                {%- include 'nt_product_loop',product:item -%}
+               {%- elsif item.object_type == 'article' -%}
+                  {%- assign article = item -%}
+                  <div class="blog_item style_3 col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item grid nt-grid-item hover-fade spb_animate">
+                     <article class="post-{{article.id}}">
+                        {%- if settings_pr_img_size and article.image -%}
+                           <div class="article__grid-image-wrapper pr oh product-img hover-{{settings.post_hover_effect}}">
+                              <a class="db pr nt-pr-image-link nt_img_ratio lazyload nt_bg_lz" href="{{ article.url }}" data-bgset="{%- include 'bgset', image: article.image -%}" data-sizes="auto" data-parent-fit="cover"></a>
+                           </div>
+                        {%- elsif article.image -%}
+                           {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                           <div class="article__grid-image-wrapper product-img pr oh hover-{{settings.post_hover_effect}}">
+                              <a class="db pr" href="{{ article.url }}">
+                                <img class="article__grid-image w_100 lazyload" src="{{ article.image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ article.image.aspect_ratio }}" data-sizes="auto" alt="{{ article.image.alt | escape }}">
+                                <div class="nt-wrap-lazy"></div>
+                              </a>
+                           </div>
+                        {%- endif -%}
+                        <div class="post-info">
+                            {%- if settings.blog_show_author -%}<span class="post-author mr__5">{{ 'blogs.article.by' | t }} <span class="cd">{{ article.author }}</span></span>{%- endif -%}{%- if settings.blog_show_date -%}<span class="post-time">{{ 'blogs.article.on' | t }} <span class="cd">{{ article.published_at | time_tag: format: 'month_day_year' }}</span></span>{%- endif -%}
+                           <h5 class="blog_title fwb mb__10"><a href="{{ article.url }}">{{ article.title }}</a></h5>
+                           {%- if settings.article_excerpt and article.excerpt.size > 0 -%}
+                               <div class="post-content mb__10">{{ article.excerpt | strip_html }}</div>
+                           {%- elsif settings.article_excerpt -%}
+                               <div class="post-content mb__10">{{ article.content | strip_html | truncatewords: 15, " […]" }}</div>
+                           {%- endif -%}
+                           {%- if settings.blog_show_read_more -%}
+                              <div class="post-action mt__10">
+                                 {%- if settings.blog_show_read_more -%}<a href="{{ article.url }}" class="{{before_block}} post-read-more">{{ 'blogs.article.read_more' | t }} <i class="icon-arrow-right icons ml__5"></i></a>{%- endif -%}
+                              </div>
+                           {%- endif -%}
+                        </div>
+                     </article>
+                  </div>
+                 {%- else -%}
+                 <div class="col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item grid nt-grid-item hover-fade spb_animate">
+                     <div class="grid-search__page-link nasa-content-group product-info-wrap">
+                        <h3 class="name pr fs__14 fwb"><a class="cd chp" href="{{ item.url }}">{{ item.title }}</a></h3>
+                        <p class="mt__5 dib">{{ item.content | strip_html | truncatewords: 40, " […]" }}</p>
+                     </div>
+                  </div>
+               {%- endif -%}
+             {%- endfor -%}
+          </div>
+          {%- else -%}
+          <p class="shopify-info">{{ 'collections.general.no_matches' | t }}</p>
+          {%- endif -%}
+          {%- if paginate.pages > 1 -%}
+          <div class="products-footer tc">
+              {%- if use_pagination == 'more-btn-infinite' or use_pagination == 'more-btn' -%}
+              <a href="{{ paginate.next.url }}&view=search_inajax{{settings.grid_column}}" class="pr tu fwb ls__2 nt-products-load-more{%- if use_pagination == 'more-btn-infinite' %} load-on-scroll{%- endif -%}"><span class="load-label">{{ 'products.grid_items.load_more' | t }}</span><span class="load-finished dn">{{ 'products.grid_items.load_finished' | t }}</span><span class="loading-label flex pa">{{ 'products.grid_items.loading' | t }}</span></a>
+              {%- else -%}
+              {%- include 'pagination',class_ajax:'nt-pagination-ajax' -%}
+              {%- endif -%}
+          </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endpaginate -%} 
+</div>

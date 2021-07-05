@@ -1,0 +1,43 @@
+<div id="snow"></div>
+<style type="text/css">
+body {position: relative;}
+#snow {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  background-color: #0000000d;
+  background-image: url({{ 'snow.png' | asset_url }}), url({{ 'snow1.png' | asset_url }}), url({{ 'snow2.png' | asset_url }});
+  background-repeat: repeat;
+  z-index: 1;
+  pointer-events: none;
+  -moz-animation: snow 10s linear infinite;
+  -webkit-animation: snow 10s linear infinite;
+  animation: snow 10s linear infinite;
+}
+@-moz-keyframes snow {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  100% {
+    background-position: 500px 3000px, 0 400px, 0 300px;
+  }
+}
+@-webkit-keyframes snow {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  100% {
+    background-position: 500px 3000px, 0 400px, 0 300px;
+  }
+}
+@keyframes snow {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  100% {
+    background-position: 500px 3000px, 0 400px, 0 300px;
+  }
+}
+  </style>

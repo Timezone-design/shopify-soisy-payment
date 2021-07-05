@@ -1,0 +1,31 @@
+{%- assign data_time = nt_count_down -%}
+{%- assign bl_data_time = false -%}
+{%- if nt_count_down contains ',' -%}
+  {%- comment -%} 2018/01/19,2018/02/15,2018/03/20 
+   int : 31/12/1991 -> 19911231
+  2018/02/05 17:34:56 {%- endcomment -%}
+  {%- assign arr_user_countdown = nt_count_down | split:"," -%}
+  {%- assign current_times = 'now' | date: "%Y%m%d" | times: 1 -%}
+  {%- for t in arr_user_countdown -%}
+        {%- assign t_r = t | replace: ' /', '' | replace: '/ ', '' | replace: ' / ', '' | remove: "/" | times: 1 -%}
+        {%- if t_r > current_times -%}
+            {%- assign data_time = t -%}
+            {%- assign bl_data_time = false -%}
+            {%- break -%}
+        {%- else -%}
+            {%- assign bl_data_time = true -%}
+        {%- endif -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- assign current_times = 'now' | date: "%Y%m%d" | times: 1 -%}
+  {%- assign arr_user_countdown = user_countdown | split:" " | first -%}
+  {%- assign t_r = arr_user_countdown | replace: ' /', '' | replace: '/ ', '' | replace: ' / ', '' | remove: "/" | times: 1 -%}
+  {%- if t_r >= current_times -%}
+      {%- assign bl_data_time = false -%}
+  {%- else -%}
+      {%- assign bl_data_time = true -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if bl_data_time == false -%}
+    <div class="countdown-time-simple tc pa {{ countdown_timer_style }}"><h5 class="mg__0 dib cw pr nt-z-index_44 fs__13 tu">{{ 'products.grid_items.offer_end' | t }}</h5><div class="dib nt-countdown-simple pr nt-z-index_44 {{ countdown_timer_style }}" data-time="{{ data_time }}"></div></div>
+{%- endif -%}

@@ -1,0 +1,103 @@
+{%- layout none -%}
+{%- include 'gecko_check_variant',quick_shop:true -%}
+
+{%- assign no_sold_out = product.available -%}
+{%- if no_sold_out -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+
+{%- if settings.pr_curent == '2' -%}{%- assign current_variant = product.selected_variant |default: product.variants.first -%}
+    {%- if current_variant.available == false and remove_soldout and no_sold_out -%}{%- assign current_variant = product.first_available_variant -%}{%- endif -%}
+{%- else -%}{%- assign current_variant = product.selected_or_first_available_variant -%}{%- endif -%}
+
+{%- assign select_quick = 'nt_select_quick' | append:product.id -%}
+{%- assign input_class = 'qs' | append:product.id -%}
+{%- assign remove_unavailable = true -%}
+{%- include 'gecko_check_variant',quick_shop:true -%}
+<div id="callBackVariant_quick_{{product.id}}" class="nt_{{current_variant.option1 | handleize}} nt1_{{current_variant.option2 | handleize}} nt2_{{current_variant.option3 | handleize}}">
+   {%- capture "form_classes" -%}variations_form_qs variations_form_qs{{product.id}} product-form nt_cart{%- endcapture -%}
+    {%- capture "form_id" -%}cart-form-quick-{{product.id}}{%- endcapture -%}
+   {%- form 'product', product, class:form_classes, id:form_id -%}
+    <select name="id" id="product-select-{{product.id}}" class="product-form__variants hide hidden">
+      {%- for variant in product.variants -%}
+        <option{% if variant.id == current_variant.id %} selected="selected"{% endif %}{% if variant.available == false and remove_soldout %} disabled="disabled"{% endif %} value="{{ variant.id }}" class="nt_{{variant.option1 | handleize }} nt1_{{variant.option2 | handleize }} nt2_{{variant.option3 | handleize }}">{{ variant.title | handle}}</option>
+      {%- endfor -%}
+    </select>
+    {%- include settings.swatch_design_quickshop,select_id:select_quick,class_input:input_class -%}
+    <div class="shopify-variation-price price_varies mb__20 entry-summary">
+       
+      {%- assign link_size = linklists[product.handle].links.size -%}
+      {%- if link_size == 0 and current_variant.unit_price_measurement -%}
+         <div class="qs_unit_price">
+           <span class="price productPrice" id="productPrice_quick-{{product.id}}">
+             {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+             {%- else -%}
+             <span id="productPrice_quick-{{product.id}}">{{ current_variant.price | money }}</span> 
+             {%- endif -%}
+           </span>
+            {%- capture unit_price_base_unit -%}
+              <span class="unit_base">
+                  {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                    {{- current_variant.unit_price_measurement.reference_value -}}
+                  {%- endif -%}
+                  {{ current_variant.unit_price_measurement.reference_unit -}}
+              </span>
+            {%- endcapture -%}
+            <div class="pr_unit_price"><span class="unit_price">{{ current_variant.unit_price | money }}</span><span>/</span>{{- unit_price_base_unit -}}</div>
+         </div>
+      {%- else -%}
+         <span class="price productPrice" id="productPrice_quick-{{product.id}}">
+           {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+           {%- else -%}
+           <span id="productPrice_quick-{{product.id}}">{{ current_variant.price | money }}</span> 
+           {%- endif -%}
+         </span>
+      {%- endif -%}
+              
+     </div>
+    <div class="single_variation_wrap">
+       <div id="shopify_quantity_quick_{{product.id}}" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+         <input type="button" value="-" class="minus">
+         <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+         <input type="button" value="+" class="plus">
+       </div>
+       <p class="stock out-of-stock mg__0 " id="nt_outstock_qs_{{product.id}}" style="display: none">{{ 'products.product.outofstock' | t }}</p>
+       {%- if check_external -%}
+       <a href="{{ check }}" id="shopify_add_to_cart_quick_{{product.id}}" rel="nofollow" class="shopify_add_to_cart add_to_cart_button single_add_to_cart_button button btn_external">{{ product.metafields.external | first | first }}</a>
+       {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+       <button type="submit"{% if settings.pr_curent == '1' and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart_quick_{{product.id}}" class="shopify_add_to_cart add_to_cart_button btn--loader ajax_form_cart single_add_to_cart_button button"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+       {%- else -%}
+       <button type="submit"{% if settings.pr_curent == '1' and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart_quick_{{product.id}}" class="shopify_add_to_cart add_to_cart_button btn--loader ajax_form_cart single_add_to_cart_button button"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+       {%- endif -%}   
+        {%- if settings.enable_payment_button_qs -%}
+          {{ form | payment_button }}
+        {%- endif -%} 
+     </div>
+   {%- endform -%}
+    {%- if product.has_only_default_variant == false and product.variants.size > 1 -%}
+     <script type="application/json" id="ProductJson-NTQS{{product.id}}">
+     {%- assign remove_unavailable = true -%}
+     {%- if product.available -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+     {%- include 'arr_pr' -%}
+     {{array | strip_newlines | remove:"  " | replace: ',]', ']' }}
+    </script>
+    <script type="application/json" id="ProductJson-templateQS{{product.id}}">
+     {%- include 'json_arr' -%}
+    {{ json_arr | strip_newlines | remove:"  "}}
+    </script>
+    <script type="text/javascript">
+     (function($) {
+       "use strict";
+          var Ntproduct = JSON.parse(document.getElementById('ProductJson-NTQS{{product.id}}').innerHTML),
+            product = JSON.parse(document.getElementById('ProductJson-templateQS{{product.id}}').innerHTML),
+            IdSelect = '#product-select-{{product.id}}',
+            NtId = '#nt_select_quick{{product.id}}_',
+            selector = '#cart-form-quick-{{product.id}}',
+            callBackVariant = '#callBackVariant_quick_{{product.id}}',
+            prefix='_qs_{{product.id}}';
+             $('#nt_select_quick{{product.id}}_1 .is-selected-none').addClass('is-selected').removeClass('is-selected-none');
+             $('#nt_select_quick{{product.id}}_2 .is-selected-none').addClass('is-selected').removeClass('is-selected-none');
+          elessiShopifyPre.Ntproduct_switch('.variations_form_qs{{product.id}}',Ntproduct,product,selector,IdSelect,NtId,callBackVariant,prefix);
+          $('#nt_select_quick{{product.id}}_0 .is-selected-none').click();
+       }(jQuery));
+    </script>
+    {%- endif -%}
+</div>

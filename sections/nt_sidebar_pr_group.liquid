@@ -1,0 +1,162 @@
+{%- include 'style_mp_section' -%}
+{%- assign image_size = '117x' -%}
+<div class="row nt_custom_{{section.id}}">
+  <div class="col-12 mt__30 widget widget_products clearfix widget_products__{{ section.id }}">
+    <h4 class="widget-title mb__30">{{ section.settings.title }}</h4>
+    {%- if section.settings.collection == blank -%}
+    <p class="mg__0 mb__30">{{ 'homepage.onboarding.no_content' | t }}</p>
+    {%- else -%}
+    <ul class="product_list_widget">
+      {%- for product in collections[section.settings.collection].products limit:section.settings.featured_product_limit_all -%}
+         {%- assign on_sale = false -%}
+         {%- if product.compare_at_price_min > product.price_min -%}
+           {%- assign on_sale = true -%}
+         {%- endif -%}
+         {%- assign c = section.settings.collection -%}
+         <li>
+            <a href="{{product.url | within: collection}}" title="{{ product.title }}">
+               {%- assign image_0 = product.images[0] -%}
+            {%- if image_0 != blank -%}
+            <img src="{{ image_0 | img_url: image_size }}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">    
+            {%- endif -%}
+            </a>
+            <div class="price db mt__10">
+               <div class="product-title"><a href="{{product.url | within: collection}}">{{ product.title }}</a></div>
+               <span class="price db mt__5">
+               {%- if product.price_varies -%}
+               {{ product.price_min | money }}–{{ product.price_max | money }}
+               {%- elsif on_sale -%}<ins>{{ product.price | money }}</ins> <del>{{ product.compare_at_price  | money }}</del>
+               {%- else -%}
+               {{ product.price | money }}
+               {%- endif -%}
+               </span>
+            </div>
+         </li>
+      {%- endfor -%}
+    </ul>
+    {%- endif -%}
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Sidebar Product Group",
+    "class": "nt-section nt_sidebar_pr_group nt_product_group",
+    "settings": [
+     {
+      "type":"text",
+      "id":"title",
+      "label":"Title",
+      "default":"Sale Products"
+      },
+      {
+       "type": "collection",
+       "id": "collection",
+       "label": "Collection to use"
+     },
+      {
+       "type": "text",
+       "id": "featured_product_limit_all",
+       "label": "Number of products to show",
+       "default": "3"
+     },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Sidebar Collection Group",
+        "category": "9. Layout"
+      }
+    ]
+  }
+{% endschema %}

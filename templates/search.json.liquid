@@ -1,0 +1,23 @@
+{% layout none %}
+
+{% capture output %}
+  {% paginate search.results by 10 %}
+    {% for result in search.results %}
+      {% if result.object_type == 'product' %}
+        {% assign resultURL = result.url %}
+        {% assign thumbURL = result.images[0] | product_img_url: '1024x1024' %}
+
+        { "value":"{% render 'json_cleanup' with result.title %}",
+          "label":"{% render 'json_cleanup' with result.title %}",
+          "url":"{% render 'json_cleanup' with resultURL %}",
+          "thumb":"{% render 'json_cleanup' with thumbURL %}",
+          "id":{{result.id}},
+          "price":"{% if result.price_varies %}from{% endif %} {{ result.price_min | money }}"
+          {% if result.compare_at_price_min > result.price_min %},"compare_at_price":"{{ result.compare_at_price_min | money }}"{% endif %}
+        }{% unless forloop.last %},{% endunless %}
+      {% endif %}
+    {% endfor %}
+  {% endpaginate %}
+{% endcapture %}
+
+{{ output | strip_newlines | prepend: '[' | append: ']' }}

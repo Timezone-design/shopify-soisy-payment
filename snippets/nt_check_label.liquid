@@ -1,0 +1,18 @@
+{%- assign pr_tags = product.tags | json | downcase -%}
+{%- assign on_sale = false -%}
+{%- if current_variant.compare_at_price > current_variant.price -%}
+   {%- unless pr_tags contains "notsale" -%}{%- assign on_sale = true -%}{%-endunless-%}
+{%- endif -%}
+{%- assign sold_out = true -%}
+{%- if product.available -%}{%- assign sold_out = false -%}{%- endif -%}
+{%- assign hot = false -%}
+{%- if pr_tags contains "jas_hot" -%}{%- assign hot = true -%}{%- endif -%}
+{%-assign new_label = false -%}
+{%-unless settings.use_new_label == false or pr_tags contains "notnew" -%}
+  {%- assign dateStart = product.created_at | date: '%s' -%}
+  {%- assign nowTimestamp = 'now' | date: '%s' -%}
+  {%- assign diffSeconds = nowTimestamp | minus: dateStart -%}
+  {%- assign diffDays = diffSeconds | divided_by: 3600 | divided_by: 24 -%}
+  {%- assign new_day_int = settings.new_day_added | default: 10 -%}
+  {%- if diffDays <= new_day_int -%}{%-assign new_label = true -%}{%-endif-%}
+{%-endunless-%}

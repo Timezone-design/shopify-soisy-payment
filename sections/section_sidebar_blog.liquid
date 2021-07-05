@@ -1,0 +1,530 @@
+<h3 class="mg__0 tu ls__2 tr fwb close-filter nt-z-index_44 pr oh"><span class="fs__13 pr cusor_pointer">{{ 'collections.filters.close' | t }}<i class="pe-7s-close pa fs__30"></i></span></h3>
+<div class="filter-content">
+{%- if section.blocks.size > 0 -%}
+	{%- for block in section.blocks -%}
+	   {%- case block.type -%}
+         {%- when 'author' -%}
+         <aside class="widget widget_author mb__30 tc">
+            {%- if block.settings.avatar != blank  -%}
+            <img width="150" height="150" src="{{ block.settings.avatar | img_url: '150x150', crop: 'top' }}" srcset="{{ block.settings.avatar | img_url: '150x150', crop: 'top' }} 1x, {{ block.settings.avatar | img_url: '150x150', crop: 'top', scale: 2 }} 2x" class="w_100 br__50" alt="{{block.settings.avatar.alt | default:'avatar' }}">
+            {%- endif -%}
+            {%- if block.settings.title != blank  -%}<h4 class="mt__15 fwsb">{{ block.settings.title }}</h4>{%- endif -%}
+            <div class="textwidget">
+                {%- if block.settings.bio != blank  -%}<p>{{ block.settings.bio | strip_html }}</p>{%- endif -%}
+                {%- if block.settings.signature != blank  -%}<p><img src="{{ block.settings.signature | img_url: '200x' }}" srcset="{{ block.settings.signature | img_url: '200x' }} 1x, {{ block.settings.signature | img_url: '200x', scale: 2 }} 2x" alt="{{block.settings.signature.alt | default:'signature' }}"></p>{%- endif -%}
+            </div>
+            {%- if block.settings.use_social  -%}
+            <ul class="nt_icons text-center style_colored nathan-follow">
+               {%- if block.settings.social_facebook_link != blank -%}<li class="facebook"><a href="{{ block.settings.social_facebook_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.facebook' | t }}"{%- endif -%}><i class="fa fa-facebook"></i>{{ 'sections.nt_tooltip.facebook' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_twitter_link != blank -%}<li class="twitter"><a href="{{ block.settings.social_twitter_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.twitter' | t }}"{%- endif -%}><i class="fa fa-twitter"></i>{{ 'sections.nt_tooltip.twitter' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_google_plus_link != blank -%}<li class="google"><a href="{{ block.settings.social_google_plus_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.google' | t }}"{%- endif -%}><i class="fa fa-google-plus"></i>{{ 'sections.nt_tooltip.google' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_pinterest_link != blank -%}<li class="pinterest"><a href="{{block.settings.social_pinterest_link}}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.pinterest' | t }}"{%- endif -%}><i class="fa fa-pinterest"></i>{{ 'sections.nt_tooltip.pinterest' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_instagram_link != blank -%}<li class="instagram"><a href="{{ block.settings.social_instagram_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.instagram' | t }}"{%- endif -%}><i class="fa fa-instagram"></i>{{ 'sections.nt_tooltip.instagram' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_tumblr_link != blank -%}<li class="tumblr"><a href="{{ block.settings.social_tumblr_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.tumblr' | t }}"{%- endif -%}><i class="fa fa-tumblr"></i>{{ 'sections.nt_tooltip.tumblr' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_youtube_link != blank -%}<li class="youtube"><a href="{{ block.settings.social_youtube_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.youtube' | t }}"{%- endif -%}><i class="fa fa-youtube-play"></i>{{ 'sections.nt_tooltip.youtube' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_vimeo_link != blank -%}<li class="vimeo"><a href="{{ block.settings.social_vimeo_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.vimeo' | t }}"{%- endif -%}><i class="fa fa-vimeo"></i>{{ 'sections.nt_tooltip.vimeo' | t }}</a></li>{%-endif-%}
+                {%- if block.settings.social_snapchat_link != blank -%}<li class="snapchat"><a href="{{ block.settings.social_snapchat_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.snapchat' | t }}"{%- endif -%}><i class="fa fa-snapchat"></i>{{ 'sections.nt_tooltip.snapchat' | t }}</a></li>{%-endif-%}
+            </ul>
+            {%- endif -%}
+         </aside>
+	      {%- when 'search' -%}
+			  <aside id="search-{{ block.id }}" class="widget mb__30 widget_search">
+			     {%- if block.settings.title  != blank -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>{%- endif -%}
+			     <form class="search-form quick-search nt_shopify" method="get" action="/search" role="search">
+			        <i class="icon-magnifier"></i>
+			        <input class="search-field text_nt_shopify" type="search"  placeholder="{{ 'general.search.blog_placeholder' | t }}" name="q"{% if search.performed %} value="{{ search.terms | escape | downcase }}"{% endif %} /> 
+			        <input type="hidden" name="type" value="article" />
+			       {%- comment -%} <input type="submit" class="search-submit nt_shopify_submit" value="{{ 'general.search.search_submit' | t }}">{%- endcomment -%}
+			     </form>
+			  </aside>  
+			{%- when 'categories' -%}
+			  <aside id="categories-{{ block.id }}" class="widget mb__30 widget_categories widget_product_categories">
+			     <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			     <ul>
+			      {%- for link in linklists[block.settings.menu].links -%}
+			        {%- if link.type == 'blog_link' -%}
+			          {%- assign gl_blog = link.object -%}
+			            <li class="cat-item{%- if blog.handle == gl_blog.handle %} current-cat{%- endif -%}"><a href="{{ gl_blog.url }}">{{ gl_blog.title }}</a> ({{ gl_blog.articles_count }})</li>
+			        {%- endif -%}
+			      {%- else -%}
+			        {% capture theme_settings_footer_linklist_path %}<strong>Blog sidebar</strong> > <strong>Quick links link list</strong>{% endcapture %}
+			        <li class="cat-item">{{ 'general.layout.footer.instructions_for_linklist_html' | t: theme_settings_link: theme_settings_link, theme_settings_footer_linklist_path: theme_settings_footer_linklist_path }}</li>
+			      {%- endfor -%}
+			     </ul>
+			  </aside>
+         {%- when 'tags' -%}
+           {%- if blog.all_tags.size > 0 -%}
+           <aside id="tag_cloud-{{ block.id }}" class="widget mb__30 widget_tag_cloud">
+              <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+              <div class="tagcloud entry-content">
+               {%- for tag in blog.all_tags -%}
+                  {% if current_tags contains tag %}
+                     <a class="chosen" href="/blogs/{{blog.handle}}">{{ tag }}{%- if block.settings.count %} ({{ tag.total_count }}){%- endif -%}</a>
+                  {% else %}
+                     <a href="/blogs/{{blog.handle}}/tagged/{{ tag | handleize }}">{{ tag }}{%- if block.settings.count %} ({{ tag.total_count }}){%- endif -%}</a>
+                  {% endif %}
+               {%- endfor -%}
+              </div>
+           </aside>
+           {%- endif -%}
+	      {%- when 'collection' -%}
+            {%- assign image_size = '80x' -%}
+            <aside class="widget widget_products mb__30 clearfix">
+               <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+               {%- if block.settings.featured_product_list_collection == blank -%}
+                  <p class="mg__0 mb__30">{{ 'homepage.onboarding.no_content' | t }}</p>
+               {%- else -%}
+               <ul class="product_list_widget">
+                  {%- for product in collections[block.settings.featured_product_list_collection].products limit:block.settings.featured_product_limit_all -%}
+                     {%- assign on_sale = false -%}
+                     {%- if product.compare_at_price_min > product.price_min -%}
+                       {%- assign on_sale = true -%}
+                     {%- endif -%}
+                     {%- assign c = block.settings.featured_product_list_collection -%}
+                     <li>
+                        <a href="{{product.url | within: collection}}" title="{{ product.title }}">
+                           {%- assign image_0 = product.images[0] -%}
+                        {%- if image_0 != blank -%}
+                        <img src="{{ image_0 | img_url: image_size}}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">    
+                        {%- endif -%}
+                        </a>
+                        <div class="pr_w_infors">
+                           <div class="product-title"><a href="{{product.url | within: collection}}">{{ product.title }}</a></div>
+                           <span class="price db mt__5">
+                           {%- if product.price_varies -%}
+                           {{ product.price_min | money }}–{{ product.price_max | money }}
+                           {%- elsif on_sale -%}<ins>{{ product.price | money }}</ins> <del>{{ product.compare_at_price  | money }}</del>
+                           {%- else -%}
+                           {{ product.price | money }}
+                           {%- endif -%}
+                           </span>
+                        </div>
+                     </li>
+                  {%- endfor -%}
+                </ul>
+               {%- endif -%}
+            </aside>
+		   {%- when 'instagram' -%}
+		      <aside id="nt_instagram-3" class="widget mb__30 widget_nt_instagram nt_ins_section" data-username='{{block.settings.username | default:'no_user_name_xxx'}}' data-limit='{{block.settings.limit }}' data-target='{{block.settings.open_link}}' data-col="4">
+				     <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+				     <div class="row nt-instagram nt-sc-instagram clearfix columns-{{block.settings.columns}}"></div>
+				</aside>
+         {%- when 'shipping' -%}
+            <aside id="jas_widget-{{block.id}}" class="widget widget_shipping mb__30">
+                 <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+                 <div class="row">
+                 {%- for i in (1..6) -%}
+                  {%- assign shipping = 'shipping_' | append:i -%}
+                  {%- assign shipping_id = block.settings[shipping] -%}
+                  {%- if shipping_id != blank -%}
+                     {%- assign shipping = shipping_id | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}
+                        <div class="col-12 service-block tl{%- if forloop.first == false %} mt__30{%- endif -%}">
+                           {%- if shipping[0] != blank -%}<div class="service-icon medium cp"><i class="{%- if shipping[0] contains 'pe-' -%}{{shipping[0]}}{%- else -%}fa fa-{{shipping[0]}}{%- endif -%}"></i></div>{%- endif -%}
+                           <div class="service-text">
+                           <h3 class="title text-c fwb fs__20 mb__5">{{shipping[1]}}</h3>
+                             <p class="mg__0">{{shipping[2]}}</p>
+                           </div>
+                        </div>
+                  {%- endif -%}
+               {%- endfor -%}
+             </div>
+            </aside>
+         {%- when 'html' -%}
+            <aside id="jas_widget-{{block.id}}" class="widget mb__30">
+                 <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+                 {%- if block.settings.code != blank -%}{{block.settings.code}}{%- endif -%}
+            </aside>
+         {%- when 'text' -%}
+            <aside id="jas_widget-{{block.id}}" class="widget mb__30">
+                 <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+                 {%- if block.settings.text != blank -%}{{block.settings.text}}{%- endif -%}
+            </aside>
+			{%- when 'recent' -%}
+            {%- assign image_size = '80x' -%}
+			   {%- assign featured_posts_limit_all = block.settings.featured_posts_limit_all | plus:0 -%}
+			   {%- if template.name == 'blog' and blogs[blog.handle].articles_count > 0 -%}
+			   <aside id="recent-posts-{{ block.id }}" class="widget widget_products mb__30 widget_recent_entries">
+			      <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+               <ul class="product_list_widget">
+                  {% for article in blogs[blog.handle].articles limit:featured_posts_limit_all %}
+                     <li>
+                        <a href="{{ article.url }}" title="{{ article.title }}">
+                           {%- assign image_0 = article.image -%}
+                        {%- if image_0 != blank -%}
+                        <img src="{{ image_0 | img_url: image_size}}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">    
+                        {%- endif -%}
+                        </a>
+                        <div class="pr_w_infors">
+                           <div class="product-title"><a href="{{ article.url }}">{{ article.title }}</a></div>
+                           <span class="price db mt__5">{{ article.published_at | date: format: 'month_day_year' }} </span>
+                        </div>
+                     </li>
+                  {%- endfor -%}
+               </ul>
+			   </aside>
+			   {%- elsif template == "article" and blogs[blog.handle].articles_count > 1 -%}
+				  <aside id="recent-posts-{{ block.id }}" class="widget widget_products mb__30 widget_recent_entries">
+				     <h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+				     <ul class="product_list_widget">
+                 {% for f_article in blogs[blog.handle].articles limit:featured_posts_limit_all %}
+                     {%- if article.id != f_article.id -%}
+                     <li>
+                        <a href="{{ f_article.url }}" title="{{ f_article.title }}">
+                           {%- assign image_0 = f_article.image -%}
+                        {%- if image_0 != blank -%}
+                        <img src="{{ image_0 | img_url: image_size}}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">    
+                        {%- endif -%}
+                        </a>
+                        <div class="pr_w_infors">
+                           <div class="product-title"><a href="{{ f_article.url }}">{{ f_article.title }}</a></div>
+                           <span class="price db mt__5">{{ f_article.published_at | date: format: 'month_day_year' }} </span>
+                        </div>
+                     </li>
+                     {%- endif -%}
+                  {%- endfor -%}
+				     </ul>
+				  </aside>
+				{%- endif -%}
+	   {%- endcase -%}
+	{%- endfor -%}
+{%- else -%}
+<div class="text-center">{%- include 'no-blocks'-%}</div>   
+{%- endif -%}
+</div>
+{%- schema -%}
+  {
+    "name": "Blog sidebar",
+    "class": "nt_sidebarfilter",
+    "max_blocks": 15,
+    "blocks": [
+      {
+        "type": "author",
+        "name": "Author",
+        "limit": 1,
+        "settings": [
+          {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Image Avatar",
+          "info":"Will be scaled down to 150 x 150px, 150 x 150px recommended"
+           },
+           {
+             "type": "text",
+             "id": "title",
+             "label": "Name",
+             "default": "Happy Customers"
+           },
+           {
+             "type": "textarea",
+             "id": "bio",
+             "label": "Bio (optional)",
+             "default": "Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum dolor sit amet, consectetur Nulla fringilla purus at leo dignissim congue. Mauris elementum accumsan leo vel tempor. Sit amet cursus nisl aliquam. Aliquam et elit eu nunc rhoncus viverra quis at felis."
+             },
+            {
+             "type": "image_picker",
+             "id": "signature",
+             "label": "Image Signature"
+              },
+             {
+              "type": "header",
+              "content": "== Social"
+            },
+            {
+              "type": "checkbox",
+              "id": "use_social",
+              "label": "Use Social?",
+              "default": true
+            },
+            {
+              "type": "text",
+              "id": "social_twitter_link",
+              "label": "Twitter",
+              "info": "https:\/\/twitter.com\/shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_facebook_link",
+              "label": "Facebook",
+              "info": "https:\/\/facebook.com\/shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_pinterest_link",
+              "label": "Pinterest",
+              "info": "https:\/\/pinterest.com\/shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_google_plus_link",
+              "label": "Google+",
+              "info": "https:\/\/plus.google.com\/+shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_instagram_link",
+              "label": "Instagram",
+              "info": "https:\/\/instagram.com\/shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_tumblr_link",
+              "label": "Tumblr",
+              "info": "https:\/\/www.tumblr.com"
+            },
+            {
+              "type": "text",
+              "id": "social_youtube_link",
+              "label": "YouTube",
+              "info": "https:\/\/www.youtube.com\/shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_vimeo_link",
+              "label": "Vimeo",
+              "info": "https:\/\/vimeo.com\/shopify"
+            },
+            {
+              "type": "text",
+              "id": "social_snapchat_link",
+              "label": "Snapchat",
+              "info": "https:\/\/www.snapchat.com\/add\/shopify"
+            }
+        ]
+      },
+      {
+        "type": "search",
+        "name": "Search",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Search"
+          }
+        ]
+      },
+      {
+        "type": "categories",
+        "name": "Categories",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Categories"
+          },
+          {
+            "type": "link_list",
+            "id": "menu",
+            "label": "Blogs Categories menu"
+          }
+        ]
+      },
+      {
+        "type": "collection",
+        "name": "Featured Products",
+        "settings": [
+         {
+          "type":"text",
+          "id":"title",
+          "label":"Title",
+          "default":"Sale Products"
+          },
+          {
+           "type": "collection",
+           "id": "featured_product_list_collection",
+           "label": "Collection to use"
+         },
+          {
+           "type": "text",
+           "id": "featured_product_limit_all",
+           "label": "Number of products to show",
+           "default": "3"
+         }
+        ]
+      },
+      {
+        "type": "recent",
+        "name": "Recent Post",
+        "limit": 1,
+        "settings": [
+         {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Recent Post"
+         },
+         {
+           "type": "text",
+           "id": "featured_posts_limit_all",
+           "label": "Number of posts to show",
+           "default": "5"
+         }
+        ]
+      },
+      {
+        "type": "instagram",
+        "name": "Instagram feed",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Instagram"
+          },
+          {
+	        "type": "range",
+	        "id": "columns",
+	        "min": 2,
+	        "max": 10,
+	        "step": 1,
+	        "label": "columns",
+	        "default": 3
+	      },
+         {
+	        "type": "text",
+	        "id": "username",
+	        "label": "Username Instagram",
+	        "default": "jsfashionstock",
+	         "info":"Ex: https://www.instagram.com/asos/, please enter:asos"
+	      },
+	      {
+	        "type": "range",
+	        "id": "limit",
+	        "min": 1,
+	        "max": 12,
+	        "step": 1,
+	        "unit": "img",
+	        "label": "Number of photos",
+	        "default": 12
+	      },
+	      {
+	        "type": "select",
+	        "id": "open_link",
+	        "options": [
+	          {
+	            "value": "_self",
+	            "label": "Current window (_self)"
+	          },
+	         {
+	            "value": "_blank",
+	            "label": "New window (_blank)"
+	          }
+	        ],
+	        "label": "Open link in",
+	        "default": "_self"
+	      }
+        ]
+      },
+      {
+        "type": "shipping",
+        "name": "SHIPPING DELIVERY",
+        "limit": 1,
+        "settings": [
+         {
+          "type":"text",
+          "id":"title",
+          "label":"Title",
+          "default":"SHIPPING & DELIVERY"
+         },
+         {
+           "type": "paragraph",
+           "content": "Example: clock-o,Save up to 20%,limited time [Get icons fa your](http:\/\/fontawesome.com\/v4.7.0\/icons\/)"
+         },
+         {
+           "type": "paragraph",
+           "content": "Example: pe-7s-car,Save up to 20%,limited time [Get icons pe your](http:\/\/themes-pixeden.com\/font-demos\/7-stroke/)"
+         },
+         {
+           "type": "textarea",
+           "id": "shipping_1",
+           "label":"Shipping Block 1"
+         },
+         {
+           "type": "textarea",
+           "id": "shipping_2",
+           "label":"Shipping Block 2"
+         },
+         {
+           "type": "textarea",
+           "id": "shipping_3",
+           "label":"Shipping Block 3"
+         },
+         {
+           "type": "textarea",
+           "id": "shipping_4",
+           "label":"Shipping Block 4"
+         },
+         {
+           "type": "textarea",
+           "id": "shipping_5",
+           "label":"Shipping Block 5"
+         },
+         {
+           "type": "textarea",
+           "id": "shipping_6",
+           "label":"Shipping Block 6"
+         }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "Custom HTML",
+        "settings": [
+         {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Custom HTML"
+          },
+          {
+            "type": "html",
+            "id": "code",
+            "label": "HTML"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+            {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Talk about your brand"
+            },
+            {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+            }
+         ]
+      },
+      {
+        "type": "tags",
+        "name": "Blog Tags",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Blog Tags"
+          },
+          {
+            "type": "checkbox",
+            "id": "count",
+            "label": "Show counnt tag?",
+            "default": false
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

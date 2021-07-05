@@ -1,0 +1,19 @@
+{%- assign settings_pr_img_size = settings.use_eq_height_search -%}
+<div class="pr oh">
+  <div class="nt_search_wrapper position_{{settings.search_position}}">
+     <div class="nt_search_inner">
+        <div class="pr">
+           <span class="nt_close_search">{{ 'general.search.close_search' | t }}</span>
+           <form class="header__search w_100 {%- if settings.ajax_search %} nt-ajax-search{%- endif -%}" role="search" method="get" action="/search">
+               <div>
+                  <input class="w_100" type="text" value="{{ search.terms | escape }}" name="q" placeholder="{{ 'general.search.placeholder' | t }}">
+                  {%- if settings.only_search_products -%}<input type="hidden" name="type" value="product" />{%- endif -%}
+                  <span class="nt_span_bg"></span>
+               </div>
+            </form>
+         </div>
+         <div class="lds-ellipsis center mt__40"><div></div><div></div><div></div><div></div></div>
+         <div class="search-suggestions-wrapp w_100"><div class="nt_search_results mt__40"><ul class="products_list autocomplete-suggestions row {{settings.image_size_search}} {{settings.image_ratio_search}} position_{{settings.image_position_search}} equal-nt"></ul></div></div>
+     </div>
+  </div>
+</div>

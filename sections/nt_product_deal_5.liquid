@@ -1,0 +1,508 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- include 'style_mp_section' -%}
+{%- assign paginate_index = section.settings.paginate_index | plus: 0 -%}
+{%- assign show_vendor = section.settings.show_vendor -%}
+{%- assign settings_pr_img_size = section.settings.use_eq_height -%}
+{%- assign section_settings_countdown = section.settings.sale_countdown -%}
+{%- assign countdown_timer_style = section.settings.countdown_style -%}
+{%- assign use_pagination = section.settings.use_pagination -%}
+{%- assign collection = collections[section.settings.collection] -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = '12' -%}
+{%- assign class_xs = '12' -%}
+{%- assign product_hover = 'hover-fade' -%}
+{%- assign current_page = '1' -%}
+{%- paginate collection.products by paginate_index -%}
+<div class="nt_custom_{{section.id}} bg_overlay_{{section.settings.overlay}} nt-full nt-banner-parallax{%- if section.settings.use_parallax %} ntparallax{%- endif %}{%- if section.settings.image != blank %} lazyload lazypreload nt_bg_lz{%- endif %}{%- if section.settings.full_height %} nt-full-height{%- endif -%}"{%- if section.settings.image != blank %} data-bgset="{%- include 'bgset', image: section.settings.image -%}" data-sizes="auto" data-parent-fit="cover"{%- endif %}>
+   <div class="div_overlay"></div>
+   <div class="container">
+      <div class="row">
+         <div class="col-md-6 col-12">
+            <h2 class="nasa-title-heading">{{section.settings.title}}</h2>
+            <p>{{section.settings.sub_title}}</p>
+            {%- if section.settings.timer != blank -%}
+               {%- if section.settings.timer contains ',' -%}
+                  {%- assign list_countdown = section.settings.timer | replace: ' ,', ',' | replace: ', ', ',' | replace: ' , ', ',' | split: ',' -%}
+                  {%- assign year_now = "now" | date: "%Y" | plus:0 -%}
+                  {%- assign month_now_text = "now" | date: "%m" | downcase -%}
+                  {%- assign month_now = "now" | date: "%m" | plus:0 -%}
+                  {%- assign day_now = "now" | date: "%e" | plus:0 -%}
+                  {%- assign day_now_text = "now" | date: "%e" | downcase -%}
+                  {%- for list in list_countdown -%}
+                       {%- assign countdown = list | split: ' ' | first | replace: ' /', '/' | replace: '/ ', '/' | replace: ' / ', '/' | split: '/' -%}
+                       {%- assign year = countdown[0] | plus:0 -%}
+                      {%- assign month = countdown[1] | plus:0 -%}
+                       {%- assign day = countdown[2] | plus:0 -%}
+                       {%- if year >= year_now and month >= month_now and day >= day_now -%}
+                           {%- assign _user_countdown = list -%}
+                           {%- break -%}
+                       {%- endif -%}
+                  {%- endfor -%}
+               {%- else -%}
+                  {%- assign _user_countdown = section.settings.timer -%}
+               {%- endif -%}
+               <div class="nasa-deal-for-time nt_countdow_page {{countdown_timer_style}} mb__30" data-time="{{_user_countdown}} 23:59:59"></div>
+            {%- endif -%}
+            <div class="products row nt-products-holder nt-carousel {{section.settings.image_size}} {{section.settings.image_ratio}} position_{{section.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'>
+               {%- for product in collection.products -%}
+                  {%- include 'nt_product_loop' -%}
+               {%- else -%}
+                  {%- for i in (1..8) -%}
+                     <div class="spb_animate col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item grid nt-grid-item hover-fade">
+                        <div class="product-inner">
+                           <div class="product-img-wrap pr tc">
+                              <div class="product-img hover-overlay pr oh">
+                                 <a href="/collections/test/products/analogue-resin-strap-watch" class="db">
+                                    <div class="main-img nt-product-img-element nt-pr-image-link">
+                                       {%- capture current -%}{%- cycle 7,8,9,10,11,12,13,14,15,16,1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+                                       <img src="{{ 'product-' | append: current | append: '.jpg' | asset_url }}" class="attachment-shop_catalog size-shop_catalog" alt="Analogue Resin Strap Watch">
+                                    </div>
+                                 </a>
+                              </div>
+                              <div class="add-to-cart-btn pa"><a href="/admin/products" class="tooltip_left" aria-label="{{'products.product.add_to_cart'|t}}"><i class="icon-handbag icons"></i></a></div>
+                           </div>
+                           <div class="product-info-wrap pr">
+                              <div class="name nasa-show-one-line"><a href="/admin/products">{{ 'homepage.onboarding.product_title' | t }}</a></div>
+                              <div class="info flex flex_row c_between">
+                                 <div class="price-wrap"><span class="price"><del><span class="money">$90.00</span></del> <ins><span class="money">$80.00</span></ins></span></div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  {%- endfor -%}
+               {%- endfor -%}
+            </div> 
+         </div>
+         <div class="col-md-6 col-12"></div> 
+      </div>
+   </div>
+</div>
+{%- endpaginate -%}
+{%- schema -%}
+  {
+    "name": "Product Deal 5",
+    "class": "nt-section nt_product_deal_5 nt_product_deal_4 spb_animate",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Background Image"
+      },
+      {
+        "type": "range",
+        "id": "overlay",
+        "label": "Background overlay",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "%"
+      },
+      {
+        "type": "color",
+        "id": "section_bg_color",
+        "label": "Background color",
+        "default": "#000"
+      },
+      {
+        "type": "text",
+        "id": "timer",
+        "label": "Countdown timer",
+        "info":"2020/04/19",
+        "default": "2020/04/19"
+      },
+      {
+        "type": "select",
+        "id": "countdown_style",
+        "label": "Countdown style",
+        "default": "size_nt_large",
+        "options": [
+          {
+            "value": "light",
+            "label": "Countdown timer light"
+          },
+          {
+            "value": "light_2",
+            "label": "Countdown timer light 2"
+          },
+          {
+            "value": "size_nt_large",
+            "label": "Countdown timer light 3"
+          },
+          {
+            "value": "dark",
+            "label": "Countdown timer default"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title: ",
+        "default": "Deals of the day"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title: ",
+        "default": "Sale 35% for all T-Shirt products"
+      },
+      {
+        "id": "collection",
+        "type": "collection",
+        "label": "Collection"
+      },
+      {
+        "type": "range",
+        "id": "paginate_index",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "label": "Items per page",
+        "info": "Number of items to show per page.",
+        "default": 8
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show product vendors",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio_nt",
+        "options": [
+          {
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "value": "ratio4_3",
+            "label": "4:3 (Landscape)"
+          },
+          {
+            "value": "ratio1_1",
+            "label": "1:1 (Square)"
+          },
+          {
+            "value": "ratio_nt",
+            "label": "Ratio Elessi"
+          },
+          {
+            "value": "ratio2_3",
+            "label": "2:3 (Portrait)"
+          },
+          {
+            "value": "ratio1_2",
+            "label": "1:2"
+          },
+          {
+            "value": "ratio_cus1",
+            "label": "Ratio Custom 1"
+          },
+          {
+            "value": "ratio_cus2",
+            "label": "Ratio Custom 2"
+          },
+          {
+            "value": "ratio_cus3",
+            "label": "Ratio Custom 3"
+          },
+          {
+            "value": "ratio_cus4",
+            "label": "Ratio Custom 4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "default": "nt_cover",
+        "options": [
+          {
+            "value": "nt_cover",
+            "label": "Full"
+          },
+          {
+            "value": "nt_contain",
+            "label": "Auto"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "info":"The first value is the horizontal position and the second value is the vertical.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "1",
+            "label": "Left Top"
+          },
+          {
+            "value": "2",
+            "label": "Left Center"
+          },
+          {
+            "value": "3",
+            "label": "Left Bottom"
+          },
+          {
+            "value": "4",
+            "label": "Right Top"
+          },
+          {
+            "value": "5",
+            "label": "Right Center"
+          },
+          {
+            "value": "6",
+            "label": "Right Bottom"
+          },
+          {
+            "value": "7",
+            "label": "Center Top"
+          },
+          {
+            "value": "8",
+            "label": "Center Center"
+          },
+          {
+            "value": "9",
+            "label": "Center Bottom"
+          }
+        ],
+        "label": "Image Position",
+        "default": "8"
+      },
+      {
+       "type": "header",
+       "content": "== settings Slider"
+      },
+     {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+{
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "default":"70px",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "default":"70px",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      },
+      {
+        "type": "header",
+        "content": "== Elessi Extras"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_parallax",
+        "label": "Use Elessi parallax?",
+        "default": true
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Deal 5",
+        "category": "3. Product Deals"
+      }
+    ]
+  }
+{% endschema %}

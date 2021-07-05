@@ -1,0 +1,184 @@
+<div id="nt-mobile-menu" class="menu-main-menu-container">
+   <div class="nt-mobile-tabs">
+      <h3 class="mg__0 tc cw bgb tu ls__2 active{%- if settings.use_mobile_categories == false %} no_cat{%- endif -%}" data-tab="menu-main-menu">{{ 'general.homepage.menu' | t }}{%- if settings.use_mobile_categories == false %} <i class="close-menu pe-7s-close pa"></i>{%- endif -%}</h3>
+      {%- if settings.use_mobile_categories -%}<h3 class="mg__0 tc cw bgb tu ls__2" data-tab="cat-main-menu">{{ 'general.homepage.categories' | t }}</h3>{%- endif -%}
+   </div>
+   {%- assign mobile_link_list = settings.menu_mobile -%}
+   {%- if mobile_link_list != blank -%}
+      <ul id="menu-main-menu" class="nt_ui_menu menu active">
+         {%- for link in linklists[mobile_link_list].links -%}
+            {%- assign child_list_handle = link.title | handleize -%}
+            {%- assign child_list = link.title -%}
+            {%- if linklists[child_list_handle].links != blank and none -%}
+               <li class="has_handle menu-item menu-item-has-children has-sub{%- if link.active %} active current_page_item{%- endif -%}">
+                  <a href="{{ link.url }}" class="holderr"><span>{{ link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                  <ul>
+                     <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                     <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+                     {%- for child_link in linklists[child_list_handle].links -%}
+                        {%- assign third_list_handle = child_link.title | handleize -%}
+                           {%- if linklists[third_list_handle].links != blank -%}
+                               <li class="menu-item menu-item-has-children has-sub">
+                                 <a href="{{ child_link.url }}" class="holderr"><span>{{ child_link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                                 <ul>
+                                    <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                                    <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}">{{ child_link.title | split: '[' | first }}</a></li>
+                                    {%- for four_link in linklists[third_list_handle].links -%}
+                                        <li class="menu-item{%- if four_link.active %} active current_page_item{%- endif -%}"><a href="{{ four_link.url }}"><span>{{ four_link.title | split: '[' | first }}</span></a></li>
+                                    {%- endfor -%}
+                                 </ul>
+                              </li>
+                           {%- else -%}
+                              <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}"><span>{{ child_link.title | split: '[' | first }}</span></a></li>
+                           {%- endif -%}
+                     {%- endfor -%}
+                  </ul>
+               </li>
+            {%- elsif linklists[child_list].links != blank and none -%}
+               <li class="not_handle menu-item menu-item-has-children has-sub{%- if link.active %} active current_page_item{%- endif -%}">
+                  <a href="{{ link.url }}" class="holderr"><span>{{ link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                  <ul>
+                     <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                     <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+                     {%- for child_link in linklists[child_list].links -%}
+                        {%- assign third_list = child_link.title -%}
+                        {%- assign third_list_handle = child_link.title | handleize -%}
+                           {%- if linklists[third_list_handle].links != blank -%}
+                               <li class="menu-item menu-item-has-children has-sub">
+                                 <a href="{{ child_link.url }}" class="holderr"><span>{{ child_link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                                 <ul>
+                                    <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                                    <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}">{{ child_link.title | split: '[' | first }}</a></li>
+                                    {%- for four_link in linklists[third_list_handle].links -%}
+                                        <li class="menu-item{%- if four_link.active %} active current_page_item{%- endif -%}"><a href="{{ four_link.url }}"><span>{{ four_link.title | split: '[' | first }}</span></a></li>
+                                    {%- endfor -%}
+                                 </ul>
+                              </li>
+                            {%- elsif linklists[third_list].links != blank -%}
+                               <li class="menu-item menu-item-has-children has-sub">
+                                 <a href="{{ child_link.url }}" class="holderr"><span>{{ child_link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                                 <ul>
+                                    <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                                    <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}">{{ child_link.title | split: '[' | first }}</a></li>
+                                    {%- for four_link in linklists[third_list].links -%}
+                                        <li class="menu-item{%- if four_link.active %} active current_page_item{%- endif -%}"><a href="{{ four_link.url }}"><span>{{ four_link.title | split: '[' | first }}</span></a></li>
+                                    {%- endfor -%}
+                                 </ul>
+                              </li>
+                           {%- else -%}
+                              <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}"><span>{{ child_link.title | split: '[' | first }}</span></a></li>
+                           {%- endif -%}
+                     {%- endfor -%}
+                  </ul>
+               </li>
+            {%- elsif link.links != blank -%}
+               <li class="menu-item menu-item-has-children has-sub{%- if link.active %} active current_page_item{%- endif -%}">
+                  <a href="{{ link.url }}" class="holderr"><span>{{ link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                  <ul>
+                     <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                     <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+                     {%- for child_link in link.links -%}
+                           {%- if child_link.links != blank-%}
+                               <li class="menu-item menu-item-has-children has-sub">
+                                 <a href="{{ child_link.url }}" class="holderr"><span>{{ child_link.title | split: '[' | first }}</span><span class="holder"></span></a>
+                                 <ul>
+                                    <li class="black_menu menu_link_list"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.menu_back' | t }}</span></a></li>
+                                    <li class="menu-item {%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}">{{ child_link.title | split: '[' | first }}</a></li>
+                                    {%- for four_link in child_link.links -%}
+                                        <li class="menu-item{%- if four_link.active %} active current_page_item{%- endif -%}"><a href="{{ four_link.url }}"><span>{{ four_link.title | split: '[' | first }}</span></a></li>
+                                    {%- endfor -%}
+                                 </ul>
+                              </li>
+                           {%- else -%}
+                              <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="{{ child_link.url }}"><span>{{ child_link.title | split: '[' | first }}</span></a></li>
+                           {%- endif -%}
+                     {%- endfor -%}
+                  </ul>
+               </li>
+            {%- else -%}
+               <li class="menu-item{%- if link.active %} active current_page_item{%- endif -%}"><a href="{{ link.url }}"><span>{{ link.title | split: '[' | first }}</span></a></li>
+            {%- endif -%}
+         {%- endfor -%}
+         {%- if shop.customer_accounts_enabled and settings.account_header_enable -%}
+           {%- if customer -%}
+              <li class="jas_customer menu-item{%- if link.active %} active current_page_item{%- endif -%}"><a href="/account"><span>{{ 'general.layout.customer.dashboard' | t }}</span></a></li>
+              <li class="jas_customer menu-item{%- if link.active %} active current_page_item{%- endif -%}"><a href="/account/logout"><span>{{ 'general.layout.customer.log_out' | t }}</span></a></li>
+           {%- else -%}
+              <li class="jas_customer menu-item{%- if link.active %} active current_page_item{%- endif -%}"><a href="/account/login"><span>{{ 'general.layout.customer.log_in' | t }}</span></a></li>
+           {%- endif -%}
+         {%- endif -%}
+         {%- if settings.use_wishlist and pages['wishlist'].url != blank -%}
+            <li class="menu-item{%- if link.active %} active current_page_item{%- endif -%}"><a href="{{pages['wishlist'].url}}"><span>{{ 'general.layout.customer.wishlist' | t }}</span></a></li>
+         {%- endif -%}
+         {%- if settings.show_multiple_currencies -%}
+            {%- assign supported_codes = settings.supported_currencies | split: '|' -%}
+            {%- assign codes = 'USD,EUR,GBP,CAD,ARS,AUD,BBD,BDT,BSD,BHD,BRL,BOB,BND,BGN,ILS,MMK,KYD,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,XPF,FJD,GHS,GTQ,GYD,GEL,HKD,HUF,ISK,INR,IDR,NIS,JMD,JPY,JOD,KZT,KES,KWD,LVL,LTL,MXN,MYR,MUR,MDL,MAD,MNT,MZN,ANG,NZD,NGN,NOK,OMR,PKR,PYG,PEN,PHP,PLN,QAR,RON,RUB,SAR,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TRY,UAH,AED,UYU,VEB,VND,ZMK' | split: ',' -%}
+            {%- assign check = true -%}
+            {%- unless currency_header -%}
+            {%- assign currency_header = false -%}
+            {%- endunless -%}
+            {%- for code in supported_codes -%}
+              {%- assign array_money = code | split: '-' -%}
+              {%- assign data_currency = array_money | first | upcase | strip -%}
+              {%- assign name_money = array_money | last | strip -%}
+              {%- if data_currency == shop.currency and codes contains data_currency -%}
+                 {%- assign check = false -%}
+                 {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+            <li class="menu-item menu-item-has-children has-sub{%- if link.active %} active current_page_item{%- endif -%}">
+               <a href="javascript:void(0);" class="holderr"><span>{{ 'general.homepage.currency' | t }}</span><span class="holder"></span></a>
+               <ul class="currencies">
+                  <li class="black_menu"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.currency' | t }}</span></a></li>
+                 {%- if settings.currency_type == '1'-%}
+                    {%- if shop.enabled_currencies.size > 1 -%}
+                      {%- if linklists.currency-the4.links.size > 0 -%}{%- assign cart_iso_code = cart.currency.iso_code -%}
+                      {%- for link_cr in linklists.currency-the4.links -%}{%- assign iso_code = link_cr.url |remove:'#'|remove:' ' -%}
+                         <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="javascript:void(0);" data-currency="{{iso_code}}" class="currency-item{%- if iso_code == cart_iso_code %} selected{%- endif -%}"><span>{{ link_cr.title|strip_html}}</span></a></li>
+                      {%- endfor -%}
+                      {%- else -%}
+                      {%- for currency in shop.enabled_currencies -%}
+                         <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="javascript:void(0);" data-currency="{{currency.iso_code}}" class="currency-item{%- if currency == cart.currency %} selected{%- endif -%}"><span>{{currency.iso_code}}</span></a></li>
+                      {%- endfor -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                 {%- else -%}
+                    {%- if check and codes contains shop.currency -%}
+                        <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="javascript:void(0);" data-currency="{{ shop.currency }}" class="currency-item selected"><span>{{ shop.currency }}</span></a></li>
+                    {%- endif -%}
+                    {%- for code in supported_codes -%}
+                      {%- assign array_money = code | split: '-' -%}
+                      {%- assign data_currency = array_money | first | upcase | strip -%}
+                      {%- assign name_money = array_money | last | strip -%}
+                      {%- if codes contains data_currency -%}
+                       <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="javascript:void(0);" data-currency="{%- if data_currency contains 'EUR' -%}EUR{%- else -%}{{data_currency}}{%- endif -%}" class="currency-item{%- if shop.currency == data_currency %} selected{%- endif -%}"><span>{{ name_money }}</span></a></li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                 {%- endif -%}
+               </ul>
+            </li>
+         {%- endif -%}
+         {%- if settings.show_language_currencies and settings.language_link_list != blank -%}
+            <li class="menu-item menu-item-has-children has-sub{%- if link.active %} active current_page_item{%- endif -%}">
+               <a href="javascript:void(0);" class="holderr"><span>{{ 'general.homepage.language' | t }}</span><span class="holder"></span></a>
+               <ul class="language">
+                  <li class="black_menu"><a href="javascript:void(0);"><span class="black_btn_menu">{{ 'general.homepage.language' | t }}</span></a></li>
+                  {%- assign title_dow = settings.language_title | downcase -%}
+                  {%- for link in linklists[settings.language_link_list].links -%}
+                     {%- assign link_dow = link.title | downcase -%}
+                     {%- assign link_dow_2 = link.title | split: '[' | first | downcase -%}
+                     <li class="menu-item{%- if child_link.active %} active current_page_item{%- endif -%}"><a href="{{ link.url }}" class="{%- if link.active or title_dow == link_dow or title_dow == link_dow_2 -%}selected{%- endif -%}"><span>{{ link.title | split: '[' | first }}</span></a></li>
+                  {%- endfor -%}
+               </ul>
+            </li>
+         {%- endif -%}
+      </ul>
+   {%- else -%}
+      <h5>Create your mobile navigation menu sidebar and config from Theme Settings > Header > Mobile Menu</h5>
+   {%- endif -%}
+   {%- if settings.use_mobile_categories -%}
+      <div class="nt_ui_menu" id="cat-main-menu">
+          {%- section 'mobile_categories' -%}
+      </div>
+   {%- endif -%}
+</div>

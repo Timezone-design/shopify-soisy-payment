@@ -1,0 +1,32 @@
+{% comment %}
+   Page Liquid for Easy GDPR Shopify app: https://apps.shopify.com/easy-gdpr
+   The 3 GDPR pages (Request Personal Data, My Personal Data, Edit Personal Data) should use this liquid.
+   PLEASE DON'T MODIFY
+{% endcomment %}
+<link rel="stylesheet" href="https://gdpr-app.firebaseapp.com/style.css" type="text/css"/>
+<div class="EG-container">
+{%- assign image = settings.other_page_bg_image -%}
+{%- assign color_scheme = settings.other_page_color -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.other_overlay}} pr oh{%- if settings.use_parallax_other_page %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{page.title}}</h1>
+      </div>
+   </div>
+</div>
+<div class="container container_page mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+	{{ page.content }}
+</div>
+
+</div>
+
+<div>
+{% if customer %}
+  {% assign hash_id = customer.id | append: '-' | append: shop.permanent_domain %}
+{% else %}
+  {% assign hash_id = '0-' | append: shop.permanent_domain %}
+{% endif %}
+  <input type="hidden" value="{{ hash_id | hmac_sha256: "ObGx&bRI3lc*?Ykw" }}" id="eg_hmac" />
+  <input type="hidden" id="accounts_enabled" value="{{ shop.customer_accounts_enabled }}" />
+</div>

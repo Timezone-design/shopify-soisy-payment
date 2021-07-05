@@ -1,0 +1,6 @@
+development:
+  password: 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
+  theme_id: "121108955305"
+  store: ldm-tech-store.myshopify.com
+  ignore_files:
+  - config/settings_data.json  

@@ -1,0 +1,510 @@
+{%- assign image = settings.collection_bg_image -%}
+{%- if section.settings.collection_bg_image != blank -%}{%- assign image = section.settings.collection_bg_image %}{%- endif -%}
+<div class="collection_header with_term_description bg_overlay_{{settings.overlay}} pr oh{%- if settings.use_parallax_collection %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image %}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+    <div class="wrap_cat">
+         <h1 class="page-title">{{ page_title }}</h1>
+      </div>
+   </div>
+</div>
+{%- if section.settings.section_bg_color != blank -%}
+<style type="text/css">#shopify-section-{{section.id}} {background-color: {{section.settings.section_bg_color}}}</style>
+{%- endif -%}
+{%- case section.settings.categories_layout -%}
+   {%- when 'default' -%}
+      {%- assign layout = "categories-style-default" -%}
+   {%- when 'masonry' -%}
+      {%- assign  layout = "categories-style-masonry categories-masonry" -%}
+   {%- when 'masonry_first' -%}
+      {%- assign layout = "categories-style-masonry-first categories-masonry" -%}
+   {%- when 'carousel' -%}
+      {%- assign layout = "categories-style-carousel" -%}
+{%- endcase -%}
+<div class="nt_custom_{{section.id}} nt-sc-wc-categories container_cat mb__40{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+      <div class="row {{ layout }} categories-space-{{ section.settings.space_categories }}{%- if style_title != blank %} mt__30{%- endif %}{%- if section.settings.categories_layout == 'carousel' %} nt-carousel{%- endif -%}"{%- if section.settings.categories_layout == 'carousel' %} data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "speed": {{ section.settings.speed }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'{%- endif -%}>
+         {%- if section.settings.categories_layout != 'carousel' %}<div class="col-lg-3 nt-item-category hide"></div>{%- endif -%}
+            {%- for block in section.blocks -%}
+               {%- assign collection = collections[block.settings.collection] -%}
+               {%- assign number_of_collection = collection.all_products_count  -%}
+               {%- assign block_image = block.settings.image -%}
+               <div class="col-lg-{{block.settings.grid_column}} col-md-{{block.settings.grid_columns_md}} col-{{block.settings.grid_columns_xs}} {{ section.settings.categories_design }} nt-item-category spb_animate" {{ block.shopify_attributes }}>
+                  <div class="nt-cat-content">
+                   <a href="{%- if collection.empty? -%}/admin/collections{%- else -%}{{ collection.url }}{%- endif -%}" class="w_100 nt-cat-url">
+                       <div class="nt-cat-thumb">
+                          {%- if block_image != blank -%}
+                             {%- assign img_url = block_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                             <img src="{{ block_image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block_image.aspect_ratio }}"  data-sizes="auto" class="lazyload w__100 attachment-shop_catalog size-shop_catalog" alt="{{block_image.alt}}" >
+                             <div class="nt-wrap-lazy"></div>
+                          {%- elsif collection.image != blank -%}
+                             {%- assign img_url = collection.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                             <img src="{{ collection.image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ collection.image.aspect_ratio }}"  data-sizes="auto" class="lazyload w__100 attachment-shop_catalog size-shop_catalog" alt="{{collection.image.alt}}" >
+                             <div class="nt-wrap-lazy"></div>
+                          {%- elsif collection.products.first and collection.products.first.featured_image != blank -%}
+                             {%- assign image = collection.products.first.featured_image -%}
+                             {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                             <img src="{{ image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ image.aspect_ratio }}"  data-sizes="auto" class="lazyload w__100 attachment-shop_catalog size-shop_catalog" alt="{{image.alt}}" >
+                             <div class="nt-wrap-lazy"></div>
+                          {%- else -%}
+                              {%- capture current -%}{%- cycle '570x630', '270x300', '270x300','570x300' -%}{%- endcapture -%}
+                             <img src="https://placehold.it/{{current}}/eee/999" alt="placehold" class="ts__05 w_100">
+                          {%- endif -%}
+                       </div>
+                       {%- if collection != blank and number_of_collection > 1 -%}
+                       <span class="nt-cat-pr-coun">{{number_of_collection}} {{ section.settings.categories_count | strip_html }}</span>
+                       {%- endif -%}
+                    </a>
+                     <div class="hover-wrap">
+                        <a href="{%- if collection.empty? -%}/admin/collections{%- else -%}{{ collection.url }}{%- endif -%}" class="nt-cat-url-overlay"></a>
+                        <h3>{%- if collection.empty? -%}{{ 'homepage.onboarding.collection_title' | t }}{%- else -%}{{ collection.title }}{%- endif -%}</h3>
+                        <a href="{%- if collection.empty? -%}/admin/collections{%- else -%}{{ collection.url }}{%- endif -%}">{{ section.settings.categories_view | strip_html }}</a>
+                     </div>
+                  </div>
+               </div>
+            {%- endfor -%}
+      </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Collections list page",
+    "class": "nt-section nt_collection_list",
+    "max_blocks": 30,
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "text",
+        "id": "categories_count",
+        "label": "categories product count title",
+        "default": "products"
+      },
+      {
+        "type": "text",
+        "id": "categories_view",
+        "label": "categories view",
+        "default": "View products"
+      },
+      {
+        "type": "select",
+        "id": "categories_layout",
+        "options": [
+            {
+               "value": "default",
+               "label": "Default"
+             },
+             {
+               "value": "masonry",
+               "label": "Masonry"
+             },
+             {
+               "value": "masonry_first",
+               "label": "Masonry (with first wide)"
+             },
+             {
+               "value": "carousel",
+               "label": "Carousel"
+             }
+           ],
+           "label": "Layout",
+           "default": "default"
+         },
+         {
+           "type": "select",
+           "id": "categories_design",
+           "options": [
+             {
+               "value": "nt_cat_alt",
+               "label": "Alternative"
+             },
+             {
+               "value": "nt_cat_center",
+               "label": "Center title"
+             },
+             {
+               "value": "nt_cat_bottom",
+               "label": "bottom title"
+             }
+           ],
+           "label": "Categories design",
+           "default": "nt_cat_alt"
+         },
+         {
+           "type": "select",
+           "id": "space_categories",
+           "options": [
+            {
+               "value": "30",
+               "label": "30"
+             },
+             {
+               "value": "20",
+               "label": "20"
+             },
+             {
+               "value": "10",
+               "label": "10"
+             },
+             {
+               "value": "6",
+               "label": "6"
+             },
+             {
+               "value": "2",
+               "label": "2"
+             },
+             {
+               "value": "0",
+               "label": "0"
+             }
+           ],
+           "label": "Space between categories",
+           "default": "30"
+         },
+      {
+           "type": "paragraph",
+           "content": "Select collections to show 'all', not support for Carousel layout:"
+          },
+          {
+            "type": "select",
+            "id": "grid_column",
+            "label": "Columns",
+            "default": "3",
+            "options": [
+              {
+                "value": "6",
+                "label": "2"
+              },
+              {
+                "value": "4",
+                "label": "3"
+              },
+              {
+                "value": "3",
+                "label": "4"
+              },
+              {
+                "value": "15",
+                "label": "5"
+              },
+              {
+                "value": "2",
+                "label": "6"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "grid_columns_md",
+            "label": "Columns tablet",
+            "default": "4",
+            "options": [
+              {
+                "value": "6",
+                "label": "2"
+              },
+              {
+                "value": "4",
+                "label": "3"
+              },
+              {
+                "value": "3",
+                "label": "4"
+              },
+              {
+                "value": "15",
+                "label": "5"
+              },
+              {
+                "value": "2",
+                "label": "6"
+              }
+            ]
+          },
+         {
+           "type": "select",
+           "id": "grid_columns_xs",
+           "label": "Columns Mobile",
+           "default": "6",
+           "options": [
+             {
+               "value": "12",
+               "label": "1"
+             },
+             {
+               "value": "6",
+               "label": "2"
+             }
+           ]
+         },
+      {
+       "type": "header",
+       "content": "== settings Slider ( Only for Carousel layout )"
+      },
+     {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+{
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "speed",
+        "min": 100,
+        "max": 1000,
+        "step": 100,
+        "label": "Slide/Fade animation speed",
+        "default": 300
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 4
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "collection_bg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "color",
+        "id": "section_bg_color",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          },
+          {
+             "type": "image_picker",
+             "id": "image",
+             "label": "Image"
+           },
+          {
+           "type": "header",
+           "content": "not support for Carousel layout:"
+          },
+          {
+            "type": "select",
+            "id": "grid_column",
+            "label": "Columns",
+            "default": "3",
+            "options": [
+              {
+               "value": "8",
+               "label": "66.66666667%"
+              },
+              {
+                "value": "6",
+                "label": "50%"
+              },
+              {
+                "value": "4",
+                "label": "33.33333333%"
+              },
+              {
+                "value": "3",
+                "label": "25%"
+              },
+              {
+                "value": "15",
+                "label": "20%"
+              },
+              {
+                "value": "2",
+                "label": "16.666667%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "grid_columns_md",
+            "label": "Columns tablet",
+            "default": "4",
+            "options": [
+              {
+               "value": "8",
+               "label": "66.66666667%"
+              },
+              {
+                "value": "6",
+                "label": "50%"
+              },
+              {
+                "value": "4",
+                "label": "33.33333333%"
+              },
+              {
+                "value": "3",
+                "label": "25%"
+              },
+              {
+                "value": "15",
+                "label": "20%"
+              },
+              {
+                "value": "2",
+                "label": "16.666667%"
+              }
+            ]
+          },
+         {
+           "type": "select",
+           "id": "grid_columns_xs",
+           "label": "Columns Mobile",
+           "default": "6",
+           "options": [
+             {
+               "value": "12",
+               "label": "100%"
+             },
+             {
+               "value": "6",
+               "label": "50%"
+             }
+           ]
+         }
+        ]
+      }
+    ]
+  }
+{% endschema %}

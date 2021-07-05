@@ -1,0 +1,13 @@
+{%- assign image = settings.other_page_bg_image -%}
+{%- assign color_scheme = settings.other_page_color -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.other_overlay}} pr oh{%- if settings.use_parallax_other_page %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{page.title}}</h1>
+      </div>
+   </div>
+</div>
+<div class="container container_page mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+	{{ page.content }}
+</div>

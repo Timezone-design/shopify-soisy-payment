@@ -1,0 +1,327 @@
+{%- assign sett_title = section.settings.title -%}
+{%- assign product_image_zoom_size = 'master' -%}
+{%- assign product_image_scale = '2' -%}
+{%- case section.settings.categories_layout -%}
+   {%- when 'default' -%}
+      {%- assign layout = "categories-style-default" -%}
+   {%- when 'masonry' -%}
+      {%- assign  layout = "categories-style-masonry categories-masonry" -%}
+   {%- when 'masonry_first' -%}
+      {%- assign layout = "categories-style-masonry-first categories-masonry" -%}
+   {%- when 'carousel' -%}
+      {%- assign layout = "categories-style-carousel" -%}
+{%- endcase -%}
+<h3 class="mt__30 pr">Demo:</h3>
+{%- capture html -%}
+  {%- assign index = 0 -%}
+  {%- for block in section.blocks -%}
+	 {%- assign collection = collections[block.settings.collection] -%}
+	 {%- assign number = collection.all_products_count  -%}
+	 {%- assign image = block.settings.image -%}
+    {%- if image != blank -%}
+      {%- assign index = index | plus:1 -%}
+      {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+      src{{index}}="{{image | img_url: '50x50'}}" img_url{{index}}="{{img_url}}" aspectratio{{index}}="{{image.aspect_ratio}}" alt{{index}}="{{ image.alt | default:shop.name }}" url{{index}}="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}" size{{index}}="{{image.width}}x{{image.height}}" gird{{index}}="{{block.settings.grid_column}}" md{{index}}="{{block.settings.grid_columns_md}}" xs{{index}}="{{block.settings.grid_columns_xs}}"
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<code>
+  <!-- Shortcode lookbook --> 
+[gallery title="{{sett_title}}" total="{{section.blocks.size}}" space="{{ section.settings.space_categories }}" layout="{{ section.settings.categories_layout }}" design="nt_cat_default" txt_count="{{ section.settings.categories_count }}" txt_view="{{ section.settings.categories_view }}"{%- if section.settings.categories_layout == 'carousel' %} cols="{{section.settings.sidetoshow}}" autoplay="{{ section.settings.use_autoplay }}" autoplaySpeed="{{ section.settings.slider_speed }}000" infinite="{{section.settings.use_loop}}" arrows="{{section.settings.use_arrows}}" dots="{{section.settings.use_dots}}" 1024="{{ section.settings.sidetoshow_first}}" 600="{{ section.settings.sidetoshow_center}}" 480="{{ section.settings.sidetoshow_last}}"{%- endif %} {{html | strip_newlines | remove: "  "}} ]
+ <!-- / Shortcode lookbook -->
+</code>
+<h3 class="mt__30 pr">Demo:</h3>
+{%- if sett_title != blank -%}
+<div class="mt__50 mb__40 nt_separator nt_separator_align_center nt_sep_width_100 nt_sep_double nt_sep_pos_align_center nt_sep_color_grey nt_custom_1479922305779 nt_separator-has-text">
+   <span class="nt_sep_holder nt_sep_holder_l"><span class="nt_sep_line"></span></span>
+   <h4>{{ sett_title }}</h4>
+   <span class="nt_sep_holder nt_sep_holder_r"><span class="nt_sep_line"></span></span>
+</div>
+{%- endif -%}
+<div class="nt_custom_{{section.id}} nt-sc-wc-categories">
+  <div class="SlickPhotoswipGallery row {{ layout }} categories-space-{{ section.settings.space_categories }}{%- if section.settings.categories_layout == 'carousel' %} nt-carousel{%- endif -%}"{%- if section.settings.categories_layout == 'carousel' %} data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "speed": {{ section.settings.speed }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'{%- endif -%}>
+    {%- for block in section.blocks -%}
+     {%- assign block_image = block.settings.image -%}
+     {%- if block_image != blank -%}
+     <figure data-src="{{ block_image | img_url: product_image_zoom_size, scale: product_image_scale }}" data-size="{{block_image.width}}x{{block_image.height}}" class="ck_nt_cl col-lg-{{block.settings.grid_column}} col-md-{{block.settings.grid_columns_md}} col-{{block.settings.grid_columns_xs}} nt_cat_default nt-item-category spb_animate" {{ block.shopify_attributes }}>
+        <div class="nt-cat-content">
+         <a href="javascript:void(0);" class="nt-cat-url">
+            <div class="nt-cat-thumb">
+             {%- assign img_url = block_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+             <img src="{{ block_image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[157, 270, 303, 370, 377, 670, 570, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ block_image.aspect_ratio }}"  data-sizes="auto" class="lazyload w__100 attachment-shop_catalog size-shop_catalog" alt="{{block_image.alt | default:shop.name}}" >
+             <div class="nt-wrap-lazy"></div>
+            </div>
+          </a>
+       </div>
+     </figure >
+     {%- endif -%}
+     {%- endfor -%}
+     {%- if section.settings.categories_layout != 'carousel' and section.settings.categories_layout != 'default' -%}<div class="col-lg-3 nt-item-category hide"></div>{%- endif -%}
+  </div>
+ {%- if section.blocks.size == 0 -%}
+  {%- include 'no-blocks' -%}
+   {%- endif -%}
+</div>
+{%- schema -%}
+  {
+    "name": "5. Image Gallery",
+    "class": "nt-section nt_gallery_img",
+    "max_blocks":30,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Gallery"
+      },
+      {
+        "type": "select",
+        "id": "categories_layout",
+        "options": [
+            {
+               "value": "default",
+               "label": "Default"
+             },
+             {
+               "value": "masonry",
+               "label": "Masonry"
+             },
+             {
+               "value": "masonry_first",
+               "label": "Masonry (with first wide)"
+             },
+             {
+               "value": "carousel",
+               "label": "Carousel"
+             }
+           ],
+           "label": "Layout",
+           "default": "default"
+         },
+         {
+           "type": "select",
+           "id": "space_categories",
+           "options": [
+            {
+               "value": "30",
+               "label": "30"
+             },
+             {
+               "value": "20",
+               "label": "20"
+             },
+             {
+               "value": "10",
+               "label": "10"
+             },
+             {
+               "value": "6",
+               "label": "6"
+             },
+             {
+               "value": "2",
+               "label": "2"
+             },
+             {
+               "value": "0",
+               "label": "0"
+             }
+           ],
+           "label": "Space between categories",
+           "default": "30"
+         },
+      {
+       "type": "header",
+       "content": "== settings Slider ( Only for Carousel layout )"
+      },
+{
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+{
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "speed",
+        "min": 100,
+        "max": 1000,
+        "step": 100,
+        "label": "Slide/Fade animation speed",
+        "default": 300
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 4
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+             "type": "image_picker",
+             "id": "image",
+             "label": "Image"
+           },
+          {
+           "type": "header",
+           "content": "not support for Carousel layout:"
+          },
+          {
+            "type": "select",
+            "id": "grid_column",
+            "label": "Columns",
+            "default": "3",
+            "options": [
+              {
+               "value": "8",
+               "label": "66.66666667%"
+              },
+              {
+                "value": "6",
+                "label": "50%"
+              },
+              {
+                "value": "4",
+                "label": "33.33333333%"
+              },
+              {
+                "value": "3",
+                "label": "25%"
+              },
+              {
+                "value": "15",
+                "label": "20%"
+              },
+              {
+                "value": "2",
+                "label": "16.666667%"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "grid_columns_md",
+            "label": "Columns tablet",
+            "default": "4",
+            "options": [
+              {
+               "value": "8",
+               "label": "66.66666667%"
+              },
+              {
+                "value": "6",
+                "label": "50%"
+              },
+              {
+                "value": "4",
+                "label": "33.33333333%"
+              },
+              {
+                "value": "3",
+                "label": "25%"
+              },
+              {
+                "value": "15",
+                "label": "20%"
+              },
+              {
+                "value": "2",
+                "label": "16.666667%"
+              }
+            ]
+          },
+         {
+           "type": "select",
+           "id": "grid_columns_xs",
+           "label": "Columns Mobile",
+           "default": "6",
+           "options": [
+             {
+               "value": "12",
+               "label": "100%"
+             },
+             {
+               "value": "6",
+               "label": "50%"
+             }
+           ]
+         }
+        ]
+      }
+    ]
+  }
+{% endschema %}

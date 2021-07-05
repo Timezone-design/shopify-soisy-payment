@@ -1,0 +1,137 @@
+{%- assign settings_pr_img_size = settings.use_eq_height_blog_main -%}
+{%- assign number_of_comments = article.comments_count -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- assign block_width = 'col-lg-12' -%}
+{%- if settings.show_blog_sidebar -%}
+  {%- if settings.blog_sidebar_layout == 'left' -%}
+     {%- assign block_width = 'col-lg-9 order-12' -%}
+     {%- assign class_sidebar = 'col-lg-3 order-1' -%}
+  {%- else -%}
+     {%- assign block_width = 'col-lg-9' -%}
+     {%- assign class_sidebar = 'col-lg-3' -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign image = article.image -%}
+{%- if image == blank -%}{%- assign image = settings.blog_bg_image -%}{%- endif -%}
+{%- assign color_scheme = settings.blog_color -%}
+<div class="{{color_scheme}} shop-content-area collection_header with_term_description bg_overlay_{{settings.blog_overlay}} pr oh{%- if settings.use_parallax_blog %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{article.title }}</h1>
+         <div class="mt__5{%- if settings.show_blog_sidebar == false %} mb__15{%- endif -%}">
+		    {{ article.published_at | date: format: 'month_day_year' }}
+		    <span>·</span>
+		    <span class="article-author">{{ 'blogs.article.by' | t }} {{ article.author }}</span>
+		    {% if blog.comments_enabled? %}
+		    <span>·</span>
+		    <a href="{{ article.url }}#comments">{{ 'blogs.comments.with_count' | t: count: article.comments_count }}</a>
+		    {%- endif -%}
+		  </div>
+      </div>
+   </div>
+</div>
+<div class="container container_article container_cat mb__60{%- if settings.show_blog_sidebar == false %} without_sidebar{%- endif -%}">
+	<div class="row">
+		<div class="{{block_width}} col-12">
+			<article id="post-{{ article.id }}" class="post-{{ article.id }} post" itemscope itemtype="http://schema.org/Article">
+	           {%- include 'shortcode' load: article.content -%}
+	        </article><!-- #post-# {{ article.id }} -->
+	        {%- if settings.show_share_btn_articles -%}
+	        {%- if settings.share_type_articles == 'Follow' -%}{%- assign gl_follow_social = true -%}{%- else -%}{%- assign gl_follow_social = false -%}{%- endif -%}
+	        <div class="article_social tc mt__40">
+	        	{%- include 'social-sharing',gl_design:'square',gl_size:'medium',follow_social:gl_follow_social,nt_tooltip:true -%}
+	        </div>
+	        {%- endif -%}
+	        {%- if settings.post_navigation -%}
+	         <nav class="post_navigation mt__40 flex alin_center c_between">
+				   <a class="post_prev{%- if blog.previous_article == blank %} op_0{%- endif -%}" href="{{ blog.previous_article }}" rel="prev">{{ 'blogs.article.prev_post' | t }}</a>
+				   <a class="post_blog" href="{{ blog.url }}">{{ 'blogs.article.back_blog' | t }}</a>
+				   <a class="post_next{%- if blog.next_article == blank %} op_0{%- endif -%}" href="{{ blog.next_article }}" rel="next">{{ 'blogs.article.next_post' | t }}</a>
+				</nav>
+	        {%- endif -%}
+	        {%- if blog.comments_enabled? -%}
+            <div id="comments" class="comments-area mb__60">
+                  {%- if number_of_comments > 0 -%}<h2 class="comments-title mt__50">{{ 'blogs.comments.with_count_comments' | t: count: article.comments_count}} {{ 'blogs.comments.comments_title_html' | t:article_title:article.title }}</h2>{%- endif -%}
+                  {%- if comment and comment.created_at -%}
+                     <p class="note form-success comment-awaiting-moderation">
+                        {%- if blog.moderated? -%}
+                           {{ 'blogs.comments.success_moderated' | t }}
+                        {%- else -%}
+                           {{ 'blogs.comments.success' | t }}
+                        {%- endif -%}
+                     </p>
+                  {%- endif -%}
+                  {%- if number_of_comments > 0 -%}
+                  {%- paginate article.comments by 5 -%}
+                  <ol class="comment-list">
+                     {%- for comment in article.comments -%}
+                        <li class="comment" id="{{ comment.id }}">
+                           <div class="comment-body">
+                              <div class="comment-author vcard">
+                                 <img alt="avatar" src="https://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}?s=80&d=mm&r=g" srcset="https://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}?s=160&d=mm&r=g 2x" class="avatar avatar-74 photo" height="74" width="74">        
+                                 <cite class="fn">{{ comment.author }}</cite> <span class="says">{{ 'blogs.comments.says' | t }}</span>     
+                              </div>
+                              <div class="comment-meta commentmetadata"><a href="{{ comment.url }}"><i class="fa fa-clock-o"></i> {{ comment.created_at | date: '%B %e, %Y at %R%P' }}</a></div>
+                              <p>{{ comment.content }}</p>
+                           </div>
+                        </li><!-- #comment-## -->
+                     {%- endfor -%}
+                  </ol><!-- .comment-list -->
+                  {%- if paginate.pages > 1 -%}
+                     {% include 'pagination',blog_ajax:true %}
+                  {%- endif -%}
+                  {%- endpaginate -%}
+                  {%- endif -%}
+                  <div id="respond" class="comment-respond">
+                     <h3 id="reply-title" class="comment-reply-title">{{ 'blogs.comments.title_reply' | t }}</h3>
+                     {%- form 'new_comment', article -%}
+                        <p>{{ form.errors | default_errors }}</p>
+                        {%- if customer and customer.name != blank and customer.email != blank -%}
+                           {%- if customer.name != blank -%}
+                              {%- assign customer_name = customer.name -%}
+                           {%- elsif customer.email != blank -%}
+                              {%- assign customer_name = customer.email -%}
+                           {%- endif -%}
+                        <p class="logged-in-as">
+                           <a href="/account" aria-label="{{ 'blogs.comments.Logged' | t: gl_customer:customer_name }}. Edit your profile.">{{ 'blogs.comments.Logged' | t: gl_customer:customer_name }}</a>. <a href="/account/logout">{{ 'blogs.comments.logout' | t }}</a>
+                        </p>
+                        {%- else -%}
+                        <p class="comment-notes">{{ 'blogs.comments.comments_note' | t }} <span class="required">*</span></p>
+                        {%- endif -%}
+                        <p class="comment-form-comment">
+                           <label for="CommentBody">{{ 'blogs.comments.message' | t }} <span class="required">*</span></label>
+                           <textarea id="CommentBody" {% if form.errors contains 'body' -%}class="input--error" {% endif -%}name="comment[body]" cols="45" rows="8" maxlength="65525" aria-required="true" required="required">{{ form.body }}</textarea>
+                        </p>
+                        {%- if customer and customer.name != blank and customer.email != blank -%}
+                        <p class="comment-form-author hide hidden">
+                           <label for="CommentAuthor">{{ 'blogs.comments.name' | t }} <span class="required">*</span></label>
+                           <input {% if form.errors contains 'author' -%}class="input--error" {% endif -%}type="text" required="required" size="30" value="{{ customer.name }}" name="comment[author]" id="CommentAuthor" maxlength="245" aria-required="true" required="required">
+                        </p>
+                        <p class="comment-form-email hide hidden">
+                           <label for="email">{{ 'blogs.comments.email' | t }} <span class="required">*</span></label>
+                           <input {% if form.errors contains 'email' -%}class="input--error" {% endif -%}type="email" size="30" value="{{ customer.email }}" name="comment[email]" id="CommentEmail" maxlength="100" aria-describedby="email-notes" aria-required="true" required="required">
+                        </p>
+                        {%- else -%}
+                        <p class="comment-form-author">
+                           <label for="CommentAuthor">{{ 'blogs.comments.name' | t }} <span class="required">*</span></label>
+                           <input {% if form.errors contains 'author' -%}class="input--error" {% endif -%}type="text" required="required" size="30" value="{{ form.author }}" name="comment[author]" id="CommentAuthor" maxlength="245" aria-required="true" required="required">
+                        </p>
+                        <p class="comment-form-email">
+                           <label for="email">{{ 'blogs.comments.email' | t }} <span class="required">*</span></label>
+                           <input {% if form.errors contains 'email' -%}class="input--error" {% endif -%}type="email" size="30" value="{{ form.email }}" name="comment[email]" id="CommentEmail" maxlength="100" aria-describedby="email-notes" aria-required="true" required="required">
+                        </p>
+                        {%- endif -%}
+                        <p class="form-submit">
+                           <input name="submit" type="submit" id="submit" class="submit" value="{{ 'blogs.comments.post' | t }}">
+                        </p>
+                     {%- endform -%}
+                  </div>
+                </div>
+           {%- endif -%}
+		</div>
+		{%- if settings.show_blog_sidebar -%}
+         <div class="sidebar {{class_sidebar}} col-12">{%- section 'section_sidebar_blog' -%}</div>
+      {%- endif -%}
+	</div>
+</div>

@@ -1,0 +1,52 @@
+{%- if linklists[product.handle].links.size == 0 and product.has_only_default_variant == false and product.variants.size > 1 -%}
+   {%- assign remove_unavailable = true -%}
+   {%- if product.available -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+   <script type="application/json" id="ProductJson-NT">
+   {%- include 'arr_pr' -%}
+   {{array | strip_newlines | remove:"  " }}
+  </script>
+  <script type="application/json" id="ProductJson-template">
+   {%- include 'json_arr' -%}
+  {{ json_arr | strip_newlines | remove:"  "}}
+  </script>
+{%- endif -%}
+{%- capture NTsettingspr -%}
+<script type="text/javascript">
+  var NTsettingspr = {
+     recently_viewed:{%- if settings.show_recently_products -%}true{%- else -%}false{%- endif -%},
+     ProductID:{{product.id | json}},
+     PrHandle:{{product.handle | json}},
+     cat_handle:{%- if collection -%}{{ '+' |append: collection.handle | json}}{%- else -%}""{%- endif -%},
+     scrolltop:{{settings.scrolltop | json}},
+     {%- if images_alt contains 'nt_360' -%}
+      {%- assign check_360 = false -%}
+      {%- capture _array_view_360 -%}
+         {%- for image in product.images -%}
+             {%- if check_360 -%}
+               {{image.src | img_url: "master" }}{%- if forloop.last == false -%},{%- endif -%}
+            {%- elsif image.alt contains 'nt_360' -%}
+               {%- assign image_first = image -%}
+               {{image.src | img_url: "master" }}
+               {%- assign check_360 = true -%}
+            {%- endif -%}
+         {%- endfor -%}
+      {%- endcapture -%}
+      {%- assign array_view_360 = _array_view_360 | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}
+      {%- assign image_first_width = image_first.width -%}
+     ThreeSixty:true,
+     totalFrames: {{array_view_360.size | json }},
+     endFrame: {{array_view_360.size | json }},
+     imgArray: {{array_view_360 | json}},
+     height: {{ image_first.height | json }},
+     width: {{ image_first.width | json }},
+     {%- else -%}
+     ThreeSixty:false,
+     {%- endif -%}
+     hashtag:{%- if product.metafields.meta.hashtag != blank -%}{{product.metafields.meta.hashtag | json}}{%- else -%}"none"{%- endif -%},
+     access_token:{%- if product.metafields.meta.access_token != blank -%}{{product.metafields.meta.access_token | json}}{%- else -%}"none"{%- endif -%},
+     username:{%- if product.metafields.meta.username != blank -%}{{product.metafields.meta.username | json}}{%- else -%}"none"{%- endif -%}
+  };
+</script>
+ {%- endcapture -%}
+{{ NTsettingspr | strip_newlines | remove: '  ' }}
+{%- if images_alt contains 'nt_360' and image_first_width < 700 -%}<style>.product-360-view-wrapper {max-width: {{image_first_width}}px;}</style>{%- endif -%}

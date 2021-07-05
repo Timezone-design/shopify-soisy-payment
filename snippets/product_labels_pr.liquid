@@ -1,0 +1,7 @@
+<span class="tu tc nt_labels nt_label_{{settings.label_settings}} flex pa">
+  {%- if settings.use_sale_label and product.has_only_default_variant == false and product.variants.size > 1 -%}{%- if settings.label_sale_style == '1' -%}<span class="nt-label onsale pr_onsale" style="display: none;">{{ 'products.product.on_sale' | t }}</span>{%- else-%}<span class="onsale nt-label pr_onsale" style="display: none;"><span></span></span>{%- endif -%}{%- endif -%}
+  {%- if settings.use_sale_label and on_sale and product.variants.size <= 1 -%}{%- if settings.label_sale_style == '1' -%}<span class="nt-label onsale pr_onsale"><span>{{ 'products.product.on_sale' | t }}</span></span>{%- else-%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<span class="onsale nt-label pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>{%- endif -%}{%- endif -%}
+  {%- if hot and settings.use_hot_label -%}<span class="nt-label hot"><span>{{ 'products.product.hot' | t }}</span></span>{%- endif -%}
+  {%- if new_label and settings.use_new_label -%}<span class="nt-label new"><span>{{ 'products.product.new' | t }}</span></span>{%- endif -%}
+  {%- if sold_out and settings.use_sold_out_label -%}<span class="nt-label out-of-stock"><span>{{ 'products.product.sold_out' | t }}</span></span>{%- endif -%}
+</span>

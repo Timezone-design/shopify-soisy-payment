@@ -1,0 +1,1052 @@
+{%- if settings.pop_style == 'pop_default' -%}
+{%- assign pop_default = true -%}
+{%- else -%}
+{%- assign pop_default = false -%}
+{%- endif -%}
+{%- assign check_tag = false -%}
+{%- if current_tags != blank -%}
+  {%- assign all_tags_downcase = collection.tags | downcase -%}
+  {%- assign check_tag = true -%}
+  {%- assign list_current_tag = '' -%}
+  {%- for current_tag in current_tags -%}
+      {%- assign current_tag_downcase = current_tag | downcase -%}
+      {%- assign list_current_tag = list_current_tag | append:current_tag_downcase | append:',' -%}
+   {%- endfor -%}
+   {%- assign current_tags = list_current_tag | split:',' -%}
+{%- else -%}
+   {%- assign all_tags_downcase = collection.all_tags | downcase -%}
+{%- endif -%}
+{%- assign current_tag_downcase = current_tags | downcase -%}
+{%- if pop_default %}
+	{%- case section.blocks.size -%}
+	   {%- when 1 -%}{%- assign class_md = '12' -%}
+	   {%- when 2 -%}{%- assign class_md = '6' -%}
+	   {%- when 3 -%}{%- assign class_md = '4' -%}
+	   {%- else -%}{%- assign class_md = '3' -%}
+	{%- endcase -%}
+{%- endif -%}
+{%- assign arrbrand = '' -%}
+{%- assign arrcolor = '' -%}
+{%- assign arrsize = '' -%}
+{%- assign arrtag = '' -%}
+{%- assign arrprice = '' -%}
+{%- assign arrother = '' -%}
+{%- assign arrother2 = '' -%}
+{%- assign arrother3 = '' -%}
+{%- for tag in collection.all_tags -%}
+   {%- assign tag_dow = tag | downcase -%}
+   {%- for block in section.blocks -%}
+      {%- case block.type -%}
+	      {%- when 'brand' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+		      {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+		      {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+		      {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrbrand = arrbrand | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- when 'color' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			      {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrcolor = arrcolor | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- when 'size' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+		        {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+		        {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrsize = arrsize | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- when 'tag' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+			    {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_'| downcase  -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrtag = arrtag | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- when 'price' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+			    {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrprice = arrprice | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- when 'other' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+			    {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrother = arrother | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- when 'other2' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+			    {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrother2 = arrother2 | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+	      {%- else -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+			    {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			      {%- if tag_dow contains key or tag_dow contains key_2 or tag_dow contains key_3 -%}
+		               {%- assign arrother3 = arrother3 | append:tag_dow |append:',' -%}
+		         {%- endif -%}
+	         {%- endif -%}
+      {%- endcase -%}
+   {%- endfor -%}  
+{%- endfor -%}
+{%- assign check_tag_hide_all = true -%}
+<div class="{%- if pop_default -%}row{%- else -%}filter-content nt-scroll{%- endif -%}"><h3 class="nt-z-index_44 pr oh mg__0 tu ls__2 tr fwb close-filter"><span class="fs__13 pr cusor_pointer">{{ 'collections.filters.close' | t }}<i class="pe-7s-close pa fs__30"></i></span></h3>{%- if pop_default == false -%}<div class="nt-scroll-content">{%- endif -%}
+	{%- for block in section.blocks -%}
+	   {%- case block.type -%}
+	      {%- when 'brand' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrbrand | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>{%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="nt-scroll-content yith-wcan-label yith-wcan yith-wcan-group">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										       <li>{{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      <li>{{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      <li>{{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+			         </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+	      {%- when 'color' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrcolor | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="nt-scroll-content yith-wcan-color yith-wcan yith-wcan-group nt_filter_color">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- assign tag_handle = tag | handleize -%}
+											{%- assign class_name = '<div class="filter-swatch bg_color_' | append: tag_handle | append: '"></div>' | append:tag_key | append:'</a>' -%}
+						         	   {%- if block.settings.use_auto_filter_tag and current_tag_downcase contains tag_downcase -%}
+									         {%- assign tag_handle = tag_key | handleize -%}
+									         {%- assign class_name = '<div class="filter-swatch bg_color_' | append: tag_handle | append: '"></div>' | append:tag_key | append:'</a>' -%}
+											   <li class="chosen remove_tag">{{ '' | link_to_remove_tag: tag_dow | replace: '</a>', class_name | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+						         	   {%- elsif current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ '' | link_to_remove_tag: tag_dow | replace: '</a>', class_name | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+									         {%- assign tag_handle = tag_key | handleize -%}
+									         {%- assign class_name = '<div class="filter-swatch bg_color_' | append: tag_handle | append: '"></div>' | append:tag_key | append:'</a>' -%}
+										       <li>{{ '' | link_to_add_tag: tag_dow | replace: '</a>', class_name | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ '' | link_to_add_tag: tag_dow | replace: '</a>', class_name | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      {%- assign tag_handle = tag_key | handleize -%}
+												{%- assign class_name = '<div class="filter-swatch bg_color_' | append: tag_handle | append: '"></div>' | append:tag_key | append:'</a>' -%}
+										      <li>{{ '' | link_to_add_tag: tag | replace: '</a>', class_name | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- assign tag_dow = tag | downcase -%}
+											   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      {%- assign tag_handle = tag | handleize -%}
+												   {%- assign class_name = '<div class="filter-swatch bg_color_' | append: tag_handle | append: '"></div>' | append:tag_key | append:'</a>' -%}
+												   <li>{{ '' | link_to_tag: tag_dow | replace: '</a>', class_name | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+										   {%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+	      {%- when 'size' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrsize | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget widget_size yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="nt-scroll-content {% if block.settings.style == '1' -%}yith-wcan-list yith-wcan size{% else -%}yith-wcan-label yith-wcan yith-wcan-group{% endif -%}">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank  and all_tags_downcase contains tag_downcase -%}
+										       <li>{{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_dow |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+									   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+									   {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+									      {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      <li>{{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag_dow |append:',' -%}
+											      <li>{{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+		   {%- when 'tag' -%}
+		      {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrtag | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget widget_tag_cloud yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="tagcloud entry-content">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   {{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'class="chosen remove_tag" aria-label=' }}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										       {{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   {{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      {{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label='}}
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      {{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label='}}
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+	      {%- when 'price' -%}
+	         {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrprice | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="yith-wcan nt-scroll-content">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										       <li>{{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      <li>{{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      <li>{{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+		   {%- when 'other' -%}
+		      {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrother | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="yith-wcan nt-scroll-content">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										       <li>{{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      <li>{{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      <li>{{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+		   {%- when 'other2' -%}
+		      {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrother2 | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="yith-wcan nt-scroll-content">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										       <li>{{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      <li>{{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      <li>{{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+		   {%- when 'other3' -%}
+		      {%- if block.settings.use_auto_filter_tag -%}
+	            {%- assign key = block.settings.key | default:'nttzzz' | append:' ' | downcase -%}
+	            {%- assign key_2 = block.settings.key | default:'nttzzz' | append:'_' | downcase -%}
+			    {%- assign key_3 = block.settings.key | default:'nttzzz' | append:'-' | downcase -%}
+			    {%- assign tags = arrother | split: ',' | uniq -%}
+            {%- else -%}
+               {%- assign tags = block.settings.arra_enter | replace: ' ,', ',' | replace: ', ', ',' | split: ',' | uniq -%}
+            {%- endif -%}
+	         {%- if tags.size > 0 and block.settings.hidden_block == false -%}
+		         <aside id="yith-woo-ajax-navigation-{{block.id}}" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-navigation shopify widget_layered_nav{%- if pop_default %} col-12 col-md-6 col-lg-{{class_md}}{%- endif -%}">
+			         {%- if pop_default -%}<h4 class="pr tu widget-title fwsb fs__16 mb__25">{{ block.settings.title }}</h4>
+			         {%- else -%}<h3 class="pr tu widget-title fwsb fs__16 mb__25 tu fwsb tab-heading">{{ block.settings.title }}</h3>
+			         {%- endif -%}
+			         {%- assign check_tag_hide = true -%}
+			         <div class="nt-scroll entry-content">
+				         <ul class="yith-wcan nt-scroll-content">
+				         	{%- assign arr_check = '' -%}
+				         	{%- if current_tags.size > 0 or check_tag -%}
+					         	{%- for tag in tags -%}
+					         	   {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+					         	   {%- unless arr_check contains tag_key -%}
+						         	   {%- assign tag_dow = tag | downcase -%}
+						         	   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+						         	   {%- if current_tag_downcase contains tag_downcase -%}
+											   <li class="chosen remove_tag">{{ tag_key | link_to_remove_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										       <li>{{ tag_key| link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										       {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										       {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										   {%- elsif all_tags_downcase contains tag_downcase -%}
+											   <li>{{ tag | link_to_add_tag: tag_dow | replace: 'title=', 'aria-label=' }}</li>
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+										   {%- endif -%}
+										{%- endunless -%}
+									{%- endfor -%}
+								{%- else -%}
+								   {%- for tag in tags -%}
+								      {%- assign tag_dow = tag | downcase -%}
+						         	{%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+								      {%- assign tag_key = tag | remove:key_3 | remove:key_2 | remove:key -%}
+								      {%- unless arr_check contains tag_key -%}
+										   {%- assign tag_dow = tag | downcase -%}
+										   {%- assign tag_downcase = tag_dow | append: '"' | prepend: '"'-%}
+										   {%- if block.settings.use_auto_filter_tag and tag != blank and all_tags_downcase contains tag_downcase -%}
+										      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+										      {%- assign arr_check = arr_check | append:tag_key |append:',' -%}
+										      <li>{{ tag_key | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+										   {%- else -%}
+											   {%- if all_tags_downcase contains tag_downcase -%}
+											      {%- assign check_tag_hide = false -%}{%- assign check_tag_hide_all = false -%}
+											      {%- assign arr_check = arr_check | append:tag |append:',' -%}
+											      <li>{{ tag | link_to_add_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+											   {%- endif -%}
+											{%- endif -%}
+										{%- endunless -%}
+								   {%- endfor -%}
+								{%- endif -%}
+				         </ul>
+				      </div>
+			      </aside>
+			      {%- if check_tag_hide -%}<style type="text/css">#yith-woo-ajax-navigation-{{block.id}}{display: none}</style>{%- endif -%}
+		      {%- endif -%}
+	   {%- endcase -%}
+	{%- endfor -%}
+   {%- if current_tags.size > 1 and settings.pop_style == 'nt_pop_sidebar' -%}
+   <aside id="yith-woo-ajax-reset-navigation-2" class="sp-toogle active widget yith-shopify-ajax-product-filter mb__30 yith-woo-ajax-reset-navigation yith-woo-ajax-navigation shopify widget_layered_nav">
+	   <div class="yith-wcan"><a class="yith-wcan-reset-navigation button" href="/collections/{{collection.handle}}">{{ 'collections.filters.all_reset' | t }}</a></div>
+	</aside>
+   {%- endif -%}
+  {%- if check_tag_hide_all -%}<style type="text/css">.nt_filter {display: none}</style>{%- endif -%}
+  {%- if section.blocks.size == 0 -%}
+    {%- include 'no-blocks' -%}
+   {%- endif -%}
+{%- if pop_default == false -%}</div>{%- endif -%}</div>
+{%- schema -%}
+  {
+    "name": "Filter Sidebar",
+    "class": "nt_ajaxFilter sp-toogles clearfix",
+    "max_blocks": 20,
+    "blocks": [
+      {
+        "type": "brand",
+        "name": "By Brand",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Brand"
+          },
+          {
+           "type": "textarea",
+           "id": "arra_enter",
+           "label": "Shop by tags list",
+           "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+         },
+         {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Vendor",
+          "default":"Vendor"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "color",
+        "name": "By Color",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Color"
+          },
+          {
+           "type": "textarea",
+           "id": "arra_enter",
+           "label": "Shop by tags list",
+           "default":"Red,White,Brown,Blue, Black, Green, Grey, Sliver,Pink",
+           "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+         },
+         {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Color",
+          "default":"Color"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "size",
+        "name": "By Size",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Size"
+          },
+          {
+	        "type": "select",
+	        "id": "style",
+	        "options": [
+	          {
+	            "value": "1",
+	            "label": "Style 1"
+	          },
+	          {
+	            "value": "2",
+	            "label": "Style 2"
+	          }
+	        ],
+	        "label": "Style: ",
+	        "default": "1"
+	      },
+          {
+           "type": "textarea",
+           "id": "arra_enter",
+           "label": "Shop by tags list",
+           "default":"L,M,S,XL,XS",
+           "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+         },
+         {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Size",
+          "default":"Size"
+          },
+          { 
+          "type":"text",
+          "id":"key_2",
+          "label":"Filter key word 2",
+          "placeholder": "Sizes"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "tag",
+        "name": "By Tag",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Tag"
+          },
+          {
+           "type": "textarea",
+           "id": "arra_enter",
+           "label": "Shop by tags list",
+           "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+         },
+         {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Tag",
+          "default":"Tag"
+          },
+          { 
+          "type":"text",
+          "id":"key_2",
+          "label":"Filter key word 2",
+          "placeholder": "Tags"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "price",
+        "name": "By Price",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Price"
+          },
+           {
+              "type": "textarea",
+              "id": "arra_enter",
+              "label": "Shop by tags list",
+              "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+            },
+          {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Price",
+          "default":"Price"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "other",
+        "name": "By Other",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Other"
+          },
+           {
+              "type": "textarea",
+              "id": "arra_enter",
+              "label": "Shop by tags list",
+              "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+            },
+          {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Other",
+          "default":"Other"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "other2",
+        "name": "By Other 2",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Other 2"
+          },
+           {
+              "type": "textarea",
+              "id": "arra_enter",
+              "label": "Shop by tags list",
+              "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+            },
+          {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Other",
+          "default":"Other"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      },
+      {
+        "type": "other3",
+        "name": "By Other 3",
+        "limit": 1,
+        "settings": [
+          {
+	        "type": "checkbox",
+	        "id": "hidden_block",
+	        "label": "Hidden block?",
+	        "info": "if checked block will be set to hidden.",
+	        "default": false
+	      },
+          { 
+          "type":"text",
+          "id":"title",
+          "label":"Filter by categories title",
+          "default":"By Other 3"
+          },
+           {
+              "type": "textarea",
+              "id": "arra_enter",
+              "label": "Shop by tags list",
+              "info": "Separate by a comma, i.e \"Tag1, Tag2, Tag3\"."
+            },
+          {
+          "type": "checkbox",
+          "id": "use_auto_filter_tag",
+          "label": "Use auto filter groups?",
+          "default": false
+         },
+         { 
+          "type":"text",
+          "id":"key",
+          "label":"Filter key word",
+          "placeholder": "Other",
+          "default":"Other"
+          },
+         {
+          "type": "paragraph",
+          "content": "Create tag filter groups in Shopify. This snippet is designed to group and separate out collection tags. Use admin extensions"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

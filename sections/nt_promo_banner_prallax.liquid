@@ -1,0 +1,316 @@
+{%- include 'style_mp_section' -%}
+<div class="nt_custom_{{section.id}} nt-banner-parallax bg_overlay_{{section.settings.overlay}}{%- if section.settings.use_parallax %} ntparallax{%- endif %}{%- if section.settings.image != blank %} lazyload nt_bg_lz lazypreload{%- endif %}{%- if section.settings.full_height %} nt-full-height{%- endif -%}"{%- if section.settings.image != blank %} data-bgset="{%- include 'bgset', image: section.settings.image -%}" data-sizes="auto" data-parent-fit="cover"{%- endif %}>
+   <div class="div_overlay"></div>
+   <div class="container clearfix nt-z-index_44">
+      <div class="row">
+         <div class="col-12 tc">
+                  {%- if section.settings.title != blank -%}<h3 class="title_1 mt__20 fs__18 lh__1 f__libre tc cw">{{ section.settings.title }}</h3>{%- endif -%}
+                  {%- if section.settings.title_last != blank -%}<h2 class="title_2 tu fs__60 mt__20 mb__20 fwbex lh__1 cw tc">{{ section.settings.title_last }}</h2>{%- endif -%}
+                  {%- if section.settings.link != blank and section.settings.button != blank -%}<a class="fwb button button-o-w cw mb__20" href="{{section.settings.link}}" target="_blank">{{section.settings.button}}</a>{%- endif -%}
+         </div>
+      </div>
+   </div>
+</div>
+<style>
+{%- if section.settings.font_title != blank -%}
+  {%- assign header_font = section.settings.font_title -%}
+  {{ header_font | font_face }}
+{%- endif -%}
+{%- if section.settings.font_title_2 != blank -%}
+  {%- assign base_font = section.settings.font_title_2 -%}
+  {{ base_font | font_face }}
+{%- endif -%}
+{%- if section.settings.font_title_3 != blank -%}
+  {%- assign btn_font = section.settings.font_title_3 -%}
+  {{ btn_font | font_face }}
+{%- endif -%}
+.nt_custom_{{section.id}} .title_1{
+  font-size:{{section.settings.size_text_1}}px;
+{%- if section.settings.font_title_2 != blank -%}
+  font-family: {{ header_font.family }}, {{ header_font.fallback_families }};
+  font-style: {{ header_font.style }};
+  font-weight: {{ header_font.style }};
+{%- endif -%}
+}
+.nt_custom_{{section.id}} .title_2{
+  font-size:{{section.settings.size_text_2}}px;
+{%- if section.settings.font_title_2 != blank -%}
+  font-family: {{ base_font.family }}, {{ base_font.fallback_families }};
+  font-style: {{ base_font.style }};
+  font-weight: {{ base_font.style }};
+{%- endif -%}
+}
+.nt_custom_{{section.id}} .button-o-w{
+  font-size:{{section.settings.size_text_3}}px;
+{%- if section.settings.font_title_3 != blank -%}
+  font-family: {{ btn_font.family }}, {{ btn_font.fallback_families }};
+  font-style: {{ btn_font.style }};
+  font-weight: {{ btn_font.style }};
+{%- endif -%}
+}
+@media (max-width: 767px) {
+.nt_custom_{{section.id}} .title_1{
+  font-size:{{section.settings.size_text_1_mb}}px
+}
+.nt_custom_{{section.id}} .title_2{
+  font-size:{{section.settings.size_text_2_mb}}px
+}
+.nt_custom_{{section.id}} .button-o-w{
+  font-size:{{section.settings.size_text_3_mb}}px
+}
+}
+</style>
+{% schema %}
+  {
+    "name": "Promotion Banner Parallax",
+    "class": "nt-section nt_promo_banner_parallax spb_animate",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Background Image"
+      },
+      {
+        "type": "color",
+        "id": "section_bg_color",
+        "label": "Background color",
+        "default": "#ddd"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_height",
+        "label": "Full height row?",
+        "info": "if checked row will be set to full height.",
+        "default": false
+      },
+      {
+         "type": "header",
+         "content": "== CUSTOMIZE YOUR TEXT"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "===== Title 1: ",
+        "default": "Spring – Summer 2018"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_title",
+        "label": "Font Family Title 1",
+        "default": "nunito_sans_n4"
+      },
+      {
+        "type": "range",
+        "id": "size_text_1",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "label": "Title 1 Font size",
+        "unit": "px",
+        "default": 60
+      },
+      {
+        "type": "range",
+        "id": "size_text_1_mb",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "label": "Title 1 Font size Mobile",
+        "unit": "px",
+        "default": 30
+      },
+      {
+        "type": "text",
+        "id": "title_last",
+        "label": "===== Title 2: ",
+        "default": "FLASH SALE OFF 70%"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_title_2",
+        "label": "Font Family Title 2",
+        "default": "nunito_sans_n4"
+      },
+      {
+        "type": "range",
+        "id": "size_text_2",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "label": "Title 2 Font size",
+        "unit": "px",
+        "default": 28
+      },
+      {
+        "type": "range",
+        "id": "size_text_2_mb",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "label": "Title 2 Font size Mobile",
+        "unit": "px",
+        "default": 26
+      },
+      {
+        "type": "text",
+        "id": "button",
+        "label": "===== Button Title: ",
+        "default": "Shop Now"
+      },
+      {
+        "type":"url",
+        "id":"link",
+        "label":"Link",
+        "info": "Optional"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_title_3",
+        "label": "Font Family Button",
+        "default": "nunito_sans_n4"
+      },
+      {
+        "type": "range",
+        "id": "size_text_3",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "label": "Button Font size",
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "size_text_3_mb",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "label": "Button Font size Mobile",
+        "unit": "px",
+        "default": 14
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      },
+      {
+        "type": "header",
+        "content": "== Elessi Extras"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_parallax",
+        "label": "Use Elessi parallax?",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "overlay",
+        "label": "Background overlay",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "%"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Promotion Banner Parallax",
+        "category": "4. IMAGE"
+      }
+    ]
+  }
+{% endschema %}

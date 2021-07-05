@@ -1,0 +1,22 @@
+{%- assign page_pr_img_size = settings.use_eq_nav_height -%}
+ {%- if page_pr_img_size -%}
+		{%- for image in product.images -%}
+			 {%- assign alt = image.alt -%}
+			 {%- if alt contains 'nt_360' -%}{%- break -%}{%- endif -%}
+			 {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+			 {%- assign img_alt = image.alt | split:'|' | first | handleize | strip -%}
+					 <div class="{%- if ck_thumb -%}bc_{{img_alt}}{%- endif -%}">
+							<span class="nt-pr_nav-image-equal lazyload" data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover">
+							<img class="hide op_0 attachment-shop_single size-shop_single sp-post-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-image-id="{{ image.id }}" data-variant_ava="{{image.variants.first.available }}" data-variant_id="{{image.variants.first.id}}" alt="{{ image.alt | split:'|' | last | escape }}">
+							</span>
+					 </div>
+		{%- endfor -%}
+ {%- else -%}
+		{%- for image in product.images -%}
+			 {%- assign alt = image.alt -%}
+			 {%- if alt contains 'nt_360' -%}{%- break -%}{%- endif -%}
+			 {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+			 {%- assign img_alt = image.alt | split:'|' | first | handleize | strip -%}
+					<div class="{%- if ck_thumb -%}bc_{{img_alt}}{%- endif -%}"><img class="attachment-shop_single size-shop_single sp-post-image lazyload{%- unless featured_image == image %} lazypreload{%- endunless -%}" src="{{ image | img_url: '50x50' }}" data-variant_ava="{{image.variants.first.available }}" data-image-id="{{ image.id }}" data-variant_id="{{image.variants.first.id}}" data-src="{{ img_url }}"  data-widths="[80 ,90, 180]" data-aspectratio="{{ image.aspect_ratio }}" data-sizes="auto" alt="{{ image.alt | escape }}"></div>
+		{%- endfor -%}
+ {%- endif -%}

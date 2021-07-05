@@ -1,0 +1,120 @@
+{%- assign current_variant = product -%}
+{%- include 'nt_check_label' -%}
+{%- include 'nt_check_color' -%}
+{%- unless collection -%}
+{%- assign collection = product.collections.last -%}
+{%- endunless -%}
+{%- unless show_vendor -%}
+{%- assign show_vendor = false -%}
+{%- endunless -%}
+{%- unless class_lg -%}
+{%- assign class_lg = '4' -%}
+{%- endunless -%}
+{%- unless class_xs -%}
+{%- assign class_xs = '6' -%}
+{%- endunless -%}
+{%- unless settings_pr_img_size -%}
+{%- assign settings_pr_img_size = false -%}
+{%- endunless -%}
+{%- unless settings_metro_img_size -%}
+{%- assign settings_metro_img_size = false -%}
+{%- endunless -%}
+{%- assign user_countdown = '' -%}
+{%- assign url_nt_bl = false -%}
+{%- assign url_nt = product.url -%}
+{%- if product.metafields.external -%}
+  {%- assign check = product.metafields.external | first | last -%}
+  {%- if check contains 'https:' or check  contains 'http:' -%}{%- assign check_external = true -%}{%-else-%}{%- assign check_external = false -%}{%-endif-%}
+{%-endif-%}
+{%- capture url_js -%}/products/{{product.handle}}{%- endcapture -%}
+<div class="spb_animate col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item nt_{{product.id}} grid nt-grid-item hover-fade">
+   <div class="product-inner">
+      <div class="product-img-wrap pr tc">
+         <div class="hover-overlay pr oh{%- if settings_pr_img_size and settings_metro_img_size %} metro-image-equal{%- else %} product-img{%- endif -%}">
+            {%- if settings.use_wishlist and pages['wishlist'].empty? != true -%}{%- include 'nt-wishlist-product' -%}{%- endif -%}
+            <a href="{{ url_nt | within: collection }}" class="db">
+               {%- include 'product_labels' -%}
+               {%- include 'product_img' -%} 
+            </a>
+            {%- if product.has_only_default_variant == false -%}
+            <div class="nt-qs-wrapper pa"><div class="nt-qs-close nt-qs-close-{{product.id}} pa"></div><div class="nt-qs-form flex" id="product-{{product.id}}"></div></div>
+            {%- endif -%}
+         </div>
+         {%- if block.settings.timer != blank -%}
+            {%- assign user_countdown = block.settings.timer -%}
+            {%- include 'nt_count_down' with user_countdown -%}
+         {%- elsif section_settings_countdown and product.metafields.meta.countdown != blank -%}
+            {%- assign user_countdown = product.metafields.meta.countdown -%}
+            {%- include 'nt_count_down' with user_countdown -%}
+         {%- endif -%}
+         {%- if settings.use_quickview and product.images.size > 0 -%}
+         <div class="quick-view pa">
+            <a href="javascript void(0);" data-ajax="{{ url_js }}/?view=quick_view" class="open-quick-view tooltip_left" aria-label="{{ 'products.grid_items.quick_view' | t }}" rel="nofollow"><i class="icon-eye icons"></i></a>
+            <a href="javascript void(0);" data-ajax="{{ url_js }}/?view=quick_view_mpf" class="open-qv-mpf tooltip_left" aria-label="{{ 'products.grid_items.quick_view' | t }}" rel="nofollow"><i class="icon-eye icons"></i></a>
+         </div>
+         {%- endif -%}
+         <div class="add-to-cart-btn pa">
+            {%- if linklists[product.handle].links.size == 0 -%}
+               {%- if product.variants.size > 1 -%}
+                  {%- if sold_out -%}
+                     <a href="{{ url_nt | within: collection }}" class="read-more tooltip_left" aria-label="{{ 'products.product.read_more' | t }}" rel="nofollow"><i class="icon-info icons"></i></a>
+                  {%- elsif check_external -%}
+                     <a href="{{ check }}" class="external tooltip_left" aria-label="{{ product.metafields.external | first | first }}" rel="nofollow"><i class="icon-link icons"></i></a>
+                  {%- elsif settings.use_quickshop -%}
+                     <a href="javascript void(0);" data-id="{{product.id}}" data-ajax="{{ url_js }}/?view=json" class="btn-quick-shop tooltip_left" aria-label="{{ 'products.grid_items.quick_shop' | t }}" rel="nofollow"><i class="icon-handbag icons"></i></a>
+                  {%- else -%}
+                     <a href="{{ url_nt | within: collection }}" class="tooltip_left" aria-label="{{ 'products.product.select_option' | t }}" rel="nofollow"><i class="icon-options-vertical icons"></i></a>
+                  {%- endif -%}
+               {%- else -%}
+                  {%- if sold_out -%}
+                     <a href="{{ url_nt | within: collection }}" class="tooltip_left read-more" aria-label="{{ 'products.product.read_more' | t }}" rel="nofollow"><i class="icon-info icons"></i></a>
+                  {%- elsif check_external -%}
+                     <a href="{{ check }}" class="external tooltip_left" aria-label="{{ product.metafields.external | first | first }}" rel="nofollow"><i class="icon-link icons"></i></a>
+                  {%- else -%}
+                     <a href="{{ url_nt | within: collection }}" class="ajax_add_to_cart tooltip_left" data-pid="{{ product.variants.first.id }}" aria-label="{{'products.product.add_to_cart'|t}}" rel="nofollow"><i class="icon-handbag icons"></i></a>
+                  {%- endif -%}
+               {%- endif -%} 
+            {%- else -%}
+               <a href="{{ url_nt | within: collection }}" class="tooltip_left" aria-label="{{'products.product.view'|t}}" rel="nofollow"><i class="icon-info icons"></i></a>
+            {%- endif -%}
+         </div>
+      </div>
+      <div class="product-info-wrap pr">
+         {%- if product.vendor.size > 0 -%}{%- if show_vendor == true or show_vendor == 'true' -%}<div class="product-brand"><a href="{{ product.vendor | url_for_vendor }}">{{ product.vendor }}</a></div>{%- endif -%}{%- endif -%}
+         <div class="name nasa-show-one-line"><a href="{{ url_nt | within: collection }}">{{ product.title }}</a></div>
+         {%- if settings.show_product_rating -%}
+            {%- if settings.app_review == '1' -%}
+               <div class="shopify-product-reviews-badge star-rating" data-id="{{ product.id }}"></div>
+            {%- elsif settings.app_review == '2' -%}
+               <div class="review-widget"><ryviu-widget-total reviews_data="{{product.metafields.ryviu.product_reviews_info  | escape  }}" product_id="{{product.id}}" handle="{{product.handle}}"></ryviu-widget-total></div>
+            {%- elsif settings.app_review == '4' -%}
+               <div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}" data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+            {%- else -%}
+               <div product-id="{{ product.id }}" class="arv-collection arv-collection--{{ product.id }}"></div>
+            {%- endif -%}
+         {%- endif -%}
+         <div class="info flex flex_row c_between alin_center">
+            <div class="price-wrap">
+               {%- include 'product_price' -%}  
+            </div>
+            {%- if settings.show_product_color and colour_count > 0 -%}{%- include 'swatches_on_grid' -%}{%- endif -%}
+         </div>
+      </div>
+      {%- if nt_product_loop == 'deal' -%}
+         {%- if block.settings.use_sold -%}
+         {%- assign total = block.settings.total | plus:0 -%}
+         {%- assign available = block.settings.available | plus:0 -%}
+         {%- assign sold = total | minus: available | times: 100 | divided_by: total | ceil -%}
+         <div class="product-deal-special-progress mt__10">
+            <div class="deal-stock-label flex flex_row c_between"> 
+               <span class="stock-available">{{ 'products.grid_items.stock_available' | t }} <strong>{{available}}</strong></span> 
+               <span class="stock-sold">{{ 'products.grid_items.stock_sold' | t }} <strong>{{total | minus: available}}</strong></span>
+            </div>
+            <div class="deal-progress"> 
+               <span class="deal-progress-bar" style="width:{{sold}}%;">{{sold}}</span>
+            </div>
+         </div>
+         {%- endif -%}
+      {%- endif -%}
+   </div>
+</div>

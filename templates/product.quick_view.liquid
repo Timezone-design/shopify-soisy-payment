@@ -1,0 +1,466 @@
+{%- layout none -%}
+{%- assign nt_carousel = 'product-images-slider_on product-images-slider_on_ani' -%}
+
+{%- assign no_sold_out = product.available -%}
+{%- if no_sold_out -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+
+{%- if settings.pr_curent == '2' -%}{%- assign current_variant = product.selected_variant |default: product.variants.first -%}
+    {%- if current_variant.available == false and remove_soldout and no_sold_out -%}{%- assign current_variant = product.first_available_variant -%}{%- endif -%}
+{%- else -%}{%- assign current_variant = product.selected_or_first_available_variant -%}{%- endif -%}
+
+{%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+{%- include 'nt_check_label' -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- if product.metafields.external -%}
+  {%- assign check = product.metafields.external | first | last -%}
+  {%- if check contains 'https:' or check  contains 'http:' -%}{%- assign check_external = true -%}{%-else-%}{%- assign check_external = false -%}{%-endif-%}
+{%-endif-%}
+{%- if settings.show_share_btn and settings.share_type == '1' -%}
+   {%- assign gl_follow_social = false -%}
+{%- elsif settings.show_share_btn and settings.share_type == '2' -%}
+   {%- assign gl_follow_social = true -%}
+{%- endif -%}
+  {%- assign stock_countdow = false -%}
+{%- if settings.gecko_stock_countdown == false -%}
+    {%- assign stock_countdow = true -%}
+{%- elsif settings.gecko_stock_countdown and settings.stock_message == blank -%} 
+    {%- assign stock_countdow = true -%}
+{%- endif -%}
+{%- assign estimateStartDate = settings.delivery_start -%}
+{%- assign estimateEndDate = settings.delivery_end -%}
+{%- if product.metafields.meta.estimateStartDate != blank -%}
+  {%- assign estimateStartDate = product.metafields.meta.estimateStartDate | plus:0 -%}
+{%- endif -%}
+{%- if product.metafields.meta.estimateEndDate != blank -%} 
+   {%- assign estimateEndDate = product.metafields.meta.estimateEndDate | plus:0 -%}
+{%- endif -%}
+{%- assign btn_atc_full = settings.btn_atc_full -%}
+{%- assign remove_unavailable = true -%}
+{%- assign ck_inventory = settings.ck_inventory -%} 
+{%- include 'gecko_check_variant',quick_view:true -%}
+<div class="product-image-summary single-product-content" id="product-{{product.id}}">
+	<div class="product-images cd-slider-wrapper">
+		<div class="cover-image">
+	      <div class="db tc">
+				   <img data-variant_id= "{{variant.id}}" data-image-id="{{ product.images.first.id }}"
+				   src="{{ product.images.first | img_url: '500x' }}" 
+				   class="attachment-shop_single size-shop_single sp-post-image" alt="{{ product.images.first.alt | split:'|' | last | escape }}" 
+				   srcset="{{ product.images.first | img_url: '500x' }} 500w, 
+				   {{ product.images.first | img_url: '350x' }} 350w, 
+				   {{ product.images.first | img_url: '242x' }} 242w,  
+				   {{ product.images.first | img_url: '150x' }} 150w, 
+				   {{ product.images.first | img_url: '306x' }} 306w" sizes="(max-width: 500px) 100vw, 500px">
+	      </div>
+		</div> 
+	   <div class="db w_100 cd-slider {{nt_carousel}}">
+	      {%- for image in product.images -%}
+	      {%- if image.alt contains 'nt_360' -%}{%- break -%}{%- endif -%}
+	      <div class="db tc">
+				   <img data-variant_id= "{{variant.id}}" data-image-id="{{ image.id }}"
+				   src="{{ image | img_url: '500x' }}" 
+				   class="attachment-shop_single size-shop_single sp-post-image" alt="{{ image.alt | split:'|' | last | escape }}" 
+				   srcset="{{ image | img_url: '500x' }} 500w, 
+				  {{ image | img_url: '350x' }} 350w, 
+				   {{ image | img_url: '242x' }} 242w, 
+				   {{ image | img_url: '150x' }} 150w, 
+				   {{ image | img_url: '306x' }} 306w" sizes="(max-width: 500px) 100vw, 500px">
+	      </div>
+	      {%- endfor -%}
+	   </div>
+	   {%- if settings.use_wishlist and pages['wishlist'].empty? != true -%}
+	   <div class="group_btn_pr pa flex">{%- include 'nt-wishlist-product' -%}</div>
+	   {%- endif -%}
+      {%- include 'product_labels_pr' -%}
+	</div>
+	<div class="cd-item-info summary entry-summary">
+		<div class="summary-inner nt-scroll-quick">
+         <div class="nt-scroll-content-quick">
+				<a href="{{ product.url | within: collection }}"><h1 class="product_title entry-title">{{ product.title }}</h1></a>
+				{%- if settings.show_product_page_rating -%}
+				   <a href="#shopify-section-product-page-description" class="shopify-product-rating dib">
+				     {%- if settings.app_review == '1' -%}
+				         <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+                      {%- elsif settings.app_review == '2' -%}
+                         <div class="review-widget"><ryviu-widget-total reviews_data="{{product.metafields.ryviu.product_reviews_info  | escape  }}" product_id="{{product.id}}" handle="{{product.handle}}"></ryviu-widget-total></div>
+                      {%- elsif settings.app_review == '4' -%}
+                         <div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}" data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+				      {%- else -%}
+				         <div product-id="{{ product.id }}" class="arv-collection arv-collection--{{ product.id }}"></div>
+				      {%- endif -%}
+				   </a>
+			   {%- endif -%}
+                          
+                {%- assign link_size = linklists[product.handle].links.size -%}
+                {%- if link_size == 0 and current_variant.unit_price_measurement -%}
+                   <div>
+                      <p class="price productPrice">{%- if on_sale -%}<del>{{ current_variant.compare_at_price  | money }}</del> <ins>{{ current_variant.price | money }}</ins>{%- else -%}{{ current_variant.price | money }}{%- endif -%}</p>
+                      {%- capture unit_price_base_unit -%}
+                        <span class="unit_base">
+                            {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                              {{- current_variant.unit_price_measurement.reference_value -}}
+                            {%- endif -%}
+                            {{ current_variant.unit_price_measurement.reference_unit -}}
+                        </span>
+                      {%- endcapture -%}
+                      <span class="pr_unit_price db"><span class="unit_price">{{ current_variant.unit_price | money }}</span><span>/</span>{{- unit_price_base_unit -}}</span>
+                   </div>
+                {%- elsif link_size == 0 -%}
+                   {%- if product.price_varies -%}
+                      <p class="price">
+                        {%- if settings.price_format == '1' -%}
+                            {{ product.price_min | money }} – {{ product.price_max | money }}
+                         {%- else -%}
+                            <small><em>{{ 'products.product.from' | t }}</em></small> {{ product.price_min | money }}
+                         {%- endif -%}
+                      </p>
+                   {%- else -%}
+                      <p class="price productPrice">
+                          {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+                          {%- else -%}
+                          <span>{{ current_variant.price | money }}</span> 
+                          {%- endif -%}
+                      </p>
+                   {%- endif -%}
+                {%- else -%}
+                    <p class="price">{%- if settings.price_format == '1' -%}{{ product.price | money }}{%- if product.compare_at_price != blank -%} – {{ product.compare_at_price | money }}{%- endif -%}{%- else -%}<small><em>{{ 'products.product.from' | t }}</em></small> {{ product.price | money }}{%- endif -%}</p>
+                {%- endif -%}
+           
+			   {%- if settings.use_description_excerpt -%}
+					{%- assign _prodcut_excerpt_length = settings.prodcut_excerpt_length | plus:0 -%}
+					{%- assign prodcut_excerpt_length = _prodcut_excerpt_length | default: 31 -%}
+					<div class="Shopify-product-details__short-description">
+						<p class="p_des_ex mg__0">
+					      {%- if product.metafields.meta.description_excerpt -%}
+					       {{  product.metafields.meta.description_excerpt }}
+				        {%- elsif product.metafields.global.description -%}
+				           {{ product.metafields.global.description }}
+					     {% elsif product.description contains  '[' %}
+					       {% assign pr_des = product.description | split: '[' %}
+					       {% assign pr_des = pr_des[1] | split: ']' | first | append:']' | prepend:'[' %}
+					       {{ product.description | remove: pr_des | strip_html | truncatewords: prodcut_excerpt_length }}
+					     {%-else-%}
+					       {{ product.description | strip_html | truncatewords: prodcut_excerpt_length }}
+					     {%-endif-%}
+					   </p>
+
+					</div>
+				{%- endif -%}
+				<a class="view_details" href="{{ product.url | within: collection }}">{{ 'products.product.product_view_details' | t }}<svg class="" xmlns="http://www.w3.org/2000/svg" width="6" height="10" viewBox="0 0 6 10"><path fill="currentColor" fill-rule="evenodd" d="M5.138 5.344l.004-.54L.005 9.457.567 10l5.138-4.652L6 5.08l-.29-.27L.57 0 0 .535"></path></svg></a>
+				{%- if product.available -%}
+				  {%- if settings.show_countdown or settings.gecko_stock_countdown -%}{%- include 'nt_countdow_page',class:'nt_progress_bar_pr_quick' -%}{%- endif -%}
+				{%- endif -%}
+            <div class="btn-atc atc-popup {{settings.btn_atc_style}}{%- if btn_atc_full %} btn_atc_full{%- endif -%}">
+            	{%- if linklists[product.handle].links.size == 0 -%}
+            	   {%- if product.has_only_default_variant == false and product.variants.size > 1 -%}
+            	      <div id="callBackVariant_quick" class="nt_{{current_variant.option1 | handleize}} nt1_{{current_variant.option2 | handleize}} nt2_{{current_variant.option3 | handleize}}">
+                        {%- form 'product', product, id: "cart-form-quick", class: "variations_form_qv product-form nt_cart clearfix" -%}
+						            <select name="id" id="product-select-quick" class="product-form__variants hide hidden">
+						              {%- for variant in product.variants -%}
+						                  <option{% if variant.id == current_variant.id %} selected="selected"{% endif %}{% if variant.available == false and remove_soldout %} disabled="disabled"{% endif %} value="{{ variant.id }}" class="nt_{{variant.option1 | handleize }} nt1_{{variant.option2 | handleize }} nt2_{{variant.option3 | handleize }}">{{ variant.title | handle}}</option>
+						              {%- endfor -%}
+									</select>
+									{%- include settings.swatch_design,class_input:'qv',select_id:'nt_select_quick' -%}
+                                    {%- unless link_size == 0 and current_variant.unit_price_measurement -%}
+                                        {%- if product.price_varies -%}
+                                          <div class="shopify-variation-price price_varies mb__25">
+                                            <span class="price productPrice" id="productPrice_quick">
+                                              {%- if on_sale -%}{%- assign save = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | ceil -%}<del id="old-product-price_quick">{{ current_variant.compare_at_price | money }}</del> <ins id="product-price_quick">{{ current_variant.price | money }}</ins> <span class="onsale fs__14 tu dib cw pr_onsale"><span>{{ 'products.product.save_js' | t: saved_amount:save }}</span></span>
+                                              {%- else -%}
+                                              <span id="product-price_quick">{{ current_variant.price | money }}</span> 
+                                              {%- endif -%}
+                                            </span>
+                                          </div>
+                                        {%- endif -%}
+                                     {%- endunless -%}
+									{%- if settings.product_quantity_message and stock_countdow -%}<div id="variantQuantity_quick" class="variantQuantity variant-quantity mb__25 tu"></div>{%- endif -%}
+						         <div class="single_variation_wrap">
+						         	<div id="shopify_quantity_quick" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+                                 <input type="button" value="-" class="minus">
+                                 <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+                                 <input type="button" value="+" class="plus">
+                              </div>
+					               {%- if settings.use_notify_me == false -%}<p class="stock out-of-stock mg__0" id="nt_outstock_quick" style="display: none">{{ 'products.product.outofstock' | t }}</p>{%- endif -%}
+                              {%- if check_external -%}
+                                 <a href="{{ check }}" id="shopify_add_to_cart_quick" rel="nofollow" class="shopify_add_to_cart add_to_cart_button single_add_to_cart_button button btn_external">{{ product.metafields.external | first | first }}</a>
+                              {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+                                 <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart_quick" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+                              {%- else -%}
+                                 <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart_quick" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+                              {%- endif -%}   
+						         </div>
+						          {%- if settings.enable_payment_button_qv and check_external == false -%}
+                        <div class="checkout_divide mt__10 fs__16 tc shopify-payment-button">{{ 'products.product.or' | t }}</div>
+						                    {{ form | payment_button }}
+						                  {%- endif -%} 
+					         {%- endform -%}
+					      </div>
+					      {%- if settings.use_notify_me -%}
+			                <p class="stock out-of-stock mg__0 mb__20" id="nt_outstock_quick" style="display: none">{{ 'products.product.outofstock' | t }}</p>
+			                <div class="form-notify single_variation_wrap w_100 mb__20" id="frm_notify_pr_quick" style="display: none">
+			                  {%- form 'contact',class:'frm_notify w_100' -%}
+			                  {%- assign formId = 'ContactForm' | append:current_variant.id -%}
+			                  {%- include 'form-status', formId,notify_me:'1' -%}
+			                  <p class="cd fwsb mb__10 fs__16">{{ 'products.product.title_notify_me' | t }}</p>
+			                  <div class="row">
+			                    {%- if customer and customer.name != blank -%}
+			                    <div class="col-12 mb__20 hide hidden">
+			                      <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+			                      <input type="text" id="{{ formId }}-name" name="contact[name]" value="{{ customer.name }}">
+			                    </div>
+			                    {%- endif -%}
+			                    <div class="col-12 mb__20">
+			                      <label for="{{ formId }}-email">{{ 'contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+			                      <input
+			                             required="required"
+			                             type="email"
+			                             id="{{ formId }}-email"
+			                             name="contact[email]"
+			                             autocorrect="off"
+			                             autocapitalize="off"
+			                             value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+			                             aria-required="true"
+			                             {%- if form.errors contains 'email' -%}
+			                             class="input--error"
+			                             aria-invalid="true"
+			                             aria-describedby="{{ formId }}-email-error"
+			                             {%- endif -%}
+			                             >
+			                    </div>
+			                    <input type="hidden" name="challenge" value="false">
+			                    <div class="col-12 mb__20 hide hidden">
+			                      <label for="{{ formId }}-message">{{ 'contact.form.message' | t }}</label>
+			                      <textarea rows="10" id="{{ formId }}-message" name="contact[body]">
+			                        {{ 'products.product.please_notify_me' | t: title:product.title,variant:'current_variant_title',url:'current_variant_title_url' }}
+			                      </textarea>
+			                    </div>
+			                  </div>
+			                  <input type="submit" class="add_to_cart_button" value="{{ 'products.product.send_notify_me' | t }}">
+			                  {%- endform -%}
+			               </div>
+			            {%- endif -%}
+            	   {%- else -%}
+                     {%- if current_variant.inventory_management and settings.product_quantity_message and stock_countdow -%}
+				            {%- if current_variant.inventory_quantity < ck_inventory and current_variant.inventory_quantity > 0 -%}
+				               <div id="variantQuantity_quick" class="variantQuantity only_default variant-quantity mb__25 tu">{{ 'products.product.only_left' | t: count: current_variant.inventory_quantity }}</div>
+				            {%- elsif current_variant.inventory_quantity <= 0 and current_variant.incoming -%}
+				               {%- assign next_incoming_date = current_variant.next_incoming_date | date: format: 'month_day_year' -%}
+				               <div id="variantQuantity_quick" class="variantQuantity only_default variant-quantity mb__25 tu">{{ 'products.product.will_not_ship_until' | t: date:next_incoming_date }}</div>
+				            {%- endif -%}
+				         {%- endif -%}
+				         {%- if sold_out -%}
+				            {%- if settings.use_notify_me -%}
+					            <div class="form-notify single_variation_wrap w_100 mb__20">
+				                  {%- form 'contact',class:'frm_notify w_100' -%}
+				                  <p class="cd fwsb mb__10 fs__16">{{ 'products.product.title_notify_me' | t }}</p>
+				                  {%- assign formId = 'ContactForm' -%}
+				                  {%- include 'form-status', formId,notify_me:'1' -%}
+				                  {%- if form.posted_successfully?  == false -%}
+				                  <div class="row">
+				                    {%- if customer and customer.name != blank -%}
+				                    <div class="col-12 mb__20 hide hidden">
+				                      <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+				                      <input type="text" id="{{ formId }}-name" name="contact[name]" value="{{ customer.name }}">
+				                    </div>
+				                    {%- endif -%}
+				                    <div class="col-12 mb__20">
+				                      <label for="{{ formId }}-email">{{ 'contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+				                      <input
+				                             required="required"
+				                             type="email"
+				                             id="{{ formId }}-email"
+				                             name="contact[email]"
+				                             autocorrect="off"
+				                             autocapitalize="off"
+				                             value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+				                             aria-required="true"
+				                             {%- if form.errors contains 'email' -%}
+				                             class="input--error"
+				                             aria-invalid="true"
+				                             aria-describedby="{{ formId }}-email-error"
+				                             {%- endif -%}
+				                             >
+				                    </div>
+				                    <input type="hidden" name="challenge" value="false">
+				                    <div class="col-12 mb__20 hide hidden">
+				                      <label for="{{ formId }}-message">{{ 'contact.form.message' | t }}</label>
+				                      <textarea rows="10" id="{{ formId }}-message" name="contact[body]">
+				                        {%- assign url_js = shop.url | append:'/' | append:product.url -%}
+				                        {{ 'products.product.please_notify_me' | t: title:product.title,variant:'current_variant_title',url:url_js | remove: ' - current_variant_title'}}
+				                      </textarea>
+				                    </div>
+				                  </div>
+				                  <input type="submit" class="add_to_cart_button" value="{{ 'contact.form.submit' | t }}">
+				                  {%- endif -%}
+				                  {%- endform -%}
+				                </div>
+			               {%- else -%}
+					            <p class="stock out-of-stock mb__20" id="nt_outstock_quick">{{ 'products.product.outofstock' | t }}</p>
+				            {%- endif -%}
+				         {%- else -%}
+					         <div id="callBackVariant_quick">{%- form 'product', product, id: "cart-form-quick", class: "variations_form_qv product-form nt_cart clearfix" -%}
+						         <input name="id" value="{{ current_variant.id }}" class="product-select_pr product-form__variants hide hidden" type="hidden">
+									{%- if product.variants.size == 1 and product.has_only_default_variant == false -%}{%- include settings.swatch_design,class_input:'qv',select_id:'nt_select_quick',cl_selected:'is-selected' -%}{%- endif -%}
+						         <div class="single_variation_wrap">
+						         	<div id="shopify_quantity_quick" class="shopify_quantity quantity{%- if settings.show_pr_quantity == false %} hide{%- endif -%}">
+                                 <input type="button" value="-" class="minus">
+                                 <input type="number" step="1" min="1" max="{%- if current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management != null -%}999{%- elsif current_variant.inventory_management != null -%}{{current_variant.inventory_quantity}}{%- else -%}999{%- endif -%}" name="quantity" value="1" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric">
+                                 <input type="button" value="+" class="plus">
+                              </div>
+                              {%- if check_external -%}
+                                 <a href="{{ check }}" id="shopify_add_to_cart_quick" rel="nofollow" class="shopify_add_to_cart add_to_cart_button single_add_to_cart_button button btn_external">{{ product.metafields.external | first | first }}</a>
+                              {%- elsif current_variant.inventory_quantity <= 0 and current_variant.available and current_variant.inventory_management == 'shopify' -%}
+                                 <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart_quick" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.pre_orders' | t }}</span><span class="btn--loader-balls"></span></button>
+                              {%- else -%}
+                                 <button type="submit"{% if settings.pr_curent == '1' and product.variants.size > 1 and product.selected_variant == blank %} disabled="disabled"{% endif %} id="shopify_add_to_cart_quick" class="shopify_add_to_cart add_to_cart_button ajax_form_cart single_add_to_cart_button button btn--loader"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+                              {%- endif -%}   
+						         </div>
+						          {%- if settings.enable_payment_button_qv and check_external == false -%}
+              <div class="checkout_divide mt__10 fs__16 tc shopify-payment-button">{{ 'products.product.or' | t }}</div>
+						                    {{ form | payment_button }}
+						                  {%- endif -%} 
+                               {%- endform -%}</div>
+				         {%- endif -%} 
+            	   {%- endif -%}
+            	{%- else -%}
+            	   <form action="/cart" method="post" class="cart group_table" id="cart-form">
+					      <div class="nt-table-responsive">
+						      <table cellspacing="0" class="group_table shop_table">
+						        <tbody>
+						          {%- include 'product_group' -%}
+						        </tbody>
+						      </table>
+						   </div>
+					      <div class="mt__20 single_variation_wrap">
+						      {%- if check_external == false -%}
+				               <button type="submit" id="multi-variant-add-quick" class="add_to_cart_button single_add_to_cart_button button alt btn--loader"><span class="bt__text">{{ 'products.product.add_to_cart' | t }}</span><span class="btn--loader-balls"></span></button>
+				            {%- else -%}
+				               <a href="{{ check }}" rel="nofollow" class="single_add_to_cart_button button alt btn_external">{{ product.metafields.external | first | first }}</a>
+				            {%- endif -%}
+					      </div>
+					   </form>
+					   {%- assign has_size_guide = true -%}
+            	{%- endif -%} 
+				</div>
+				{%- if settings.use_flash_sold and product.available -%}
+				<div class="nt_flash_sold cd fwsb fs__16">
+		        {%- if settings.flash_sold_img != blank -%}
+		        <span class="nt_flash_icon dib mr__10"><img src="{{ settings.flash_sold_img | img_url: '15x' }}" srcset="{{ settings.flash_sold_img | img_url:'15x' }} 1x, {{ settings.flash_sold_img | img_url:'15x', scale: 2 }} 2x" alt="{{settings.flash_sold_img.alt | default:'flash sale' }}"></span>
+		        {%- endif -%}
+		        <span class="nt_flash_total_day_quick"></span> {{ 'products.nt_extra.flash_sold' | t }} <span class="nt_flash_in_hour_quick"></span> {{ 'products.nt_extra.flash_hours' | t }}
+		      </div>
+		      {%- endif -%}
+		      {%- if settings.enable_delivery_order and product.available -%}
+				<div class="product_delivery_quick product_delivery cd fwsb fs__16">
+					{%- if settings.delivery_order_img != blank -%}
+			      <span class="nt_flash_icon dib mr__10"><img src="{{ settings.delivery_order_img | img_url: '15x' }}" srcset="{{ settings.delivery_order_img | img_url:'15x' }} 1x, {{ settings.delivery_order_img | img_url:'15x', scale: 2 }} 2x" alt="{{settings.delivery_order_img.alt | default:'delivery order' }}"></span>
+			      {%- endif -%}
+				   {{ 'products.nt_extra.estimateTimer_1' | t }} <span id="nt_product_delivery_quick"></span> {{ 'products.nt_extra.estimateTimer_2' | t }} <span class="date_end_delivery" data-deliveryend="{{ estimateEndDate }}"></span>
+				</div>
+				{%- endif -%}
+				{%- if settings.product_img_trust_seal and settings.img_trust_seal != blank -%}
+				{%- assign image = settings.img_trust_seal -%}
+		        {%- assign image_size = '550x' -%}
+		        <div class="trust_img"><img alt="{{image.alt}}" src="{{ image | img_url: image_size }}" srcset="{{ image | img_url: image_size }} 1x, {{ image | img_url: image_size, scale: 2 }} 2x"></div>
+				{%- endif -%}
+				<table class="product_meta w_100">
+				   <tbody>
+				   	{%- if settings.show_pr_vendor and product.vendor != blank -%}
+				      <tr class="vendor_wrapper">
+				         <td class="label">{{ 'products.product.product_vendor' | t }}</td>
+				         <td class="vendor value" id="product-vendor">{{ product.vendor | link_to_vendor }}</td>
+				      </tr>
+                  {%- endif -%}
+				   	{%- if settings.show_sku -%}
+				      <tr class="sku_wrapper">
+				         <td class="label">{{ 'products.product.product_sku' | t }}</td>
+				         <td class="sku value" id="productSku_quick">{%- if current_variant.sku != blank -%}{{current_variant.sku}}{%-else-%}{{ 'products.product.na' | t }}{%-endif-%}</td>
+				      </tr>
+                  {%- endif -%}
+                  {%- if settings.show_available -%}
+				      <tr class="available_wrapper">
+				         <td class="label">{{ 'products.product.available' | t }}</td>
+				         <td class="available value fwb {%- if sold_out %} value_out{%- else %} value_in{%- endif -%}" id="product-available-quick">{%- if sold_out -%}{{ 'products.product.outofstock' | t }}{%- else -%}{{ 'products.product.in_stock' | t }}{%- endif -%}</td>
+				      </tr>
+				      {%- endif -%}
+				      {%- if product.collections.size > 0 and settings.show_category_product -%}
+				      <tr class="posted_in">
+				         <td class="label">{{ 'products.product.product_category' | t }}</td>
+				         <td class="value"> 
+				         	{% for collection in product.collections -%}{{ collection.title | link_to: collection.url }}{%- if forloop.last == false -%}, {% endif -%}{%- endfor -%}
+				         </td>
+				      </tr>
+				      {%- endif -%}
+				      {%- if product.tags.size > 0 and settings.show_tag_product and product.collections.size > 0 -%}
+				      <tr class="tagged_as">
+				         <td class="label">{{ 'products.product.product_tag' | t }}</td>
+				         <td class="value"> 
+                        {%- for tag in product.tags -%}
+						      <a href="{%- if collection != blank -%}{{ collection.url }}{%- else -%}{{ product.collections.first.url }}{%- endif -%}/{{ tag | handle }}">{{ tag | remove:'type ' | remove:'Type ' }}</a>{%- unless forloop.last -%}, {% endunless -%}
+						      {%- endfor -%}
+				         </td>
+				      </tr>
+				      {%- endif -%}
+				      {%- if settings.show_share_btn -%}
+				      <tr class="share_on">
+				         <td class="label">{{ 'products.product.product_share' | t }}</td>
+				         <td class="value">
+				         	{%- include 'social-sharing', follow_social:gl_follow_social,basel_tooltip:true,,class_tooltip:'tooltip_top_right' -%}
+				         </td>
+				      </tr>
+				      {%- endif -%}
+				   </tbody>
+				</table>
+         </div>
+	   </div>
+	</div>
+</div>
+<a href="javascript:void(0)" class="cd-close" title="Close (Esc)">Close</a>
+{%- if linklists[product.handle].links.size == 0 -%}
+   {%- if product.has_only_default_variant == false and product.variants.size > 1 -%}
+   <script type="application/json" id="ProductJson-NTQV">
+   {%- assign remove_unavailable = true -%}
+   {%- if product.available -%}{%- assign remove_soldout = settings.remove_sold_out -%}{%- else -%}{%- assign remove_soldout = false -%}{%- endif -%}
+   {%- include 'arr_pr' -%}
+   {{array | strip_newlines | remove:"  " | replace: ',]', ']' }}
+  </script>
+  <script type="application/json" id="ProductJson-templateQV">
+   {%- include 'json_arr' -%}
+  {{ json_arr | strip_newlines | remove:"  "}}
+  </script>
+  <script type="text/javascript">
+	 (function($) {
+	   "use strict";
+	      var Ntproduct = JSON.parse(document.getElementById('ProductJson-NTQV').innerHTML),
+          product = JSON.parse(document.getElementById('ProductJson-templateQV').innerHTML),
+          IdSelect = '#product-select-quick',
+          NtId = '#nt_select_quick_',
+          selector = '#cart-form-quick',
+          callBackVariant = '#callBackVariant_quick',
+          prefix='_quick';
+             $('#nt_select_quick_1 .is-selected-none').addClass('is-selected').removeClass('is-selected-none');
+             $('#nt_select_quick_2 .is-selected-none').addClass('is-selected').removeClass('is-selected-none');
+	      elessiShopifyPre.Ntproduct_switch('.variations_form_qv',Ntproduct,product,selector,IdSelect,NtId,callBackVariant,prefix);
+	      $('#nt_select_quick_0 .is-selected-none').click();
+	   }(jQuery));
+	</script>
+   {%- endif-%}
+{%- elsif linklists[product.handle].links.size > 0 -%}
+  <script type="text/javascript">
+	 (function($) {
+	   "use strict";
+	      $(".cd-quick-view .pr_onsale").hide();
+	      elessiShopify.Ntproduct_grouped('.cd-quick-view','-quick');
+	   }(jQuery));
+	</script>
+{%- endif -%}
+<script type="text/javascript">
+  {%- if product.available and settings.gecko_stock_countdown -%}
+  	 elessiShopify.progressbar('.nt_progress_bar_pr_quick');
+  {%- endif -%}
+  {%- if settings.use_flash_sold and product.available -%}
+     elessiShopify.flashSoldBar('_quick');
+  {%- endif -%}
+  {%- if settings.enable_delivery_order and product.available -%}
+     elessiShopify.delivery_order('#nt_product_delivery_quick');
+  {%- endif -%}
+</script>

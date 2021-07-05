@@ -1,0 +1,39 @@
+{%- if page_pr_img_size and product.images.size > 1 -%}
+   {%- for image in product.images -%}
+	     {%- assign alt = image.alt -%}
+         {%- if alt contains 'nt_360' -%}{%- break -%}{%- endif -%}
+		     {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+		     {%- assign img_alt = alt | split:'|' | first | handleize | strip -%}
+				<div class="p-item nt_img_ptw shopify-product-gallery__image{%- if ck_thumb %} bc_{{img_alt}}{%- endif -%}">
+                    <a href="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}" class="nt-pr_metro-image-equal lazyload" data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover">
+                        <img class="hide op_0 attachment-shop_single size-shop_single sp-post-image "
+                         src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                         data-image-id="{{ image.id }}"
+                         data-large_image="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}" data-large_image_width="{{ image.width }}" data-large_image_height="{{ image.height }}"
+                         alt="{{ image.alt | split:'|' | last | escape }}">
+                         <div class="nt-wrap-lazy"></div>
+                    </a>
+                </div>
+	{%- endfor -%}
+{%- else -%}
+   {%- for image in product.images -%}
+	      {%- assign alt = image.alt -%}
+         {%- if alt contains 'nt_360' -%}{%- break -%}{%- endif -%}
+		     {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+		     {%- assign img_alt = alt | split:'|' | first | handleize | strip -%}
+				<div class="p-item nt_img_ptw shopify-product-gallery__image{%- if ck_thumb %} bc_{{img_alt}}{%- endif -%}">
+					<a href="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}">
+						<img class="attachment-shop_single size-shop_single sp-post-image lazyload"
+			             src="{{ featured_image | img_url: '50x50' }}"
+			             data-src="{{ img_url }}"
+			             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+			             data-aspectratio="{{ image.aspect_ratio }}"
+			             data-sizes="auto"
+			             data-image-id="{{ image.id }}"
+			             data-large_image="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}" data-large_image_width="{{ image.width }}" data-large_image_height="{{ image.height }}"
+			             alt="{{ image.alt | escape }}">
+			             <div class="nt-wrap-lazy"></div>
+					</a>
+				</div>
+	{%- endfor -%}
+{%- endif -%}

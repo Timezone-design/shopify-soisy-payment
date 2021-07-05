@@ -1,0 +1,492 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- include 'style_mp_section' -%}
+{%- assign show_vendor = section.settings.show_vendor -%}
+{%- assign settings_pr_img_size = section.settings.use_eq_height -%}
+{%- assign section_settings_countdown = false -%}
+{%- assign countdown_timer_style = section.settings.countdown_style -%}
+{%- assign use_pagination = section.settings.use_pagination -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = '12' -%}
+{%- assign class_xs = '12' -%}
+{%- assign product_hover = 'hover-fade' -%}
+<div class="nt_custom_{{section.id}}{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+  {%- assign sett_title = section.settings.title -%}
+  {%- assign sett_sub_title = section.settings.sub_title -%}
+  {%- assign style_title = section.settings.style_title -%}
+  {%- include 'nt_section_title' with style_title -%}
+  <div class="mt__30 products row nt-products-holder nt-carousel {{section.settings.image_size}} {{section.settings.image_ratio}} position_{{section.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'>
+      {%- for block in section.blocks -%}
+         {%- assign product = all_products[block.settings.product_id] -%}
+         {%- if product != blank -%}
+            {%- include 'nt_product_loop' with 'deal' -%}
+         {%- endif -%}
+      {%- endfor -%}
+      {%- if section.blocks.size == 0 -%}
+         {%- for i in (1..8) -%}
+            <div class="spb_animate col-{{class_xs}} col-md-{{class_md}} col-lg-{{grid_columns}} product product-item grid nt-grid-item hover-fade">
+               <div class="product-inner">
+                  <div class="product-img-wrap pr tc">
+                     <div class="product-img hover-overlay pr oh">
+                        <a href="/collections/test/products/analogue-resin-strap-watch" class="db">
+                           <div class="main-img nt-product-img-element nt-pr-image-link">
+                              {%- capture current -%}{%- cycle 7,8,9,10,11,12,13,14,15,16,1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+                              <img src="{{ 'product-' | append: current | append: '.jpg' | asset_url }}" class="attachment-shop_catalog size-shop_catalog" alt="Analogue Resin Strap Watch">
+                           </div>
+                        </a>
+                     </div>
+                     <div class="countdown-time-simple tc pa light show">
+                     <h5 class="mg__0 dib cw pr nt-z-index_44 fs__13 tu">{{ 'products.grid_items.offer_end' | t }}</h5><div class="dib nt-countdown-simple pr nt-z-index_44 {{countdown_timer_style}}" data-time="{{ 'now' | date: "%Y" |plus:1 }}/04/19"></div>
+                     </div>
+                     <div class="add-to-cart-btn pa"><a href="/admin/products" class="tooltip_left" aria-label="{{'products.product.add_to_cart'|t}}"><i class="icon-handbag icons"></i></a></div>
+                  </div>
+                  <div class="product-info-wrap pr">
+                     <div class="name nasa-show-one-line"><a href="/admin/products">{{ 'homepage.onboarding.product_title' | t }}</a></div>
+                     <div class="info flex flex_row c_between">
+                        <div class="price-wrap"><span class="price"><del><span class="money">$90.00</span></del> <ins><span class="money">$80.00</span></ins></span></div>
+                     </div>
+                  </div>
+                  <div class="product-deal-special-progress mt__10">
+                     <div class="deal-stock-label flex flex_row c_between"> 
+                        <span class="stock-available">{{ 'products.grid_items.stock_available' | t }} <strong>61</strong></span> 
+                        <span class="stock-sold">{{ 'products.grid_items.stock_sold' | t }} <strong>39</strong></span>
+                     </div>
+                     <div class="deal-progress"> 
+                        <span class="deal-progress-bar" style="width:39%;">39</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         {%- endfor -%}
+      {%- endif -%}
+  </div>
+</div>
+{%- schema -%}
+  {
+    "name": "Product Deal 2",
+    "class": "nt-section nt_product_deal_2",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Products Deals"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text",
+        "default": "Sub Text"
+      },
+      {
+        "type": "select",
+        "id": "style_title",
+        "options": [
+         {
+            "value": "type-simple",
+            "label": "Style 1"
+         },
+         {
+            "value": "hr-type-simple",
+            "label": "Style 2"
+          }
+        ],
+        "label": "Style title"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show product vendors",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "countdown_style",
+        "label": "Countdown style",
+        "default": "light",
+        "options": [
+          {
+            "value": "default",
+            "label": "Countdown timer default"
+          },
+          {
+            "value": "light",
+            "label": "Countdown timer light"
+          },
+          {
+            "value": "light_2",
+            "label": "Countdown timer light 2"
+          },
+          {
+            "value": "dark",
+            "label": "Countdown timer dark"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio_nt",
+        "options": [
+          {
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "value": "ratio4_3",
+            "label": "4:3 (Landscape)"
+          },
+          {
+            "value": "ratio1_1",
+            "label": "1:1 (Square)"
+          },
+          {
+            "value": "ratio_nt",
+            "label": "Ratio Elessi"
+          },
+          {
+            "value": "ratio2_3",
+            "label": "2:3 (Portrait)"
+          },
+          {
+            "value": "ratio1_2",
+            "label": "1:2"
+          },
+          {
+            "value": "ratio_cus1",
+            "label": "Ratio Custom 1"
+          },
+          {
+            "value": "ratio_cus2",
+            "label": "Ratio Custom 2"
+          },
+          {
+            "value": "ratio_cus3",
+            "label": "Ratio Custom 3"
+          },
+          {
+            "value": "ratio_cus4",
+            "label": "Ratio Custom 4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "default": "nt_cover",
+        "options": [
+          {
+            "value": "nt_cover",
+            "label": "Full"
+          },
+          {
+            "value": "nt_contain",
+            "label": "Auto"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "info":"The first value is the horizontal position and the second value is the vertical.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "1",
+            "label": "Left Top"
+          },
+          {
+            "value": "2",
+            "label": "Left Center"
+          },
+          {
+            "value": "3",
+            "label": "Left Bottom"
+          },
+          {
+            "value": "4",
+            "label": "Right Top"
+          },
+          {
+            "value": "5",
+            "label": "Right Center"
+          },
+          {
+            "value": "6",
+            "label": "Right Bottom"
+          },
+          {
+            "value": "7",
+            "label": "Center Top"
+          },
+          {
+            "value": "8",
+            "label": "Center Center"
+          },
+          {
+            "value": "9",
+            "label": "Center Bottom"
+          }
+        ],
+        "label": "Image Position",
+        "default": "8"
+      },
+      {
+       "type": "header",
+       "content": "== settings Slider"
+      },
+     {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+{
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 4
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "blocks": [
+      {
+        "type":"collection_featured",
+         "name":"Choose product",
+         "settings": [
+           {
+             "type":"product",
+             "id":"product_id",
+             "label":"Choose product"
+           },
+            {
+              "type": "text",
+              "id": "timer",
+              "label": "Countdown timer",
+              "info":"2020/01/19",
+              "default": "2020/01/19"
+            },
+            {
+              "type": "checkbox",
+              "id": "use_sold",
+              "label": "Show Available - Sold?",
+              "default": true
+            },
+            {
+              "type": "text",
+              "id": "total",
+              "label": "Total Stock",
+              "info":"integer",
+              "default": "100"
+            },
+            {
+              "type": "text",
+              "id": "available",
+              "label": "Available Stock",
+              "info":"integer",
+              "default": "75"
+            }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Deal 2",
+        "category": "3. Product Deals"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,58 @@
+{%- assign template_id = template | split: '.' | first -%}
+{%- assign st = 'display_newsletter_' | append: template_id -%}
+{%- if settings[st] -%}
+{%- assign image = settings.newsletter_bg -%}
+<div class="nt-newsletter-popup mfp-with-anim mfp-hide popup-quick-view pr oh{%- if image == blank %} nt_non_img tc{%- endif -%}">
+   <div class="nt-popup-inner">
+      <div class="row">
+         {%- if image != blank %}
+         <div class="col-md-6 col-12 lazyload nt_bg_lz lazypreload nt_popup_bg" data-bgset="{%- include 'bgset_2', image: settings.newsletter_bg -%}" data-sizes="auto" data-parent-fit="cover">
+            <div class="newsletter_img" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%"></div>
+         </div>
+         {%- endif -%}
+         <div class="{%- if image != blank -%}col-md-6 col-12{%- else -%}col-12{%- endif -%}">
+            <div class="nt-popup-wrap pr oh flex c_center alin_center">
+               <div class="nt-popup-content">
+                  <h3 class="fs__28 fwb tu">{{'general.promo_popup.title' | t }}</h3>
+                  <p class="fs__16">{{settings.promo_popup_description | strip_html}}</p>
+                  {%- if settings.use_newsletter_mailchimp -%}
+                    {%- if settings.mcsp_form_action != blank -%}
+                    <form id="mc4wp-form-{{section.id}}" role="form" action="{%- if settings.use_ajax_mailChimp -%}{{ settings.mcsp_form_action | replace: '/post?u', '/post-json?u' }}{%- else -%}{{ settings.mcsp_form_action }}{%- endif -%}" class="mc4wp-form mc4wp-form-{{section.id}}{%- if settings.use_ajax_mailChimp %} nt_ajax_mcsp{%- endif -%}" method="post">
+                       <div class="mc4wp-form-fields">
+                          <div class="signup-newsletter-form db">
+                             <input type="email" name="EMAIL" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"  value="{%- if customer -%}{{ customer.email }}{%- endif -%}" class="ck_ntemail input-text" required="required">
+                             {%- if settings.use_agree_checkbox_mail -%}{%- include 'conditions_mail',html:'p',margin:'' -%}{%- endif -%}
+                             <div class="input-group-btn"><input type="submit" value="{{ 'general.newsletter_form.submit' | t }}" class="submit-btn{%- if settings.use_agree_checkbox_mail %} mail_agree{%- endif -%}"></div>
+                          </div>
+                       </div>
+                       <div class="mc4wp-response"></div>
+                    </form> <!-- / MailChimp for shopify Plugin -->
+                    {%- else -%}
+                     This Mailchimp Form Action URL doesn’t currently include any content. Add Mailchimp Form Action URL to this section using the sidebar.
+                     {%- endif -%}
+                  {%- else -%}
+                     {%- form 'customer', class:'mc4wp-form' -%}
+                        <div class="mc4wp-form-fields">
+                          <input type="hidden" name="contact[tags]" value="newsletter">
+                          <div class="signup-newsletter-form db">
+                             <input type="email" name="contact[email]" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"  value="{%- if customer -%}{{ customer.email }}{%- endif -%}" class="ck_ntemail input-text" required="required">
+                             {%- if settings.use_agree_checkbox_mail -%}{%- include 'conditions_mail',html:'p',margin:'' -%}{%- endif -%}
+                             <div class="input-group-btn"><input type="submit" value="{{ 'general.newsletter_form.submit' | t }}" class="submit-btn{%- if settings.use_agree_checkbox_mail %} mail_agree{%- endif -%}"></div>
+                          </div>
+                         </div>
+                         <div class="mc4wp-response">
+                           {%- if form.posted_successfully? -%}<div class="shopify-message dib">{{ 'general.newsletter_form.confirmation' | t }}</div>{%- elsif form.errors -%}<div class="shopify-error dib">{{ form.errors | default_errors }}</div>{%- endif -%}
+                         </div>
+                     {%- endform -%}
+                  {%- endif -%}
+                  <div class="nt_new_footer fs__15 mt__20">{{ 'general.promo_popup.footer' | t }}</div>
+                  <div class="nt_new_checkzone pa">
+                    <label class="label-for-checkbox mg__0 cusor_pointer"><input type="checkbox" id="hideforever_ypop" name="checkbox" class="input-checkbox nt_agree">{{'general.promo_popup.checkbox' | t }}</label>
+                 </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{%- endif -%}

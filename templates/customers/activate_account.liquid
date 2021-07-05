@@ -1,0 +1,143 @@
+{%- assign image = settings.login_bg_image -%}
+{%- assign color_scheme = settings.login_color -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.login_overlay}} pr oh{%- if settings.use_parallax_login %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{ 'customer.account.title' | t }}</h1>
+      </div>
+   </div>
+</div>
+{%- assign error_html = '' -%}
+{%- assign gl_shopify_error = false -%}
+<div class="container">
+   <div class="row">
+      <div class="col-12 mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+         <div class="shopify">
+            <div class="shopify-message resetSuccess" style="display:none;">{{ 'customer.recover_password.success' | t }}</div>
+            <p class="text_content_success resetSuccess" style="display:none;">{{ 'customer.recover_password.content_success' | t }}</p>
+            <ul id="gl_shopify_error" class="shopify-error" style="display:none;">
+               <li class="html_li" id="nthtml_frm"></li>
+            </ul>
+            <div class="container login-form">
+              <div class="row">
+                <div class="col-sm-3 col-12"></div>
+                <div class="col-sm-6 col-12">
+                   <div class="wrap_customer_nt">
+                      <div id="ntCustomerRegisterForm">
+                        <h2>{{ 'customer.activate_account.subtext' | t }}</h2>
+                        {%- form 'activate_customer_password',class:'lost_reset_password login_active_acount' -%}
+                           {%- if form.errors -%}
+                              {%- assign gl_shopify_error = true -%}
+                              {%- for field in form.errors -%}
+                                 {%- if field == 'form' -%}
+                                    {%- assign error_html = form.errors.messages[field] -%}
+                                 {%- else -%}
+                                    {%- assign error_html = form.errors.translated_fields[field] | append:' ' | append:form.errors.messages[field] -%}
+                                 {%- endif -%}
+                              {%- endfor -%}
+                           {%- endif -%}
+                           <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                              <label for="CustomerPassword">{{ 'customer.activate_account.password' | t }} <span class="required">*</span></label>
+                              <span class="pr db input--icon">
+                                <input type="password" value="" name="customer[password]" id="CustomerPassword" placeholder="{{ 'customer.activate_account.password' | t }}" class="{%- if settings.show_hide_pass -%}nt_custom_input {% endif -%}shopify-Input shopify-Input--text input-text" >
+                                <i class="icon-lock icons pa tc"></i>
+                                {%- if settings.show_hide_pass -%}
+                                <span class="dib pa icon_pass_nt cusor_pointer" onclick="toggle_pass(this);return false;">
+                                  <span class="dib pa tooltip_top_left icon_hide_pass" aria-label="{{ 'customer.show_pass' | t }}">
+                                  <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none"></path><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+                                  </span>
+                                  <span class="dib pa tooltip_top_left icon_show_pass" aria-label="{{ 'customer.hide_pass' | t }}">
+                                  <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                                  </span>
+                                </span>
+                                {%- endif -%}
+                              </span>
+                           </p>
+                           <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                              <label for="CustomerPasswordConfirmation">{{ 'customer.activate_account.password_confirm' | t }} <span class="required">*</span></label>
+                              <span class="pr db input--icon">
+                                <input type="password" value="" name="customer[password_confirmation]" id="CustomerPasswordConfirmation" placeholder="{{ 'customer.activate_account.password_confirm' | t }}" class="{%- if settings.show_hide_pass -%}nt_custom_input {% endif -%}shopify-Input shopify-Input--text input-text">
+                                <i class="icon-lock icons pa tc"></i>
+                                {%- if settings.show_hide_pass -%}
+                                <span class="dib pa icon_pass_nt cusor_pointer" onclick="toggle_repass(this);return false;">
+                                  <span class="dib pa tooltip_top_left icon_hide_pass" aria-label="{{ 'customer.show_pass' | t }}">
+                                  <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none"></path><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+                                  </span>
+                                  <span class="dib pa tooltip_top_left icon_show_pass" aria-label="{{ 'customer.hide_pass' | t }}">
+                                  <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                                  </span>
+                                </span>
+                                {%- endif -%}   
+                              </span>
+                           </p>
+                           <p class="shopify-FormRow form-row login_active_btn">
+                              <button type="submit" onclick="ntclassList(this);" class="btn btn--loader btn_primary">{{ 'customer.activate_account.submit' | t }}<span class="btn--loader-balls"></span></button>                   
+                              <button type="submit" name="decline" onclick="ntclassList(this);" class="btn btn--loader btn_primary btn_dark mt__20">{{ 'customer.activate_account.cancel' | t }}<span class="btn--loader-balls"></span></button> 
+                           </p>
+                        {%- endform -%}
+                      </div>
+                   </div>
+                </div>
+                <div class="col-sm-3 col-12"></div>
+              </div>
+            </div>
+         </div>
+      </div>
+      <!-- $classes -->
+   </div>
+   <!-- .jas-row -->
+</div>
+<script type="text/javascript">
+function toggle_pass(elem) {
+    var x = document.getElementById("CustomerPassword");
+    if (x.type === "password") {
+        x.type = "text";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.add('nt_show_pass');
+        }, 300);
+        
+    } else {
+        x.type = "password";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.remove('nt_show_pass');
+        }, 300);
+    }
+}
+ function toggle_repass(elem) {
+    var x = document.getElementById("CustomerPasswordConfirmation");
+    if (x.type === "password") {
+        x.type = "text";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.add('nt_show_pass');
+        }, 300);
+        
+    } else {
+        x.type = "password";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.remove('nt_show_pass');
+        }, 300);
+    }
+}
+function ntclassList(elem) {
+ elem.classList.add('btn--loader-active');
+}
+  {%- if gl_shopify_error -%}
+      {%- if error_html != blank -%}
+      var html = {{error_html | json }};
+      var element = document.getElementById("nthtml_frm");
+          element.innerHTML = '{{ 'customer.login.error' | t }} '+html;
+      
+      {%- endif -%}
+      document.getElementById('gl_shopify_error').style.display = 'block';
+  {%- endif -%}
+</script>
+
+

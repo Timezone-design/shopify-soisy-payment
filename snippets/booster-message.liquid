@@ -1,0 +1,285 @@
+<script src="{{ 'booster.js' | asset_url }}" defer></script>
+
+<script type="text/javascript">
+//Isolate script scope
+(function (){
+  window.baMsg = {
+     "remote_id": "53455454377",
+     "shopify_domain": "ldm-tech-store.myshopify.com",
+     "fb_page_id": "",
+     "locale": "en_US",
+     "app_id": 369783430202516,
+     "use_stm_callback": "",
+     "user_ref": 'ba_53455454377_' + Math.random().toString(36).substring(5) + '_' + Math.floor(Math.random() * (9999999 - 1000000)),
+     "atc_preference": "push",
+     "active_fb_atc_shown": false,
+     "active_sms_atc_shown": false,
+     "active_email_atc_shown": false,
+     "app_url": "/apps/ba_fb_app",
+     "page_url": window.location.href,
+     "is_preview": (window.location.href.indexOf("ba-preview") != -1),
+     "is_generating": (window.location.href.indexOf("ba_action=generate") != -1),
+     "fb_active": false,
+     "sms_active": false,
+     "email_active": false,
+     "push_active": true,
+     "bis_active": false,
+     "ab_active": false
+  };
+
+
+  baMsg.debug = function (enabled) {
+    if (enabled === false) {
+      baMet.destroyCookie("baMsg_debug");
+    } else {
+      baMet.setCookie("baMsg_debug", "t", 365 * 24 * 60);
+    }
+    return true;
+  };
+
+  baMsg.log = function(message){
+    if (baMet.getCookie("baMsg_debug")) {
+      window.console.log(message);
+    }
+  }
+
+  function isMobile() {
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  }
+
+  function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  function getUrlParam(paramName) {
+    var params = {};
+    window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str,key,value) {
+      params[key] = value;
+    });
+    return params[paramName];
+  }
+
+
+  function updateSubscriberHash(updateHash){
+    var updatedSubscriberHash = window.baMsg.subscriber_hash;
+    for (var prop in updateHash) {
+      updatedSubscriberHash[prop] = updateHash[prop];
+    }
+    var subscriberKey = "ba_msg_subscriber_" + baMet.getVisitorToken();
+    localStorage.setItem(subscriberKey, JSON.stringify(updatedSubscriberHash));
+    window.BoosterApps.can_update_cart = true;
+  }
+
+  function applyMet(metName){
+    eventHash = {}
+    //baMet.apply(metName, eventHash, "ba_msg");
+  }
+
+  function getCartSessionId(){
+    return baMet.getCookie("baMet_cs_id");
+  }
+
+  function isHidden(el) {
+    return (el.offsetParent === null)
+  }
+
+  function documentReady(callback) {
+    document.readyState === "interactive" || document.readyState === "complete" ? callback() : document.addEventListener("DOMContentLoaded", callback);
+  }
+
+documentReady(function() {
+  var baFbPresent      = (document.getElementsByTagName('head')[0].innerHTML.search("ba_fb_" + window.baMsg.remote_id) > 0);
+  if (!baFbPresent){return;}
+  var bisScriptPresent = (document.getElementsByTagName('head')[0].innerHTML.search("bis_" + window.baMsg.remote_id) > 0);
+  window.baMsg.ba_fb_script_present = baFbPresent;
+  window.baMsg.bis_script_present = bisScriptPresent;
+
+  window.baMsg.visitor_token = window.baMet.getVisitorToken();
+  window.baMsg.session_token = window.baMet.getVisitToken();
+  window.baMsg.cart_uid  = baMet.getCookie('baMet_cs_id');
+  window.baMsg.browser_info = window.baMet.getBrowserInfo();
+
+  var baSubscriberKey = "ba_msg_subscriber_" + window.baMsg.visitor_token;
+  var rawSubscriber   = localStorage.getItem(baSubscriberKey);
+  var baSubscriberHash = JSON.parse(rawSubscriber || "{}");
+  window.baMsg.subscriber_hash = baSubscriberHash;
+  if (rawSubscriber){
+    window.BoosterApps.can_update_cart = true;
+  } else {
+    window.BoosterApps.can_update_cart = false;
+  }
+
+  var baId = window.baMet.getCookie("baid");
+  var ba_fb_opted_in_cookie = window.baMet.getCookie("ba_opted_in");
+
+  if (window.BoosterApps.common.customer && !window.baMsg.subscriber_hash.customer_synced_at){
+    var data = {
+      action_type: 'sync_customer', visitor_token: window.baMsg.visitor_token,
+      sync_data: window.BoosterApps.common.customer
+    }
+    baMet.sendRequest(window.baMsg.app_url, data, function(resp) {
+      baMsg.log('sub sync updated')
+      rightNow = parseInt(new Date().getTime());
+      updateSubscriberHash({customer_synced_at: rightNow, cus_id: window.BoosterApps.common.customer.id, cus_email: window.BoosterApps.common.customer.email});
+    });
+  }
+
+  //update last seen at if subscriber active
+  if (window.baMsg.subscriber_hash.ba_fb_opted_in && window.baMsg.ab_active && window.baMsg.cart_uid && !window.baMsg.handle_legacy){
+    var data = {"action_type": 'heartbeat', visitor_token: window.baMsg.visitor_token, "cart_uid": window.baMsg.cart_uid}
+    baMet.sendRequest(window.baMsg.app_url, data, function(resp) {
+      baMsg.log('heartbeat recorded')
+    });
+  }
+
+  if (window.baMsg.is_generating == true){
+    var cartUid = getParameterByName('cart_uid');
+    var baId    = getParameterByName('baid');
+    if (cartUid || baId){
+      var abStep = getParameterByName('ab_step');
+      var baCheckoutUrl = getParameterByName('ba_checkout_url');
+      var baChannel = getParameterByName('channel');
+      var overlayWrapper = document.createElement('div');
+      overlayWrapper.id = 'ba-overlay';
+      overlayWrapper.setAttribute('style', 'position: fixed;display: block;width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(0,0,0,0.8);z-index: 9999999999999;cursor: pointer;');
+      var overlayTextDiv = document.createElement('div');
+      overlayTextDiv.innerHTML = "Please wait... Generating cart";
+      overlayTextDiv.setAttribute('style', 'position: absolute;top: 50%;left: 50%;font-size: 22px;color: white;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);');
+      overlayWrapper.appendChild(overlayTextDiv);
+      document.getElementsByTagName('body')[0].appendChild(overlayWrapper);
+
+      //get the cart
+      var data = {"action_type": 'generate_cart', "ab_step": + abStep,
+        "cart_uid": window.baMsg.cart_uid, "baid": baId, "channel": baChannel
+      }
+      baMet.sendRequest(window.baMsg.app_url, data, function(resp) {
+        var baCheckoutStr = baCheckoutUrl + "?attributes[from]=Booster%20Apps%20Abandoned%20Cart%20Notification";
+        if (resp.code){
+          var baCheckoutStr = baCheckoutStr + "&discount=" + resp.code;
+        }
+        window.location = baCheckoutStr;
+      });
+      return;
+    }
+  }
+
+  function boosterPushSession(){
+    var _this = this;
+    window.baLoaded = false;
+
+    this.generate = function (settings) {
+      baMsg.log('boosterPush generate');
+      window.baMsg.requestPushPermissions = function(sourceType, successCallback){
+        navigator.serviceWorker.register("/apps/ba_fb_app/push?js_asset=1");
+        return new Promise(function(resolve, reject) {
+          const permissionResult = Notification.requestPermission(function(result) {
+            resolve(result);
+          });
+          if (permissionResult) {
+            permissionResult.then(resolve, reject);
+          }
+        })
+        .then(function(permissionResult) {
+          baMsg.log(permissionResult)
+
+          if (permissionResult !== 'granted') {
+            baMsg.log('Permission not granted.');
+          } else {
+            baMsg.log('Permission granted.');
+            subscribeUserToPush(sourceType, successCallback);
+          }
+        });
+      }
+
+      function urlB64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (var i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+      function subscribeUserToPush(sourceType, successCallback) {
+        return navigator.serviceWorker.register("/apps/ba_fb_app/push?js_asset=1")
+        .then(function(registration) {
+          var subscribeOptions = {
+            userVisibleOnly: true,
+            applicationServerKey: urlB64ToUint8Array("BO5RJ2FA8w6MW2Qt1_MKSFtoVpVjUMLYkHb2arb7zZxEaYGTMuLvmZGabSHj8q0EwlzLWBAcAU_0z-z9Xps8kF8=")
+          };
+          baMsg.log("subscribeOptions: ", subscribeOptions);
+          return registration.pushManager.subscribe(subscribeOptions);
+        })
+        .then(function(pushSubscription) {
+          baMsg.log('PushSubscription: ', JSON.stringify(pushSubscription));
+
+          trackPushOptIn(sourceType, pushSubscription.toJSON(), successCallback);
+        });
+      }
+
+      function trackPushOptIn(sourceType, pushSubscription, successCallback){
+        var params = {
+          channel: 'push',
+          endpoint: pushSubscription.endpoint,
+          keys_auth: pushSubscription.keys.auth,
+          keys_p256dh: pushSubscription.keys.p256dh,
+          user_agent: navigator.userAgent,
+          visitor_token: window.baMsg.visitor_token,
+          tz_offset: window.baMsg.browser_info.tz_offset,
+          os: window.baMsg.browser_info.os,
+          browser: window.baMsg.browser_info.browser
+        };
+
+        if (sourceType == 'bis'){
+          var variant = window.bisApp.variant;
+          params["product_id"]    = window.bisApp.product.id;
+          params["product_title"] = window.bisApp.product.title;
+          params["variant_title"] = variant.title;
+          params["variant_id"]    = variant.id;
+          params["action_type"]   =  'bis';
+        }
+
+        baMet.sendRequest(window.baMsg.app_url + "/push", params, function(data){
+          localStorage.setItem("ba_push_subscription", JSON.stringify(pushSubscription));
+          updateSubscriberHash({ba_push_opted_in: parseInt(new Date().getTime())})
+          successCallback();
+        });
+      }
+
+      if (!window.baMsg.subscriber_hash.ba_push_opted_in && !window.baMsg.subscriber_hash.ba_push_rejected && window.baMsg.bis_active == false){
+        setTimeout(function(){
+          window.baMsg.requestPushPermissions('pageLoad', function(){});
+        }, 1000);
+      }
+    }
+    return this;
+  }
+
+  (function() {
+
+
+      //push
+      if (window.baMsg.push_active){
+        new boosterPushSession().generate({
+          "active": true
+        });
+      }
+
+
+    })();
+
+  });
+}())
+</script>

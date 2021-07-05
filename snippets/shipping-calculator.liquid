@@ -1,0 +1,48 @@
+<div id="shipping-calculator" class="cart_totals cat_ship_calc">
+  <h2>{{ settings.shipping_calculator_heading | default: 'Get shipping estimates' }}</h2>
+  <div class="row">
+    <p class="field col-12 col-md-6">
+      <label for="address_country">{{ 'cart.shipping_calculator.country' | t }}</label>
+      <select id="address_country" name="address[country]" data-default="{% if shop.customer_accounts_enabled and customer %}{{ customer.default_address.country }}{% elsif settings.shipping_calculator_default_country != '' %}{{ settings.shipping_calculator_default_country }}{% endif %}" class="w__100">{{ country_option_tags }}</select>
+    </p>
+    <p class="field col-12 col-md-6" id="address_province_container" style="display:none;">
+      <label for="address_province" id="address_province_label">{{ 'cart.shipping_calculator.province' | t }}</label>
+      <select id="address_province" name="address[province]" data-default="{% if shop.customer_accounts_enabled and customer and customer.default_address.province != '' %}{{ customer.default_address.province }}{% endif %}" class="w__100"></select>
+    </p> 
+    <p class="field col-12 col-md-6">
+      <label for="address_zip">{{ 'cart.shipping_calculator.zip_code' | t }}</label>
+      <input type="text" id="address_zip" name="address[zip]"{% if shop.customer_accounts_enabled and customer %} value="{{ customer.default_address.zip }}"{% endif %} class="w__100" />
+    </p>
+    <p class="field col-12 wc-proceed-to-checkout mt__10">
+      <input type="button" class="get-rates btn button w__100" value="{{ settings.shipping_calculator_submit_button_label | default: 'Calculate shipping' }}" />
+    </p>
+  </div>
+  <div id="wrapper-response" class="mt__15"></div>
+</div>
+<script id="shipping-calculator-response-template" type="text/x-jquery-tmpl">
+  {% raw %}
+  <p id="shipping-rates-feedback" class="{{if success}}success{{else}}error{{/if}}">
+  {{if success}}
+    {{if rates.length > 1}}
+    There are ${rates.length} shipping rates available for ${address}, starting at {{html Shopify.Cart.ShippingCalculator.formatRate(rates[0].price)}}.
+    {{else}}
+      {{if rates.length == 1}}
+      There is one shipping rate available for ${address}.
+      {{else}}
+      We do not ship to this destination.
+      {{/if}}
+    {{/if}}
+  {{else}}
+    ${errorFeedback}
+  {{/if}}
+  </p>
+  <ul id="shipping-rates">
+    {{each( index, rate ) rates}}
+    <li>${rate.name} at {{html Shopify.Cart.ShippingCalculator.formatRate(rate.price)}}</li>
+    {{/each}}
+  </ul>
+   {% endraw %}
+</script>
+<!--[if lte IE 8]>
+<style> #shipping-calculator { display: none; } </style>
+<![endif]-->

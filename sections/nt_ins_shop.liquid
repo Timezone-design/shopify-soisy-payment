@@ -1,0 +1,165 @@
+{%- include 'style_mp_section' -%}
+<div class="nt_custom_{{section.id}} nt-full oh nt_ins_shop{%- if section.settings.use_container %} container{%- else %} nt-full{%- endif -%}">
+   {%- assign sett_title = section.settings.title -%}
+   {%- assign sett_sub_title = section.settings.sub_title -%}
+   {%- assign style_title = section.settings.style_title -%}
+   {%- assign content_page = section.settings.content_page -%}
+   {%- include 'nt_section_title' with style_title -%}
+   <div class="row nt-sc-ins_shop mt__30">
+      <div class="col-12">
+         {%- if content_page != blank -%}
+         {{ pages[content_page].content | html }}
+        {%- else -%}
+             {%- include 'no-blocks' -%}
+        {%- endif -%}
+      </div>
+   </div>
+</div>
+{%- schema -%}
+  {
+    "name": "Instagram Shop",
+    "class": "nt-section nt_ins_shop",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Instagram Shop"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title",
+        "default": "shop our instagram"
+      },
+      {
+        "type": "select",
+        "id": "style_title",
+        "options": [
+         {
+            "value": "type-simple",
+            "label": "Style 1"
+         },
+         {
+            "value": "hr-type-simple",
+            "label": "Style 2"
+          }
+        ],
+        "label": "Style title"
+      },
+      {
+        "id": "content_page",
+        "type": "page",
+        "label": "Page"
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_container",
+        "label": "Use container?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Instagram Shop",
+        "category": "5. Instagram"
+      }
+    ]
+  }
+{% endschema %}

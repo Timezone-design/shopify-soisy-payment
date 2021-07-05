@@ -1,0 +1,7 @@
+<div class="col-12 single-product-thumbnail pr bc_{{cv_color}}">
+   <div class="p-thumb images shopify-product-gallery{%- if product.images.size > 1 %} {{nt_masonry}}{%- else %} columns-full{%- endif %} image-action-{{settings.main_click}}{%- if page_pr_img_size %} {{settings.image_size_thumb}} {{settings.image_ratio_thumb}} position_{{settings.image_position_thumb}} equal-nt{%- endif -%}" data-masonry='{"selector":".p-item", "layoutMode":"masonry"}' data-slick='{"slidesToShow": 1,"rtl": {{ settings.use_rtl }}, "slidesToScroll": 1, "fade":true,"adaptiveHeight": {% if page_pr_img_size -%}false{% else -%}true{%- endif -%}}'>
+	{%- include 'arr_img_thum_2' -%}
+   </div>
+   {%- include 'group_btn_pr' -%}
+   {%- include 'product_labels_pr' -%}
+</div>

@@ -1,0 +1,190 @@
+<script>
+
+    var customer_fname;
+    var customer_lname;
+    var customer_email;
+    var customer_phonenum;
+    var customer_company;
+    var customer_add_civic_num;
+    var customer_staircase;
+    var customer_postcode;
+    var customer_city;
+    var customer_province;
+    var customer_country;
+    var countries = ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "British Indian Ocean Territory", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos Islands", "Colombia", "Comoros", "Cook Islands", "Costa Rica", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Ivory Coast", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "North Korea", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of the Congo", "Reunion", "Romania", "Russia", "Rwanda", "Saint Barthelemy", "Saint Helena", "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "U.S. Virgin Islands", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican", "Venezuela", "Vietnam", "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"];
+    var country_codes = ["AF", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ", "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BA", "BW", "BR", "IO", "VG", "BN", "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC", "CO", "KM", "CK", "CR", "HR", "CU", "CW", "CY", "CZ", "CD", "DK", "DJ", "DM", "DO", "TL", "EC", "EG", "SV", "GQ", "ER", "EE", "ET", "FK", "FO", "FJ", "FI", "FR", "PF", "GA", "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GU", "GT", "GG", "GN", "GW", "GY", "HT", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL", "IT", "CI", "JM", "JP", "JE", "JO", "KZ", "KE", "KI", "XK", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", "LT", "LU", "MO", "MK", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MR", "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "AN", "NC", "NZ", "NI", "NE", "NG", "NU", "KP", "MP", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", "PT", "PR", "QA", "CG", "RE", "RO", "RU", "RW", "BL", "SH", "KN", "LC", "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SX", "SK", "SI", "SB", "SO", "ZA", "KR", "SS", "ES", "LK", "SD", "SR", "SJ", "SZ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TG", "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "VI", "UG", "UA", "AE", "GB", "US", "UY", "UZ", "VU", "VA", "VE", "VN", "WF", "EH", "YE", "ZM", "ZW"];
+
+    // SOISY buy button on cart page
+    $("#soisy_buy_btn").click(function () {
+        console.log('soisy_btn_click');
+        $("div#customer_info_form").fadeIn(500);
+        $(".site_header.live_stuck").css("z-index", "1");
+        $("body").css("overflow", "hidden");
+    });
+
+    // Information form Confirm button
+    $("#customer_info_confirm_btn").click(function() {
+        var all_filled = true;
+        for (i = 0; i < 9; i++) {
+            if ( i == 4 || i == 6 ) continue;
+            if ($("#customer_info_form input").eq(i).val().trim() == '') {
+                $("#customer_info_form input").eq(i).css('border', '1px solid red');
+                all_filled = false;
+            } else {
+                $("#customer_info_form input").eq(i).css('border', 'none');
+                $("#customer_info_form input").eq(i).css('border-bottom', '1px solid lightgrey');
+            }
+        }
+        if ( all_filled == true ) {
+            console.log('all filled');
+            create_shopify_order();
+        } else {
+            console.log('not all filled');
+        }
+    });
+
+    // Go to SOISY payment gateway
+    function go_soisy() {
+        getCustomerInfo();
+        {% unless request.page_type contains 'product' %}
+            var cart_price = parseFloat($('#nathan-content > div.container.container_cat > div.row > div > div > form > div.cart-collaterals.row.mb__80 > div:nth-child(2) > div > div.responsive-table > div > table > tbody > tr.order-total > td > strong > span').text().split('€').join('').split(',').join(''));
+        {% else %}
+            var cart_price = meta.product.variants[0].price;
+        {% endunless %}
+        customer_add_civic_num = customer_add_civic_num.replace(/[0-9]/g, "");
+        
+        var tmp = customer_country;
+        var nth = countries.indexOf(tmp);
+        if (nth != -1) {
+            customer_country = (country_codes.slice(nth, nth + 1))[0];
+        } else {
+            customer_country = "";
+        }
+        if (customer_province != '')
+        customer_province = customer_province.slice(0, 2).toUpperCase();
+
+        $.ajax({
+            url: "https://api.soisy.it/api/shops/ldmtechstore/orders",
+            type: "POST",
+            data: {
+                "firstname": customer_fname,
+                "lastname": customer_lname,
+                "e-mail": customer_email,
+                "mobilePhone": customer_phonenum,
+                "amount": cart_price,
+                "city": customer_city,
+                "postalCode": customer_postcode,
+                "vatCountry": customer_country,
+                "provinces": customer_province,
+                "successUrl": 'https://www.ldmtechstore.com',
+                "errorUrl": 'https://www.ldmtechstore.com'
+            },
+            headers: {
+                'X-Auth-Token': "pT8tCX,i86dqXMFEbzB0V6GZ883sZGj."
+            },
+            success: function(data, status){
+                // console.log(data);
+                // console.log(status);
+                // console.log("Data: " + data.redirectUrl + "\nStatus: " + status);
+                window.location.href = data.redirectUrl;
+            }
+        });
+    }
+
+    // Create shopify order
+    function create_shopify_order() {
+        console.log('create_shopify_order');
+        getCustomerInfo();
+
+        {% unless request.page_type contains 'product' %}
+            console.log('cart page create order');
+            var product_num = $('.product-thumbnail a').length;
+            var line_item = [];
+            for (let i = 0; i < product_num; i++) {
+                var variant = ($('.product-thumbnail a').eq(i).attr('href')).split('variant=')[1];
+                var amount = $('.shop_table .quantity input[inputmode="numeric"]').eq(i).val();
+                line_item.push({
+                    "variant_id": variant,
+                    "quantity": amount
+                });
+            }
+        {% else %}
+            console.log('product page create order');
+            var line_item = [{
+                "variant_id": meta.product.variants[0].id,
+                "quantity": 1
+            }];
+        {% endunless %}
+
+        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+        var theUrl = 'https://shopify-proxy.herokuapp.com/https://2cc30d72a4e5bd602a9ad028f7fbb990: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@ldm-tech-store.myshopify.com/admin/api/2021-04/orders.json';
+        xmlhttp.open("POST", theUrl);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlhttp.setRequestHeader('X-Requested-With', '*');
+        xmlhttp.setRequestHeader('X-Shopify-Access-Token', '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');
+        xmlhttp.send(JSON.stringify({
+            "order": {
+                "email": customer_email,
+                "line_items": line_item,
+                "customer": {
+                    "first_name": customer_fname,
+                    "last_name": customer_lname,
+                    "email": customer_email
+                },
+                "shipping_address": {
+                    "first_name": customer_fname,
+                    "last_name": customer_lname,
+                    "phone": customer_phonenum,
+                    "address1": customer_add_civic_num,
+                    "zip": customer_postcode,
+                    "city": customer_city,
+                    "province": customer_province,
+                    "country": customer_country
+                },
+                "financial_status": "pending"
+            }
+        }));
+        xmlhttp.onload = function() {
+            //console.log(xmlhttp.status);
+            if (xmlhttp.status == 200 || xmlhttp.status == 201) go_soisy();
+        };
+    }
+
+    // Get customer info from input form
+    function getCustomerInfo() {
+        customer_fname = $("#customer_info_form input").eq(0).val();
+        customer_lname = $("#customer_info_form input").eq(1).val();
+        customer_email = $("#customer_info_form input").eq(2).val();
+        customer_phonenum = $("#customer_info_form input").eq(3).val();
+        customer_company = $("#customer_info_form input").eq(4).val();
+        customer_add_civic_num = $("#customer_info_form input").eq(5).val();
+        customer_staircase = $("#customer_info_form input").eq(6).val();
+        customer_postcode = $("#customer_info_form input").eq(7).val();
+        customer_city = $("#customer_info_form input").eq(8).val();
+        if($("#address_province_new").val() != null) {
+            customer_province = $("#address_province_new").val().toUpperCase();
+        } else {
+            customer_province = '';
+        }
+        customer_country = $('#address_country_new').val();
+    }
+
+    var timerVar = setInterval(inspect_price, 100);
+
+    function inspect_price() {
+        var cart_price = parseFloat($('#nathan-content > div.container.container_cat > div.row > div > div > form > div.cart-collaterals.row.mb__80 > div:nth-child(2) > div > div.responsive-table > div > table > tbody > tr.order-total > td > strong > span').text().split('€').join('').split(',').join(''));
+        if ( cart_price < 10000 || cart_price == NaN ) {
+        $('#soisy_buy_btn').css('display', 'none');
+        } else {
+        $('#soisy_buy_btn').css('display', 'block');
+        }
+    }
+
+    // Information form close button
+    $("span.close_modal").click(function() {
+        $("div#customer_info_form").fadeOut(500);
+        $(".site_header.live_stuck").css("z-index", "999");
+        $("body").css("overflow", "auto");
+    });
+    
+</script>

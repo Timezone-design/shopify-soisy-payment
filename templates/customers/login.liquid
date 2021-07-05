@@ -1,0 +1,267 @@
+{%- assign error_html = '' -%}
+{%- assign gl_shopify_error = false -%}
+<div class="container">
+   <div class="row">
+      <div class="col-12 nt_customer_content" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+         <div class="shopify">
+            <div class="shopify-message resetSuccess" style="display:none;">{{ 'customer.recover_password.success' | t }}</div>
+            <p class="text_content_success resetSuccess" style="display:none;">{{ 'customer.recover_password.content_success' | t }}</p>
+            <ul id="gl_shopify_error" class="shopify-error" style="display:none;">
+               <li class="html_li" id="nthtml_frm"></li>
+            </ul>
+            <div class="container login-form">
+               <div class="row">
+                  <div class="col-12 tc nt-register-tabs">
+                     <a class="dib tab_link active" href="javascript:void(0);" id="link_login" onclick="login();return false;">{{ 'customer.login.title' | t }}</a>
+                     {%- if settings.login_register_enable  == false -%}
+                     <span class="driver">/</span> 
+                     <a class="dib tab_link" href="javascript:void(0);" id="link_register" onclick="register();return false;">{{ 'customer.register.title' | t }}</a>
+                     {%- endif -%}
+                  </div>
+                  <div class="col-sm-3 col-12"></div>
+                  <div class="col-sm-6 col-12">
+                     <div class="wrap_customer_nt">
+                        <div id="ntCustomerLoginForm">
+                           {%- form 'customer_login',class:'login' -%}
+                              {%- if form.errors -%}
+                                 {%- assign gl_shopify_error = true -%}
+                                 {%- for field in form.errors -%}
+                                    {%- if field == 'form' -%}
+                                       {%- assign error_html = form.errors.messages[field] -%}
+                                    {%- else -%}
+                                       {%- assign error_html = form.errors.translated_fields[field] | append:' ' | append:form.errors.messages[field] -%}
+                                    {%- endif -%}
+                                 {%- endfor -%}
+                              {%- endif -%}
+                              <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                                  <label for="username">{{ 'customer.login.email' | t }} <span class="required">*</span></label>
+                                  <span class="pr db input--icon">
+                                    <input type="text" class="shopify-Input shopify-Input--text input-text{%- if form.errors contains 'email' %} input--error{%- endif -%}" name="customer[email]" id="username">
+                                    <i class="icon-user-follow icons pa tc"></i>
+                                  </span>
+                              </p>
+                              {%- if form.password_needed -%}
+                              <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                                 <label for="password">{{ 'customer.login.password' | t }} <span class="required">*</span></label>
+                                 <span class="pr db input--icon">
+                                    <input class="{%- if settings.show_hide_pass -%}nt_custom_input {% endif -%}shopify-Input shopify-Input--text input-text{%- if form.errors contains 'password' %} input--error{%- endif -%}" type="password" name="customer[password]" id="CustomerPassword" id="password">
+                                    <i class="icon-lock icons pa tc"></i>
+                                    {%- if settings.show_hide_pass -%}
+                                    <span class="dib pa icon_pass_nt cusor_pointer" onclick="toggle_pass(this);return false;">
+                                      <span class="dib pa tooltip_top_left icon_hide_pass" aria-label="{{ 'customer.show_pass' | t }}">
+                                      <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none"></path><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+                                      </span>
+                                      <span class="dib pa tooltip_top_left icon_show_pass" aria-label="{{ 'customer.hide_pass' | t }}">
+                                      <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                                      </span>
+                                    </span>
+                                    {%- endif -%}
+                                  </span>
+                              </p>
+                              {%- endif -%}
+                              <p class="form-row">
+                                <button type="submit" onclick="ntclassList(this);" class="btn btn--loader btn_primary" name="login">{{ 'customer.login.sign_in' | t }}<span class="btn--loader-balls"></span></button>
+                                 {%- if settings.login_register_enable -%}<a href="/account/register" onclick="ntclassList(this);" class="db w_100 shopify-Button button btn_dark pr btn--loader mt__20">{{ 'customer.register.submit' | t }}<span class="btn--loader-balls"></span></a>{%- endif -%}
+                              </p>
+                              {%- if form.password_needed -%}
+                              <p class="shopify-LostPassword lost_password">
+                                 <a href="javascript:void(0)" onclick="showRecoverPasswordForm();return false;">{{ 'customer.login.forgot_password' | t }}</a>
+                              </p>
+                              {%- endif -%}
+                           {%- endform -%}
+                           <div id="recover_password" style="display: none;">
+                              {%- form 'recover_customer_password', class:'shopify-ResetPassword lost_reset_password' -%}
+                                 <p>{{ 'customer.recover_password.subtext' | t }}</p>
+                                 {%- if form.posted_successfully? -%}
+                                    {%- assign reset_success = true -%}
+                                 {%- endif -%}
+                                 {%- if form.errors -%}
+                                    {%- assign gl_shopify_error = true -%}
+                                    {%- for field in form.errors -%}
+                                       {%- if field == 'form' -%}
+                                          {%- assign error_html = form.errors.messages[field] -%}
+                                       {%- else -%}
+                                          {%- assign error_html = form.errors.translated_fields[field] | append:' ' | append:form.errors.messages[field] -%}
+                                       {%- endif -%}
+                                    {%- endfor -%}
+                                 {%- endif -%}
+                                 <p class="shopify-form-row shopify-form-row--first form-row form-row-first nt_100">
+                                    <label for="user_login">{{ 'customer.recover_password.email' | t }}</label>
+                                    <span class="pr db input--icon">
+                                       <input type="email" value="" name="email" id="RecoverEmail" class="shopify-Input shopify-Input--text input-text" autocorrect="off" autocapitalize="off">
+                                       <i class="icon-lock icons pa tc"></i>
+                                    </span>
+                                 </p>
+                                 <div class="clear"></div>
+                                 <p class="shopify-form-row form-row">
+                                    <button type="submit" onclick="ntclassList(this);" class="btn btn--loader btn_primary">{{ 'customer.recover_password.submit' | t }}<span class="btn--loader-balls"></span></button>
+                                    <button type="button" onclick="hideRecoverPasswordForm();return false;" class="btn_dark mt__20 shopify-Button button db w_100">{{ 'customer.recover_password.cancel' | t }}</button>
+                                 </p>
+                              {%- endform -%}
+                           </div>
+                        </div>
+                        {%- if settings.login_register_enable  == false -%}
+                        <div id="ntCustomerRegisterForm" style="display: none;">
+                           {%- form 'create_customer',class:'register' -%}
+                              {%- if form.errors -%}
+                                 {%- assign gl_shopify_error = true -%}
+                                 {%- for field in form.errors -%}
+                                    {%- if field == 'form' -%}
+                                       {%- assign error_html = form.errors.messages[field] -%}
+                                    {%- else -%}
+                                       {%- assign error_html = form.errors.translated_fields[field] | append:' ' | append:form.errors.messages[field] -%}
+                                    {%- endif -%}
+                                 {%- endfor -%}
+                              {%- endif -%}
+                              <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                                 <label for="FirstName">{{ 'customer.register.first_name' | t }}</label>
+                                 <span class="pr db input--icon">
+                                    <input type="text" class="shopify-Input shopify-Input--text input-text" name="customer[first_name]" id="FirstName"{%- if form.first_name %} value="{{ form.first_name }}"{%- endif %} autofocus>
+                                    <i class="icon-doc icons pa tc"></i>
+                                 </span>
+                              </p>
+                              <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                                 <label for="LastName">{{ 'customer.register.last_name' | t }}</label>
+                                 <span class="pr db input--icon">
+                                    <input type="text" class="shopify-Input shopify-Input--text input-text" name="customer[last_name]" id="LastName"{%- if form.last_name %} value="{{ form.last_name }}"{%- endif -%}>
+                                    <i class="icon-docs icons icons pa tc"></i>
+                                 </span>
+                              </p>
+                              <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                                 <label for="reg_email">{{ 'customer.register.email' | t }} <span class="required">*</span></label>
+                                 <span class="pr db input--icon">
+                                    <input type="email" class="shopify-Input shopify-Input--text input-text{%- if form.errors contains 'email' %} input--error{%- endif -%}" name="customer[email]" id="reg_email"{%- if form.email %} value="{{ form.email }}"{%- endif -%}>
+                                    <i class="icon-envelope icons pa tc"></i>
+                                 </span>
+                              </p>
+                              <p class="shopify-FormRow shopify-FormRow--wide form-row form-row-wide">
+                                 <label for="reg_password">{{ 'customer.register.password' | t }} <span class="required">*</span></label>
+                                 <span class="pr db input--icon">
+                                    <input type="password" class="{%- if settings.show_hide_pass -%}nt_custom_input {% endif -%}shopify-Input shopify-Input--text input-text{%- if form.errors contains 'password' %} input--error{%- endif -%}" name="customer[password]" id="reg_password">
+                                    <i class="icon-lock icons pa tc"></i>
+                                    {%- if settings.show_hide_pass -%}
+                                    <span class="dib pa icon_pass_nt cusor_pointer" onclick="toggle_repass(this);return false;">
+                                      <span class="dib pa tooltip_top_left icon_hide_pass" aria-label="{{ 'customer.show_pass' | t }}">
+                                      <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none"></path><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+                                      </span>
+                                      <span class="dib pa tooltip_top_left icon_show_pass" aria-label="{{ 'customer.hide_pass' | t }}">
+                                      <svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg" class="VhKI7c"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                                      </span>
+                                    </span>
+                                    {%- endif -%}
+                                 </span>
+                              </p>
+                              {%- if settings.use_privacy_policy -%}
+                              <div class="shopify-privacy-policy-text"><p>{%- if settings.privacy_policy_link != blank -%}{%- assign page_url = pages[settings.privacy_policy_link].url -%}{{ 'customer.register.privacy_policy_html' | t:link: page_url }}{%- else -%}{{ 'customer.register.privacy_policy' | t }}{%- endif -%}</p></div>
+                              {%- endif -%}
+                              <p class="shopify-FormRow form-row">   
+                                 <button type="submit" onclick="ntclassList(this);" class="btn btn--loader btn_primary" name="register">{{ 'customer.register.submit' | t }}<span class="btn--loader-balls"></span></button>
+                              </p>
+                           {%- endform -%}
+                        </div>
+                        {%- endif -%}
+                     </div>
+                     {%- if shop.checkout.guest_login -%}
+                     <div class="form-login mt__20 tc">
+                      <hr class="hr--invisible">
+                      <h2 class="tu fwb">{{ 'customer.login.guest_title' | t }}</h2>
+                      {%- form 'guest_login',class:'login' -%}
+                        <button type="submit" onclick="ntclassList(this);" class="btn btn--loader btn_primary">{{ 'customer.login.guest_continue' | t }}<span class="btn--loader-balls"></span></button>
+                      {%- endform -%}
+                     </div>
+                     {%- endif -%}
+                  </div>
+                  <div class="col-sm-3 col-12"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- $classes -->
+   </div>
+   <!-- .jas-row -->
+</div>
+<script type="text/javascript">
+  /*
+    Show/hide the recover password form when requested.
+  */
+  function showRecoverPasswordForm() {
+    document.getElementById('recover_password').style.display = 'block';
+    document.getElementById('customer_login').style.display='none';
+    document.getElementById('gl_shopify_error').style.display='none';
+  }
+
+  function hideRecoverPasswordForm() {
+    document.getElementById('recover_password').style.display = 'none';
+    document.getElementById('customer_login').style.display = 'block';
+  }
+  function login() {
+    document.getElementById('ntCustomerRegisterForm').style.display = 'none';
+    document.getElementById("ntCustomerLoginForm").style.display = "block";
+    document.getElementById('link_register').classList.remove("active");
+    document.getElementById('link_login').classList.add("active");
+ }
+ function register() {
+    document.getElementById('ntCustomerLoginForm').style.display = 'none';
+    document.getElementById("ntCustomerRegisterForm").style.display = "block";
+    document.getElementById('link_login').classList.remove("active");
+    document.getElementById('link_register').classList.add("active");
+ }
+ function toggle_pass(elem) {
+    var x = document.getElementById("CustomerPassword");
+    if (x.type === "password") {
+        x.type = "text";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.add('nt_show_pass');
+        }, 300);
+        
+    } else {
+        x.type = "password";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.remove('nt_show_pass');
+        }, 300);
+    }
+}
+ function toggle_repass(elem) {
+    var x = document.getElementById("reg_password");
+    if (x.type === "password") {
+        x.type = "text";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.add('nt_show_pass');
+        }, 300);
+        
+    } else {
+        x.type = "password";
+        elem.classList.add('nt_pass_effect');
+        setTimeout(function() {
+          elem.classList.remove('nt_pass_effect');
+          elem.classList.remove('nt_show_pass');
+        }, 300);
+    }
+}
+ function ntclassList(elem) {
+    elem.classList.add('btn--loader-active');
+}
+  // Allow deep linking to the recover password form
+  if (window.location.hash == '#recover') { showRecoverPasswordForm() }
+
+  // reset_success is only true when the reset form is
+  {% if reset_success -%}
+    var x = document.getElementsByClassName('resetSuccess');
+    x[0].style.display = 'block';  x[1].style.display = 'block';
+  {% endif -%}
+  {% if gl_shopify_error -%}
+      {%- if error_html != blank -%}
+      var html = {{error_html | json }};
+      var element = document.getElementById("nthtml_frm");
+         element.innerHTML = '';
+         element.innerHTML = '{{ 'customer.login.error' | t }} '+html;
+      {%- endif -%}
+      document.getElementById('gl_shopify_error').style.display = 'block';
+  {% endif -%}
+</script>

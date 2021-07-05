@@ -1,0 +1,9 @@
+<div class="recently product-extra mt__60 {{settings.recently_products_hover}}" id="recently-viewed-products" style="display:none">
+  {%- assign sett_title = settings.title_pr_recently -%}
+  {%- assign sett_sub_title = settings.sub_title_pr_recently -%}
+  {%- assign style_title = settings.style_title_pr_recently -%}
+  {%- assign settings_pr_img_size = settings.use_recently_eq_height -%}
+  {%- include 'nt_section_title' with style_title -%}
+  <div class="lds-ellipsis center"><div></div><div></div><div></div><div></div></div>
+  <div id="recently_wrap" class="products row nt-products-holder {{settings.recently_image_size}} {{settings.recently_img_ratio}} position_{{settings.recently_img_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}" data-slick='{"slidesToShow": {{ settings.recently_sidetoshow }},"slidesToScroll": 1, "autoplay": {{ settings.recently_use_autoplay }}, "autoplaySpeed": {{ settings.recently_slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{settings.recently_use_loop}}, "arrows": {{settings.recently_use_arrows}},"dots": {{settings.recently_use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ settings.recently_sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ settings.recently_sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ settings.recently_sidetoshow_last}} }}]}'></div>
+</div>

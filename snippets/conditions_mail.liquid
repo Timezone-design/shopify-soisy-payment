@@ -1,0 +1,7 @@
+{%- assign page_url = pages[settings.link_conditions_mail].url -%}
+<{{html}} class="agree_checkbox agree_mail {{margin}}">
+ <label class="label-for-checkbox">
+ <input type="checkbox" name="checkboxnt" class="input-checkbox">
+ {%- if settings.link_conditions_mail != blank %} {{ 'general.agree_mail.link_conditions_html' | t:link: page_url }}{%- else -%}{{ 'general.agree_mail.link_conditions_emty' | t }}{%- endif -%}
+ </label>
+</{{html}}>

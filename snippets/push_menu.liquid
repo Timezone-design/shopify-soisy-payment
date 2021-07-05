@@ -1,0 +1,26 @@
+<div class="nav_btn_push">
+	<a href="javascript:void(0);" class="push-menu-btn cusor_pointer pr">
+	 <span class="burger-icon burger-icon--top"></span>
+	 <span class="burger-icon burger-icon--mid"></span>
+	 <span class="burger-icon burger-icon--bottom"></span>	
+	</a>
+  {%- if settings.nt_search_widget != 'disable' -%}
+   <div class="nt_header_search pr nt_search_{{settings.nt_search_widget}}">
+      <a class="pr dib" href="javascript:void(0);"><i class="pe-7s-search"></i></a>
+       {%- if settings.nt_search_widget == 'dropdown' -%}
+      <div class="nt_search_wrapper color-scheme-dark">
+         <div class="nt_search_inner">
+            <form role="search" method="get" class="pr searchform{%- if settings.ajax_search %} nt-ajax-search{%- endif -%}" action="/search">
+               <div>
+                  <input type="text" class="search-field" placeholder="{{ 'general.search.placeholder' | t }}" value="{{ search.terms | escape }}" name="q" autocomplete="off">
+                  {%- if settings.only_search_products -%}<input type="hidden" name="type" value="product" />{%- endif -%}
+                  <button type="submit" class="searchsubmit"><i class="icon-magnifier"></i></button>
+               </div>
+            </form>
+            <div class="search-suggestions-wrapp w_100 pr oh"><div class="nt_search_results"><ul class="tl ui-autocomplete autocomplete-suggestions"></ul></div></div>
+         </div>
+      </div>
+      {%- endif -%}
+   </div>
+  {%- endif -%}
+</div>

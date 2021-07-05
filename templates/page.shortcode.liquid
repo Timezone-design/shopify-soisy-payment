@@ -1,0 +1,28 @@
+{%- assign image = settings.other_page_bg_image -%}
+{%- assign color_scheme = settings.other_page_color -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.other_overlay}} pr oh{%- if settings.use_parallax_other_page %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{page.title}}</h1>
+      </div>
+   </div>
+</div>
+<style type="text/css">code {background-color: #d1d1d1;padding: .125em .25em;line-height: 1.5}</style>
+<div class="container container_page mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+  <article id="post-{{ page.id }}" class="post">
+   <h3 class="pr fwb mt__20">1. Products<span class="sub-title db"></span></h3>
+     {%- section 'shortcode_pr' -%}
+    <h3 class="pr fwb mt__20">2. Products Owl<span class="sub-title db"></span></h3>
+     {%- section 'shortcode_pr_owl' -%}
+    <h3 class="pr fwb mt__20">3. Lookbook<span class="sub-title db"></span></h3>
+     {%- section 'shortcode_lookbook' -%}
+   <h3 class="pr fwb mt__20">4. Gallery Images<span class="sub-title db"></span></h3>
+     {%- section 'shortcode_gallery' -%}
+  </article><!-- #post-# -->
+</div>
+
+
+
+
+

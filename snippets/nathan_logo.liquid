@@ -1,0 +1,34 @@
+{%- if template == 'index' -%}
+  <h1 class="db nt-branding ts__05">
+{%- else -%}
+  <div class="nt-branding ts__05">
+ {%- endif -%}
+ {%- if settings.body_logo_svg != blank -%}
+     <a class="site-header__logo-link" href="/">
+       <img src="{{ settings.body_logo_svg | file_url }}" alt="{{ image.alt | default: shop.name }}">  
+     </a>
+  {%- elsif settings.body_logo_image -%}
+    {%- assign image = settings.body_logo_image -%}
+    <a href="/" itemprop="url" class="db pr">
+       <img class="regular-logo" src="{{ image | img_url: '500x' }}" alt="{{ image.alt | default: shop.name }}">
+       {%- if settings.body_logo_image_retina != blank -%}
+          {%- assign image_retina = settings.body_logo_image_retina -%}
+       {%- else -%}
+          {%- assign image_retina = image -%}
+       {%- endif -%}
+         <img class="retina-logo" src="{{ image_retina  | img_url: '500x' }}" alt="{{ image_retina.alt | default: shop.name }}">
+       {%- if settings.body_logo_image_sticky != blank -%}
+          {%- assign image_sticky = settings.body_logo_image_sticky -%}
+       {%- else -%}
+          {%- assign image_sticky = image -%}
+       {%- endif -%}
+          <img class="stick-logo" src="{{ image_sticky | img_url: '500x' }}" alt="{{ image_sticky.alt | default: shop.name }}">
+    </a>
+  {%- else -%}
+    <a class="site-header__logo-link" href="/">{{ shop.name }}</a>
+  {%- endif -%}
+{%- if template == 'index' -%}
+</h1>
+{%- else -%}
+ </div>
+{%- endif -%}

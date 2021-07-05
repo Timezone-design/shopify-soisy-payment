@@ -1,0 +1,50 @@
+{%- layout none -%}
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- assign num_limit = settings.many_recently_products | default:5 -%}
+{%- assign canonical_url = canonical_url | split: 'recently-viewed-products/' | last | split:'?q=' -%}
+{%- assign canonical_url_one = canonical_url[0] -%}
+{%- assign canonical_url_two = canonical_url[1] -%}
+{%- assign _canonical_url_current = canonical_url_two | split: '+' -%}
+{%- assign canonical_url_current = _canonical_url_current[0] | plus: 0 -%}
+{%- assign collection_url_current = _canonical_url_current[1] -%}
+{%- if collection_url_current != blank -%}{%- assign collection = collections[collection_url_current] -%}{%- endif -%}
+{%- assign arr_canonical_url = canonical_url_one | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}
+{%- assign num_limit_ = 0 -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = '12' -%}
+{%- assign class_xs = '12' -%}
+{%- assign product_hover = 'hover-fade' -%}
+{%- assign show_vendor = settings.show_vendor_recently -%}
+{%- assign settings_pr_img_size = settings.use_recently_eq_height -%}
+{%- assign section_settings_countdown = settings.recently_sale_countdown -%}
+{%- assign countdown_timer_style = settings.recently_countdown_style -%}
+{%- assign num_limit = settings.many_recently_products -%}
+{%- assign nt_index = 0 -%}
+{%- unless collection -%}
+ {%- assign collection = collections['all'] -%}
+{%- endunless -%}
+{%- assign check_rec = true -%}
+{%- capture min_html -%}
+  {%- for handle_product in arr_canonical_url -%}
+    {%- if handle_product != blank -%}
+      {%- assign product = all_products[handle_product] -%}
+        {%- if canonical_url_current != product.id and product != blank -%}
+          {%- assign check_rec = false -%}
+          {%- include 'nt_product_loop' -%}
+             {%- assign nt_index = nt_index | plus: 1 -%}
+          {%- if num_limit < arr_canonical_url.size -%}
+            {%- assign num_limit_ = num_limit_ | plus: 1 -%}
+            {%- if num_limit ==  num_limit_ -%}{%-break-%}{%-endif-%}
+          {%- endif-%}
+        {%- endif -%}
+      {%- if forloop.index == 20 -%}{%-break-%}{%- endif -%}
+    {%- endif-%}
+  {%- endfor -%}
+  {%- if check_rec -%}<style>#recently-viewed-products {display: none}</style>{%- endif-%}
+{%- endcapture -%}
+{%- comment -%}{%- if nt_index == 1 -%}
+{{min_html | strip_newlines | remove: "  " | remove: "jas-product-image-equal" }} 
+{%- else -%}
+{{min_html | strip_newlines | remove: "  " }} 
+{%- endif -%}{%- endcomment -%}
+{{min_html | strip_newlines | remove: "  " }} 

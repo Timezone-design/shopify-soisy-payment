@@ -1,0 +1,24 @@
+{%- assign images_alt = product.images | map: 'alt' -%}
+{%- if images_alt contains 'nt_360' or product.metafields.meta.video contains 'youtube' or settings.show_zoom_img or settings.use_wishlist -%}
+	<div class="group_btn_pr pa flex">
+		{%- if settings.main_click == 'zoom' and settings.show_zoom_img -%}<div class="nt-show-product-gallery-wrap"><a href="javascript:void(0);" class="nt-show-product-gallery tooltip_left" aria-label="{{ 'products.product.click_zoom'| t }}"><i class="pe-7s-expand1" aria-hidden="true"></i></a></div>{%- endif -%}
+		{%- if settings.use_wishlist and pages['wishlist'].empty? != true -%}{%- include 'nt-wishlist-product' -%}{%- endif -%}
+		{%- if images_alt contains 'nt_360' -%}
+		<div class="360_wrap">
+			<div class="gecko-show-product-gallery-wrap p-video-360"><a href="#product-360-view" class="tooltip_left" aria-label="{{ 'products.product.view_360'| t }}"><i class="fs__25 pe-7s-science" aria-hidden="true"></i></a></div>
+			<div id="product-360-view" class="product-360-view-wrapper mfp-hide">
+		      <div class="nt-threed-view threed-id-{{product.id}}">
+		         <ul class="threed-view-images"></ul>
+		         <div class="spinner"><span>0%</span></div>
+		      </div>
+		   </div>
+		</div>
+		{%- endif -%}
+		{%- if product.metafields.meta.video contains 'youtube' -%}
+		<div class="nt-show-product-gallery-wrap p-video-youtube"><a href="{{ product.metafields.meta.video }}" class="jas-popup-url tooltip_left" aria-label="{{ 'products.product.video'| t }}"><i class="fs__25 pe-7s-play" aria-hidden="true"></i></a></div>
+	  {%- endif -%}
+	  <div class="spar-quicklook-overlay" style="display: none">
+	   <a class="drawer_ar tooltip_left" aria-label="{{ 'products.product.shopify_ar'| t }}" href="" rel="ar" ><img src="{{ 'ARKit_Badge_Icon.svg.svg' | asset_url }}"></a>
+	</div>
+  </div>
+{%- endif -%}

@@ -1,0 +1,158 @@
+{%- include 'style_mp_section' -%}
+  <div class="row nt_custom_{{section.id}}">
+    <div class="col-md-1 col-12"></div>
+    <div class="col-md-10 col-12">
+      <h1 class="fs__50 tc">{{section.settings.title}}</h1>
+      <p class="fs__16 tc">{{section.settings.sub_title}}</p>
+      <div class="tc">
+        {%- if section.settings.social_enabled -%}
+        {%- if section.settings.share_contact == '1' -%} {%- assign gl_follow_social = false -%} {%- else -%} {%- assign gl_follow_social = true -%} {%- endif -%}
+        {%- include 'social-sharing', gl_design:'colored tc',gl_size:'medium', follow_social:gl_follow_social,nt_tooltip:true -%}
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="col-md-1 col-12"></div>
+  </div>
+{%- schema -%}
+  {
+    "name": "Text",
+    "class": "nt-section row nt_text_about",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Hello! We’re Elessi"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Title",
+        "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras lacus metus, convallis ut leo nec, tincidunt eleifend justo. Ut felis orci, hendrerit a pulvinar et, gravida ac lorem. Sed vitae molestie sapien, at sollicitudin tortor.<br> Duis id volutpat libero, id vestibulum purus.Donec euismod accumsan felis,egestas lobortis velit tempor vitae. Integer eget velit fermentum, dignissim odio non, bibendum velit."
+      },
+      {
+        "type": "header",
+        "content": "== Social"
+      },
+      {
+        "type": "checkbox",
+        "id": "social_enabled",
+        "label": "Show social media icons",
+        "default": true,
+        "info": "Add accounts in Social media section"
+      },
+      {
+        "type": "radio",
+        "id": "share_contact",
+        "default": "2",
+        "options": [
+          {
+            "value": "1",
+            "label": "Share"
+          },
+          {
+            "value": "2",
+            "label": "Follow"
+          }
+        ],
+        "label": "== Share buttons type"
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ]
+  }
+{% endschema %}

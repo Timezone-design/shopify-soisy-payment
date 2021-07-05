@@ -1,0 +1,12 @@
+{%- assign template_id = template | split: '.' | first -%}
+{%- assign st = 'display_popup_cookies_' | append: template_id -%}
+{%- if settings[st] -%}
+<div class="banner_cookies pf cw w__100 animated" style="display: none">
+  <div class="banner_cookies_inner flex c_between alin_center">
+  	{%- capture text -%}{{settings.text_cookies_popup}}{%- endcapture -%}
+  	 {%- assign page_url = settings.link_btn_infor -%}
+    <p class="mg__0 pr__15">{{text | replace: 'nt_link_url', page_url}}</p>
+    <a href="#" class="banner_cookies_btn cw tu btn_primary">{{ 'general.cookiespopup.accept' | t }}</a>
+  </div>
+</div>
+{%- endif -%}

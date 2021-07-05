@@ -1,0 +1,68 @@
+{%- unless gl_design -%}
+{%- assign gl_design = 'default' -%}
+{%- endunless -%}
+{%- unless nt_tooltip -%}
+{%- assign nt_tooltip = false -%}
+{%- endunless -%}
+{%- unless follow_social -%}
+{%- assign follow_social = false -%}
+{%- endunless -%}
+{%- unless class_tooltip -%}
+{%- assign class_tooltip = 'tooltip_top' -%}
+{%- endunless -%}
+{%- if gl_design == 'square' -%}
+{%- assign square = '-square' -%}
+{%- else -%}
+{%- assign square = '' -%}
+{%- endif -%}
+{%- if template.name == 'article' or template.name == 'blog' or template.name == 'index' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{{ article.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{{ article.title | url_param_escape }}{%- endcapture -%}
+{%- elsif template.name == 'product' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{{ product.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{{ product.title | url_param_escape }}{%- endcapture -%}
+{%- elsif template.name == 'password' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{%- unless shop.description == blank -%}{{ shop.description | url_param_escape }}{%- else -%}{{ shop.name | url_param_escape }}{%- endunless -%}{%- endcapture -%}
+{%- elsif template.name == 'index' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{%- unless shop.description == blank -%}{{ shop.description | url_param_escape }}{%- else -%}{{ shop.name | url_param_escape }}{%- endunless -%}{%- endcapture -%}
+{%- elsif template.name == 'page' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{{ page.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{{ page.title | url_param_escape }}{%- endcapture -%}
+{%- endif -%}
+<ul class="nt_icons nathan-share style_{{gl_design | remove:'icons-design-'}} {{gl_size | remove:'icons-size-'}}">
+  {%- if follow_social == false -%}  
+    {%- if settings.share_facebook -%}
+     <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u={{ permalinkURL }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.facebook' | t }}"{%- endif -%}><i class="fa fa-facebook{{square}}"></i>Facebook</a></li>
+    {%- endif -%}
+    {% if settings.share_twitter %}
+     <li class="twitter"><a href="http://twitter.com/share?url={{ permalinkURL }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.twitter' | t }}"{%- endif -%}><i class="fa fa-twitter{{square}}"></i>Twitter</a></li>
+     {%- endif -%}
+     {% if settings.share_google %}
+     <li class="google"><a href="http://plus.google.com/share?url={{ permalinkURL }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.google' | t }}"{%- endif -%}><i class="fa fa-google-plus{{square}}"></i>Google</a></li>
+     {%- endif -%}
+     {% if settings.share_email %}
+     <li class="email"><a href="mailto:?subject=Check this {{ permalinkURL }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.email' | t }}"{%- endif -%}><i class="fa fa-envelope{{square}}"></i>Email</a></li>
+     {%- endif -%}
+     {%- if product.featured_image or article.image -%}
+        {%- if settings.share_pinterest -%}
+        <li class="pinterest"><a href="http://pinterest.com/pin/create/button/?url={{ permalinkURL }}&amp;media=http:{%- if template contains 'product' -%}{{ product | img_url: '1024x1024' }}{%- else -%}{{ article | img_url: '1024x1024' }}{%- endif -%}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.pinterest' | t }}"{%- endif -%}><i class="fa fa-pinterest{{square}}"></i>Pinterest</a></li>
+        {%- endif -%}
+        {%- if settings.share_tumblr -%}
+           <li class="tumblr"><a data-content="http:{%- if template contains 'product' -%}{{ product | img_url: '1024x1024' }}{%- else -%}{{ article | img_url: '1024x1024' }}{%- endif -%}" href="//tumblr.com/widgets/share/tool?canonicalUrl={{ permalinkURL }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.tumblr' | t }}"{%- endif -%}><i class="fa fa-tumblr{{square}}"></i>Tumblr</a></li>
+        {%- endif -%}
+      {%- endif -%}
+  {%-else-%}
+    {%- if settings.social_facebook_link != blank -%}<li class="facebook"><a href="{{ settings.social_facebook_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.facebook' | t }}"{%- endif -%}><i class="fa fa-facebook{{square}}"></i>{{ 'sections.nt_tooltip.facebook' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_twitter_link != blank -%}<li class="twitter"><a href="{{ settings.social_twitter_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.twitter' | t }}"{%- endif -%}><i class="fa fa-twitter{{square}}"></i>{{ 'sections.nt_tooltip.twitter' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_google_plus_link != blank -%}<li class="google"><a href="{{ settings.social_google_plus_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.google' | t }}"{%- endif -%}><i class="fa fa-google-plus{{square}}"></i>{{ 'sections.nt_tooltip.google' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_pinterest_link != blank -%}<li class="pinterest"><a href="{{settings.social_pinterest_link}}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.pinterest' | t }}"{%- endif -%}><i class="fa fa-pinterest{{square}}"></i>{{ 'sections.nt_tooltip.pinterest' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_instagram_link != blank -%}<li class="instagram"><a href="{{ settings.social_instagram_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.instagram' | t }}"{%- endif -%}><i class="fa fa-instagram{{square}}"></i>{{ 'sections.nt_tooltip.instagram' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_tumblr_link != blank -%}<li class="tumblr"><a href="{{ settings.social_tumblr_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.tumblr' | t }}"{%- endif -%}><i class="fa fa-tumblr{{square}}"></i>{{ 'sections.nt_tooltip.tumblr' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_youtube_link != blank -%}<li class="youtube"><a href="{{ settings.social_youtube_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.youtube' | t }}"{%- endif -%}><i class="fa fa-youtube-play{{square}}"></i>{{ 'sections.nt_tooltip.youtube' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_vimeo_link != blank -%}<li class="vimeo"><a href="{{ settings.social_vimeo_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.vimeo' | t }}"{%- endif -%}><i class="fa fa-vimeo{{square}}"></i>{{ 'sections.nt_tooltip.vimeo' | t }}</a></li>{%-endif-%}
+    {%- if settings.social_snapchat_link != blank -%}<li class="snapchat"><a href="{{ settings.social_snapchat_link }}" target="_blank" class="{%- if nt_tooltip -%}{{class_tooltip}}{%- endif -%}"{%- if nt_tooltip %} aria-label="{{ 'sections.nt_tooltip.snapchat' | t }}"{%- endif -%}><i class="fa fa-snapchat{{square}}"></i>{{ 'sections.nt_tooltip.snapchat' | t }}</a></li>{%-endif-%}
+  {%-endif-%}
+</ul>
+

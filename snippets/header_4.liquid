@@ -1,0 +1,29 @@
+<div class="container">
+   <div class="header_wrapper">
+      {%- include 'push_menu' -%}
+      {%- include 'nathan_logo' -%}
+      <div class="search_extended pr">
+         <form role="search" method="get" class="pr searchform{%- if settings.ajax_search %} nt-ajax-search{%- endif -%}" action="/search">
+            <div class="flex">
+               <input type="text" class="search-field" placeholder="{{ 'general.search.placeholder' | t }}" value="{{ search.terms | escape }}" name="q" autocomplete="off">
+               {%- if settings.only_search_products -%}<input type="hidden" name="type" value="product" />{%- endif -%}
+               <button type="submit" class="searchsubmit pr"><i class="icon-magnifier"></i></button>
+            </div>
+         </form>
+         <div class="search-suggestions-wrapp w_100 pa"><div class="nt_search_results"><ul class="tl ui-autocomplete autocomplete-suggestions"></ul></div></div>
+      </div>
+      {%- include 'nathan-action' -%}
+   </div>
+</div>
+<div class="navigation-wrap">
+	<div class="container">
+		<div class="row">
+			<div class="col-3">
+				<div class="vertical-menu_4 pr{% if template contains 'index' %} opened{% endif %}">
+					{%- section 'menu_vertical' -%}
+				</div>
+			</div>
+	      <div class="col-9">{%- section 'mega_menu' -%}</div>
+      </div>
+   </div>
+</div>

@@ -1,0 +1,671 @@
+{%- include 'style_mp_section' -%}
+{%- assign blog = blogs[section.settings.blog] -%}
+{%- assign settings_pr_img_size = section.settings.use_eq_height -%}
+{%- assign jas_blog_comment = false -%}
+{%- case section.settings.post_per_row -%}
+   {%- when 1 -%}
+     {%- assign class_colum = '12' -%}{%- assign class_colum_2 = '12' -%}
+   {%- when 2 -%}
+     {%- assign class_colum = '6' -%}{%- assign class_colum_2 = '6' -%}
+  {%- when 3 -%}
+    {%- assign class_colum = '4' -%}{%- assign class_colum_2 = '6' -%}
+  {%- when 4 -%}
+    {%- assign class_colum = '3' -%}{%- assign class_colum_2 = '6' -%}
+{%- endcase -%}
+{%- if section.settings.post_design == 'slider' %}{%- assign class_colum = '12' -%}{%- assign class_colum_2 = '12' -%}{%- endif -%}
+<div class="container nt_custom_{{section.id}} {{section.settings.image_size}} {{section.settings.image_ratio}} position_{{section.settings.image_position}}{%- if settings_pr_img_size %} equal-nt{%- endif -%}">
+   {%- assign sett_title = section.settings.title -%}
+  {%- assign sett_sub_title = section.settings.sub_title -%}
+  {%- assign style_title = section.settings.style_title -%}
+  {%- include 'nt_section_title' with style_title -%}
+  <div class="nasa-sc-posts-warp mt__20">
+     <div class="{{section.settings.style}} row{%- if section.settings.post_design == 'slider' %} nt-carousel slick_static{%- endif -%}"{%- if section.settings.post_design == 'slider' %} data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'{%- endif -%}>
+        {%- if blog != blank and blog.articles_count > 0 -%}
+            {%- for article in blog.articles limit: section.settings.post_limit -%}
+            <div class="blog_item col-lg-{{class_colum}} col-md-{{class_colum_2}} col-12 style_2 mt__5 mb__20 spb_animate">
+              {%- if section.settings.style == 'default' -%}
+                 <article class="nasa-content-group post-{{article.id}}">
+                     {%- if settings_pr_img_size and article.image -%}
+                        <div class="article__grid-image-wrapper pr oh product-img hover-{{section.settings.hover_effect}}">
+                           <a class="db pr nt-pr-image-link nt_img_ratio lazyload nt_bg_lz" href="{{ article.url }}" data-bgset="{%- include 'bgset', image: article.image -%}" data-sizes="auto" data-parent-fit="cover"></a>
+                        </div>
+                     {%- elsif article.image -%}
+                        {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                        <div class="article__grid-image-wrapper product-img pr oh hover-{{section.settings.hover_effect}}">
+                           <a class="db pr" href="{{ article.url }}">
+                             <img class="article__grid-image w_100 lazyload" src="{{ article.image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ article.image.aspect_ratio }}" data-sizes="auto" alt="{{ article.image.alt | escape }}">
+                             <div class="nt-wrap-lazy"></div>
+                           </a>
+                        </div>
+                     {%- endif -%}
+                     <div class="post-info">
+                        {%- if section.settings.show_title -%}<div class="nasa-post-cats-wrap mb__10 tu"><a href="{{blog.url}}" rel="category tag">{{blog.title}}</a></div>{%- endif -%}
+                        <h5 class="blog_title fwb mb__10"><a href="{{ article.url }}">{{ article.title }}</a></h5>
+                        {%- if section.settings.article_excerpt and article.excerpt.size > 0 -%}
+                            <div class="post-content mb__10">{{ article.excerpt | strip_html }}</div>
+                        {%- elsif section.settings.article_excerpt -%}
+                            <div class="post-content mb__10">{{ article.content | strip_html | truncatewords: 15, " […]" }}</div>
+                        {%- endif -%}
+                        {%- if section.settings.blog_show_author -%}<span class="post-author mr__5">{{ 'blogs.article.by' | t }} <span class="cd">{{ article.author }}</span></span>{%- endif -%}{%- if section.settings.blog_show_date -%}<span class="post-time">{{ 'blogs.article.on' | t }} <span class="cd">{{ article.published_at | time_tag: format: 'month_day_year' }}</span></span>{%- endif -%}
+                        {%- if blog.comments_enabled? and section.settings.blog_show_comments -%}
+                              {%- assign jas_blog_comment = true -%}
+                              {%- assign before_block = 'before_block' -%}
+                        {%- endif -%}
+                        {%- if section.settings.blog_show_read_more or jas_blog_comment -%}
+                           <div class="post-action mt__10">
+                              {%- if jas_blog_comment -%}<a href="{{ article.url }}#comments" class="post-read-more"><i class="icon-speech icons mr__5"></i> {{ 'blogs.comments.with_count' | t: count: article.comments_count }}</a>{%- endif -%}
+                              {%- if section.settings.blog_show_read_more -%}<a href="{{ article.url }}" class="{{before_block}} post-read-more"><i class="icon-book-open icons mr__5"></i> {{ 'blogs.article.read_more' | t }}</a>{%- endif -%}
+                           </div>
+                        {%- endif -%}
+                     </div>
+                  </article>
+               {%- else -%}
+                  <article class="nasa-content-group post-{{article.id}} pr oh">
+                     <figure class="imghvr-{{section.settings.hover_effect_2}}">
+                        {%- if settings_pr_img_size and article.image -%}
+                           <div class="article__grid-image-wrapper pr oh product-img img_bg_post">
+                              <a class="db pr nt-pr-image-link nt_img_ratio lazyload nt_bg_lz" href="{{ article.url }}" data-bgset="{%- include 'bgset', image: article.image -%}" data-sizes="auto" data-parent-fit="cover"></a>
+                           </div>
+                        {%- elsif article.image -%}
+                           {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                             <img class="article__grid-image w_100 lazyload" src="{{ article.image | img_url: '50x50' }}" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="{{ article.image.aspect_ratio }}" data-sizes="auto" alt="{{ article.image.alt | escape }}">
+                             <div class="nt-wrap-lazy"></div>
+                        {%- endif -%}
+                        <h5 class="pa-center w_100 tc blog_title fwb tu mg__0"><a href="{{ article.url }}" class="dib">{{ article.title }}</a></h5>
+                        <figcaption class="pt__30 pl__30 pr__30 pb__20">
+                           {%- if section.settings.show_title -%}<div class="nasa-post-cats-wrap mb__10 tu"><a href="{{blog.url}}" rel="category tag">{{blog.title}}</a></div>{%- endif -%}
+                           <h5 class="blog_title fwb mb__10 nt-z-index_44 t_ellipsis"><a href="{{ article.url }}">{{ article.title }}</a></h5>
+                           {%- if section.settings.article_excerpt and article.excerpt.size > 0 -%}
+                            <div class="post-content mb__10">{{ article.excerpt | strip_html }}</div>
+                           {%- elsif section.settings.article_excerpt -%}
+                               <div class="post-content">{{ article.content | strip_html | truncatewords: 15, " […]" }}</div>
+                           {%- endif -%}
+                           <div class="nasa-date-author-wrap pt__25 mt__20">
+                              {%- if section.settings.blog_show_author -%}<span class="post-author mr__5">{{ 'blogs.article.by' | t }} <span class="cd">{{ article.author }}</span></span>{%- endif -%}{%- if section.settings.blog_show_date -%}<span class="post-time">{{ 'blogs.article.on' | t }} <span class="cd">{{ article.published_at | time_tag: format: 'month_day_year' }}</span></span>{%- endif -%}
+                              {%- if blog.comments_enabled? and section.settings.blog_show_comments -%}
+                                    {%- assign jas_blog_comment = true -%}
+                                    {%- assign before_block = 'before_block' -%}
+                              {%- endif -%}
+                              {%- if section.settings.blog_show_read_more or jas_blog_comment -%}
+                                 <div class="post-action mt__10">
+                                    {%- if jas_blog_comment -%}<a href="{{ article.url }}#comments" class="post-read-more"><i class="icon-speech icons mr__5"></i> {{ 'blogs.comments.with_count' | t: count: article.comments_count }}</a>{%- endif -%}
+                                    {%- if section.settings.blog_show_read_more -%}<a href="{{ article.url }}" class="{{before_block}} post-read-more"><i class="icon-book-open icons mr__5"></i> {{ 'blogs.article.read_more' | t }}</a>{%- endif -%}
+                                 </div>
+                              {%- endif -%}
+                           </div>
+                        </figcaption>
+                     </figure>
+                  </article>
+               {%- endif -%}
+            </div>
+            {%- endfor -%}
+        {%- else -%}
+            {%- for i in (1..section.settings.post_limit) -%}
+               <div class="blog_item col-lg-{{class_colum}} col-md-{{class_colum}} col-12 mb__20">
+                 <article class="nasa-content-group post-{{ i }}">
+                     <div class="post-info">
+                        <div class="nasa-post-cats-wrap mb__10 tu"><a href="/admin/blogs" rel="category tag">Fashions</a></div>
+                        <div class="post-content mb__10">{{ 'homepage.onboarding.blog_excerpt' | t }}</div>
+                        <h5 class="blog_title fwb mb__10"><a href="/admin/blogs">{{ 'homepage.onboarding.blog_title' | t }}</a></h5>
+                        <a href="/admin/blogs" class="post-read-more"><i class="pe-7s-news-paper mr__5"></i> {{ 'blogs.article.read_more' | t }}</a>
+                     </div>
+                  </article> 
+              </div>
+            {%- endfor -%}
+         {%- endif -%}
+     </div>
+     {%- if blog != blank and section.settings.show_view_all -%}
+      <div class="tc mt__15 clearfix">
+         <a href="{{ blog.url }}" class="button button_before">{{ 'blogs.article.view_all' | t }}</a>
+       </div>
+      {%- endif -%}
+  </div>
+</div>
+
+{%- schema -%}
+  {
+    "name": "Blog posts",
+    "class": "nt-section nt_featured_blog",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Blog posts"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub Title",
+        "default": "Sub Blog posts"
+      },
+      {
+        "type": "select",
+        "id": "style_title",
+        "options": [
+         {
+            "value": "type-simple",
+            "label": "Style 1"
+         },
+         {
+            "value": "hr-type-simple",
+            "label": "Style 2"
+          }
+        ],
+        "label": "Style title"
+      },
+      {
+        "id": "blog",
+        "type": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "range",
+        "id": "post_limit",
+        "label": "Posts",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "select",
+        "id": "post_design",
+        "options": [
+         {
+            "value": "grid",
+            "label": "Grid"
+         },
+         {
+            "value": "slider",
+            "label": "Slider"
+          }
+        ],
+        "label": "Design",
+        "default": "grid"
+      },
+      {
+        "type": "range",
+        "id": "post_per_row",
+        "min": 1,
+        "max": 4,
+        "step": 1,
+        "label": "posts per row",
+        "info":"Number of posts per row for grid design",
+        "default": 3
+      },
+      {
+        "type": "select",
+        "id": "style",
+        "label": "Style",
+        "default": "default",
+        "info": "You can use different design for your blog styled for the theme",
+        "options": [
+          {
+            "value": "default",
+            "label": "Style 1"
+          },
+          {
+            "value": "default_alt",
+            "label": "Style 2"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "hover_effect",
+        "options": [
+          {
+            "value": "0",
+            "label": "None"
+          },
+          {
+            "value": "1",
+            "label": "Zoom image"
+          },
+          {
+            "value": "2",
+            "label": "Zoom rotate image"
+          }
+        ],
+        "label": "== Hover effect for style 1",
+        "default": "1"
+      },
+      {
+        "type": "select",
+        "id": "hover_effect_2",
+        "options": [
+          {
+            "value": "0",
+            "label": "None"
+          },
+          {
+            "value": "hinge-up",
+            "label": "Hinge up"
+          },
+          {
+            "value": "hinge-down",
+            "label": "Hinge down"
+          },
+          {
+            "value": "hinge-left",
+            "label": "Hinge left"
+          },
+          {
+            "value": "hinge-right",
+            "label": "Hinge right"
+          },
+          {
+            "value": "flip-horiz",
+            "label": "Flip horiz"
+          },
+          {
+            "value": "flip-vert",
+            "label": "Flip vert"
+          },
+          {
+            "value": "flip-diag-1",
+            "label": "Flip diag 1"
+          },
+          {
+            "value": "flip-diag-2",
+            "label": "Flip diag 2"
+          },
+          {
+            "value": "fold-up",
+            "label": "Fold up"
+          },
+          {
+            "value": "fold-down",
+            "label": "Fold down"
+          },
+          {
+            "value": "fold-left",
+            "label": "Fold left"
+          },
+          {
+            "value": "fold-right",
+            "label": "Fold right"
+          }
+        ],
+        "label": "== Hover effect for style 2",
+        "default": "hinge-up"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_title",
+        "label": "Show the title of the blog.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "article_excerpt",
+        "label": "Show article excerpt",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_author",
+        "label": "Show author",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_date",
+        "label": "Show date",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_read_more",
+        "label": "Show 'read more' button",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_comments",
+        "label": "Show comments with count",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_view_all",
+        "label": "Show 'View all' button",
+        "default": false
+      },
+      {
+       "type": "header",
+       "content": "== settings Slider ( Only for Carousel layout )"
+      },
+     {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+{
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 1
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 1
+      },
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio4_3",
+        "options": [
+          {
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "value": "ratio4_3",
+            "label": "4:3 (Landscape)"
+          },
+          {
+            "value": "ratio1_1",
+            "label": "1:1 (Square)"
+          },
+          {
+            "value": "ratio_nt",
+            "label": "Ratio Elessi"
+          },
+          {
+            "value": "ratio2_3",
+            "label": "2:3 (Portrait)"
+          },
+          {
+            "value": "ratio1_2",
+            "label": "1:2"
+          },
+          {
+            "value": "ratio_cus1",
+            "label": "Ratio Custom 1"
+          },
+          {
+            "value": "ratio_cus2",
+            "label": "Ratio Custom 2"
+          },
+          {
+            "value": "ratio_cus3",
+            "label": "Ratio Custom 3"
+          },
+          {
+            "value": "ratio_cus4",
+            "label": "Ratio Custom 4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "default": "nt_cover",
+        "options": [
+          {
+            "value": "nt_cover",
+            "label": "Full"
+          },
+          {
+            "value": "nt_contain",
+            "label": "Auto"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "info":"The first value is the horizontal position and the second value is the vertical.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "1",
+            "label": "Left Top"
+          },
+          {
+            "value": "2",
+            "label": "Left Center"
+          },
+          {
+            "value": "3",
+            "label": "Left Bottom"
+          },
+          {
+            "value": "4",
+            "label": "Right Top"
+          },
+          {
+            "value": "5",
+            "label": "Right Center"
+          },
+          {
+            "value": "6",
+            "label": "Right Bottom"
+          },
+          {
+            "value": "7",
+            "label": "Center Top"
+          },
+          {
+            "value": "8",
+            "label": "Center Center"
+          },
+          {
+            "value": "9",
+            "label": "Center Bottom"
+          }
+        ],
+        "label": "Image Position",
+        "default": "8"
+      },
+     {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "color",
+        "id": "section_bg_color",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog posts",
+        "category": "6. Blog",
+        "settings": {
+          "blog": "News",
+          "post_limit": 3
+        }
+      }
+    ]
+  }
+{% endschema %}

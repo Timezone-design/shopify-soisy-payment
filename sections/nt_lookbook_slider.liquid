@@ -1,0 +1,567 @@
+{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+{%- include 'style_mp_section' -%}
+{%- assign grid_columns = '12' -%}
+{%- assign class_md = grid_columns -%}
+{%- assign class_xs = '12' -%}
+{%- assign check = true -%}
+<div id="pin-{{section.id}}" class="nt-carousel nt_custom_{{section.id}}" data-slick='{"slidesToShow": {{ section.settings.sidetoshow }},"slidesToScroll": 1, "autoplay": {{ section.settings.use_autoplay }}, "autoplaySpeed": {{ section.settings.slider_speed }}000,"rtl": {{ settings.use_rtl }}, "infinite": {{section.settings.use_loop}}, "arrows": {{section.settings.use_arrows}},"dots": {{section.settings.use_dots}}, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": {{ section.settings.sidetoshow_first}} }},{"breakpoint": 600,"settings":{"slidesToShow": {{ section.settings.sidetoshow_center}} }},{"breakpoint": 480,"settings":{"slidesToShow": {{ section.settings.sidetoshow_last}} }}]}'>
+   {%- for i in (1..20) -%}
+      {%- assign img_id = 'img_' | append:i -%}
+      {%- assign image = section.settings[img_id] -%}
+      {%- if image != blank -%}
+         {%- assign check = false -%}
+         <div id="pin-{{section.id}}-{{i}}" class="pin__wrapper pr">
+            <div class="pin__image">
+                  {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                  <img src="{{ image | img_url: '50x50' }}"
+                  data-src="{{ img_url }}"
+                  data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" 
+                  data-aspectratio="{{ image.aspect_ratio }}" 
+                  data-sizes="auto"
+                  class="db w_100 attachment-full size-full lazyload" alt="{{image.alt}}" >
+                  <div class="nt-wrap-lazy"></div>
+            </div>
+            {%- for block in section.blocks -%}
+               {%- assign banner_id = block.settings.banner_id | plus:0 -%}
+               {%- assign top_pin = block.settings.top_pin -%}
+               {%- assign left_pin = block.settings.left_pin -%}
+               {%- assign product = all_products[block.settings.product_id] -%}
+               {%- if banner_id == i and top_pin != blank and left_pin != blank and product != blank -%}
+                  <div class="{{block.settings.tooltip_design}} pa pin__type pin_{{block.id}} cusor_pointer" aria-label="{{product.title |strip_html}}" style="
+                     background-color: {{block.settings.bg}};
+                     width: {{block.settings.width}}px;
+                     height: {{block.settings.height}}px;
+                     top:{%- if top_pin == 100 -%}100%{%- else -%}{{top_pin}}.80886454085634%{%- endif -%};
+                     left:{%- if left_pin == 100 -%}100%{%- else -%}{{left_pin}}.43785310734463%{%- endif -%}">
+                     <span class="pin__title flex c_center alin_center">{{block.settings.title}}</span>
+                     <a href="javascript void(0);" data-ajax="{{product.url}}/?view=quick_view_mpf" class="open-qv-mpf pin__title flex c_center alin_center">{{block.settings.title}}</a>
+                     <div class="pin__popup pin__popup--{{block.settings.product_design}} pin__popup--fade">
+                        <div class="popup__content popup__content--product">
+                           {%- include 'nt_product_loop' -%}
+                        </div>
+                     </div>
+                  </div>
+               {%- endif -%}
+            {%- endfor -%}
+         </div>
+      {%- endif -%}
+   {%- endfor -%}
+</div>
+{%- if check -%}{%- include 'no-blocks' -%}{%- endif -%}
+{%- schema -%}
+  {
+    "name": "Products Lookbook Slider",
+    "class": "nt-section nt_lookbook_slider spb_animate",
+    "max_blocks":20,
+    "settings": [
+       {
+       "type": "header",
+       "content": "== settings Slider"
+      },
+     {
+        "type": "range",
+        "id": "slider_speed",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Autoplay Speed in milliseconds",
+        "unit": "sec",
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "use_autoplay",
+        "label": "Use autoplay?",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "use_arrows",
+        "label": "Use Arrows?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_dots",
+        "default": false,
+        "label": "Use pagination control?"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_loop",
+        "label": "Use Infinite loop sliding?",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 5
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 1024"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_first",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 3
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 600"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_center",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+       "type": "header",
+       "content": "=== breakpoint: 480"
+      },
+      {
+        "type": "range",
+        "id": "sidetoshow_last",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "label": "slides To Show",
+        "default": 2
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top",
+        "label": "Margin top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom",
+        "label": "Margin bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_left",
+        "label": "Margin left",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_right",
+        "label": "Margin right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top",
+        "label": "Padding top",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right",
+        "label": "Padding right",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom",
+        "label": "Padding bottom",
+        "info": "60px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left",
+        "label": "Padding left",
+        "info": "60px"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_top_mb",
+        "label": "Margin top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_margin_bottom_mb",
+        "label": "Margin bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_top_mb",
+        "label": "Padding top",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_right_mb",
+        "label": "Padding right",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_bottom_mb",
+        "label": "Padding bottom",
+        "info": "20px"
+      },
+      {
+        "type": "text",
+        "id": "section_padding_left_mb",
+        "label": "Padding left",
+        "info": "60px"
+      },
+      {
+       "type": "header",
+       "content": "== settings Banner image"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_1",
+        "label": "Banner image #1"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_2",
+        "label": "Banner image #2"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_3",
+        "label": "Banner image #3"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_4",
+        "label": "Banner image #4"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_5",
+        "label": "Banner image #5"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_6",
+        "label": "Banner image #6"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_7",
+        "label": "Banner image #7"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_8",
+        "label": "Banner image #8"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_9",
+        "label": "Banner image #9"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_10",
+        "label": "Banner image #10"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_11",
+        "label": "Banner image #11"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_12",
+        "label": "Banner image #12"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_13",
+        "label": "Banner image #13"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_14",
+        "label": "Banner image #14"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_15",
+        "label": "Banner image #15"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_16",
+        "label": "Banner image #16"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_17",
+        "label": "Banner image #17"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_18",
+        "label": "Banner image #18"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_19",
+        "label": "Banner image #19"
+      },
+      {
+        "type": "image_picker",
+        "id": "img_20",
+        "label": "Banner image #20"
+      }
+    ],
+    "blocks": [{
+       "type": "pin",
+       "name": "Pin",
+       "settings": [
+         {
+           "type": "select",
+           "id": "banner_id",
+           "options": [
+             {
+               "value": "1",
+               "label": "#1"
+             },
+             {
+               "value": "2",
+               "label": "#2"
+             },
+             {
+               "value": "3",
+               "label": "#3"
+             },
+             {
+               "value": "4",
+               "label": "#4"
+             },
+             {
+               "value": "5",
+               "label": "#5"
+             },
+             {
+               "value": "6",
+               "label": "#6"
+             },
+             {
+               "value": "7",
+               "label": "#7"
+             },
+             {
+               "value": "8",
+               "label": "#8"
+             },
+             {
+               "value": "9",
+               "label": "#9"
+             },
+             {
+               "value": "10",
+               "label": "#10"
+             },
+             {
+               "value": "11",
+               "label": "#11"
+             },
+             {
+               "value": "12",
+               "label": "#12"
+             },
+             {
+               "value": "13",
+               "label": "#13"
+             },
+             {
+               "value": "14",
+               "label": "#14"
+             },
+             {
+               "value": "15",
+               "label": "#15"
+             },
+             {
+               "value": "16",
+               "label": "#16"
+             },
+             {
+               "value": "17",
+               "label": "#17"
+             },
+             {
+               "value": "18",
+               "label": "#18"
+             },
+             {
+               "value": "19",
+               "label": "#19"
+             },
+             {
+               "value": "20",
+               "label": "#20"
+             }
+           ],
+           "label": "Banner image ID",
+           "default": "1"
+         },
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+           "default": "$59"
+         },
+         {
+           "type": "range",
+           "id": "top_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Top",
+           "default": 46
+         },
+         {
+           "type": "range",
+           "id": "left_pin",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "%",
+           "label": "Position Left",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "width",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Width",
+           "default": 30
+         },
+         {
+           "type": "range",
+           "id": "height",
+           "min": 1,
+           "max": 100,
+           "step": 1,
+           "unit": "px",
+           "label": "Height",
+           "default": 30
+         },
+         {
+           "type": "color",
+           "id": "bg",
+           "label": "__ Select Color",
+           "default": "#f76b6a"
+         },
+         {
+           "type": "select",
+           "id": "tooltip_design",
+           "options": [
+             {
+               "value": "tooltip_top",
+               "label": "Top"
+             },
+             {
+               "value": "tooltip_top_left",
+               "label": "Top Left"
+             },
+             {
+               "value": "tooltip_top_right",
+               "label": "Top Right"
+             },
+             {
+               "value": "tooltip_bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "tooltip_bottom_left",
+               "label": "Bottom Left"
+             },
+             {
+               "value": "tooltip_bottom_right",
+               "label": "Bottom Right"
+             },
+             {
+               "value": "tooltip_left",
+               "label": "Left"
+             },
+             {
+               "value": "tooltip_right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Tooltip",
+           "default": "tooltip_top"
+         },
+         {
+             "type":"product",
+             "id":"product_id",
+             "label":"Choose product"
+         },
+         {
+           "type": "select",
+           "id": "product_design",
+           "options": [
+             {
+               "value": "top",
+               "label": "Top"
+             },
+             {
+               "value": "bottom",
+               "label": "Bottom"
+             },
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "label": "Position Product",
+           "default": "top"
+         }
+       ]
+    }],
+    "presets": [
+      {
+        "name": "Lookbook Slider",
+        "category": "2. Lookbook",
+        "blocks": [
+           {
+             "type": "pin"
+           }
+         ]
+      }
+    ]
+  }
+{% endschema %}

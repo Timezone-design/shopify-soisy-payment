@@ -1,0 +1,54 @@
+{%- if section.blocks.size > 0 -%}
+	{%- for block in section.blocks -%}
+	   {%- assign collection = collections[block.settings.collection] -%}
+      {%- assign number_of_collection = collection.all_products_count  -%}
+      {%- assign block_image = block.settings.image -%}
+      {%- if block_image != blank -%}
+          {%- assign image = block_image -%}
+      {%- elsif collection.image != blank -%}
+          {%- assign image = collection.image -%}
+      {%- elsif collection.products.first and collection.products.first.images != empty -%}
+          {%- assign image = collection.products.first.featured_image -%}
+      {%- endif -%}
+      {%- if collection != blank -%}
+	   <a href="{{ collection.url }}" class="dp pr image-picker-list__category-item{%- if image != blank %} lazyload nt_bg_lz{%- endif -%}"{%- if image != blank -%} data-bgset="{%- include 'bgset_2', image: image -%}" data-sizes="auto" data-parent-fit="cover" style="background-image: url('{{ image | img_url: '50x50' }});"{%- endif -%}>
+         <div class="image-picker-list__category">
+            <h3 class="ui-title">{%- if block.settings.title != blank -%}{{block.settings.title}}{%- else -%}{{ collection.title }}{%- endif -%}</h3>
+         </div>
+      </a>
+     {%- endif -%}
+	{%- endfor -%}
+{%- endif -%}
+{%- if section.blocks.size == 0 -%}
+   {%- include 'no-blocks' -%}
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Mobile Categories",
+    "class": "te-panel__flex-container",
+    "max_blocks": 30,
+    "blocks": [
+      {
+        "type": "Category",
+        "name": "Collection",
+        "settings": [
+         {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+         },
+         {
+             "type": "image_picker",
+             "id": "image",
+             "label": "Image"
+         },
+         {
+	        "type": "text",
+	        "id": "title",
+	        "label": "Collection Title (optional)"
+	      }
+        ]
+      }
+    ]
+  }
+{% endschema %}

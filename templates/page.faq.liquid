@@ -1,0 +1,29 @@
+{%- assign image = settings.faq_bg_image -%}
+{%- assign color_scheme = settings.faq_color -%}
+<div class="{{color_scheme}} collection_header faq_header with_term_description bg_overlay_{{settings.faq_overlay}} pr oh{%- if settings.use_parallax_faq %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title">{{page.title}}</h1>
+      </div>
+   </div>
+</div>
+<div class="container container_page container_faq mb__60" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+  {%- if settings.text_faq_1 != blank -%}
+  <div class="nasa-title clearfix hr-type-none text-center mb__50">
+      <div class="nasa-wrap mb__50">
+         <h3 class="nasa-heading-title"><span class="nasa-title-wrap"><span>{{settings.text_faq_1}}</span></span></h3>
+         {%- if settings.text_faq_2 != blank -%}<div class="nasa-title-desc">{{settings.text_faq_2}} {{ page.published_at | time_tag: format: 'month_day_year' }}</div>{%- endif -%}
+      </div>
+   </div>
+   {%- endif -%}
+   {%- section 'faq' -%}
+   {%- if settings.enable_contact_box -%}
+   <div class="box_contact pt__50 pb__50 mt__50 mb__70 tc">
+      <h2>{{settings.text_faq_3}}</h2>
+      {%- if settings.url_faq != blank -%}
+      <p class="mg__0"><a class="button nt_primary_auto" href="{{settings.url_faq}}">{{settings.text_faq_4}}</a></p>
+      {%- endif -%}
+   </div>
+   {%- endif -%}
+</div>

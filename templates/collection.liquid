@@ -1,0 +1,188 @@
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+{%- assign limit = settings.products_per_page | plus:0 -%}
+{%- assign grid_columns = settings.grid_column -%}
+{%- assign class_md = '4' -%}
+{%- assign class_xs = settings.grid_column_mobile -%}
+{%- assign settings_pr_img_size = settings.use_eq_height -%}
+{%- assign show_vendor = settings.show_vendor -%}
+{%- assign shop_sidebar = settings.shop_sidebar -%}
+{%- assign coll_style = settings.collection_style -%}
+{%- assign use_pagination = settings.use_pagination -%}
+{%- assign section_settings_countdown = settings.sale_countdown -%}
+{%- assign countdown_timer_style = settings.collection_countdown_style -%}
+{%- assign array_metro = ',2,10,19,27,37,45,54,63,71,80,89,98' -%}
+{%- assign no_sidebar = true -%}
+{%- assign class_gl = '12' -%}
+{%- assign pop_style = settings.pop_style -%}
+{%- if shop_sidebar == 'left' -%}
+   {%- assign no_sidebar = false -%}
+   {%- case settings.shop_size_sidebar -%}
+     {% when '1' %}
+       {%- assign class_gl = '10 order-12 ' -%}
+       {%- assign class_sidebar = '2 order-1 ' -%}
+     {% when '2' %}
+       {%- assign class_gl = '9 order-12 ' -%}
+       {%- assign class_sidebar = '3 order-1 ' -%}
+     {% when '3' %}
+       {%- assign class_gl = '8 order-12 ' -%}
+       {%- assign class_sidebar = '4 order-1 ' -%}
+   {%- endcase -%}
+{%- elsif shop_sidebar == 'right' -%}
+   {%- assign no_sidebar = false -%}
+   {%- case settings.shop_size_sidebar -%}
+     {% when '1' %}
+       {%- assign class_gl = '10' -%}
+       {%- assign class_sidebar = '2' -%}
+     {% when '2' %}
+       {%- assign class_gl = '9' -%}
+       {%- assign class_sidebar = '3' -%}
+     {% when '3' %}
+       {%- assign class_gl = '8' -%}
+       {%- assign class_sidebar = '4' -%}
+   {%- endcase -%}
+{%- endif -%}
+{%- assign image = settings.collection_bg_image -%}
+{%- assign color_scheme = settings.collection_color -%}
+{%- if collection.image != blank and settings.use_specify_image -%}{%- assign image = collection.image %}{%- endif -%}
+<div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.overlay}} pr oh{%- if settings.use_parallax_collection %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+  {%- if image %}<div class="div_overlay"></div>{%- endif %}
+   <div class="container tc">
+      <div class="wrap_cat">
+         <h1 class="page-title pr">{{collection.title }}</h1>
+         {%- if  collection.description.size > 0 -%}
+         <div class="term-description fs__16">
+            <p>{{ collection.description | strip_html}}</p>
+         </div>
+         {%- endif -%}
+      </div>
+   </div>
+   {%- if settings.use_top_categories  -%}{%- include 'cat_shop' -%}{%- endif -%}
+</div>
+<div class="container container_cat mb__60 grid_mobile_{{class_xs}}">
+	{%- if settings.use_wishlist -%}{%- include 'nitro-wishlist' -%}{%- endif -%}
+	{%- paginate collection.products by limit -%}
+	{%- if settings.shop_filters and pop_style == 'nt_pop_sidebar' -%}
+	<div class="filter-sidebar pf">{%- section 'nt_filter' -%}</div>
+	{%- endif -%}
+	<div class="row">
+		<div class="shop-content-area col-12 flex c_between alin_center">
+			{%- if settings.shop_show_per_page -%}
+			<div class="result-count-order dib nt_hidden-xs">
+				<div class="sp_result_html tu dib fs__12">{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = collection.products.size | plus:paginate.current_offset -%}{%- if current_tags == blank -%}{%- if limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{{ 'collections.general.results_with_count' | t:count:current_offset,curent_count:current_product_size,pr_count:collection.all_products_count }}{%- endif -%}{%- elsif limit > paginate.items -%}{{ 'collections.general.results_limit' | t: count: paginate.items }}{%- else -%}{%- assign current_offset = paginate.current_offset | plus:1 -%}{%- assign current_product_size = collection.products.size | plus:paginate.current_offset -%}{{ 'collections.general.results_with_count' | t:count:current_offset,curent_count:current_product_size,pr_count:paginate.items }}{%- endif -%}</div>
+			</div>
+			{%- endif %}
+			{%- if settings.show_column_switch -%}
+			<div class="sp-col-switch flex">
+				<a rel="nofollow" href="javascript:void(0);" class="one" data-col="12"><div class="icon_columnnt"></div></a>
+				<a rel="nofollow" href="javascript:void(0);" class="two{%- if grid_columns == '6' %} active{%- endif -%}" data-col="6"><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+				<a rel="nofollow" href="javascript:void(0);" class="nt_hidden-xs three{%- if grid_columns == '4' %} active{%- endif -%}" data-col="4"><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+				<a rel="nofollow" href="javascript:void(0);" class="hidden-sm four{%- if grid_columns == '3' %} active{%- endif -%}" data-col="3"><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+			    {%- if no_sidebar -%}
+			    <a rel="nofollow" href="javascript:void(0);" class="hidden-sm five{%- if grid_columns == '15' %} active{%- endif -%}" data-col="15"><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+			    {%- endif -%}
+			</div>
+			{%- endif -%}
+			<div class="shop-tools flex alin_center">
+				{%- if settings.shop_filters -%}<div class="pr oh nt_filter {{pop_style}} mr__30 fs__12 cusor_pointer">{{ 'collections.filters.filters_title' | t }}</div>{%- endif -%}
+				{%- if settings.show_column_switch -%}
+				<div class="sp-col-switch flex">
+					<a rel="nofollow" href="javascript:void(0);" class="one" data-col="12"><div class="icon_columnnt"></div></a>
+					<a rel="nofollow" href="javascript:void(0);" class="two{%- if grid_columns == '6' %} active{%- endif -%}" data-col="6"><div class="icon_columnnt"></div><div class="icon_columnnt"></div></a>
+				</div>
+				{%- endif -%}
+				{%- if settings.sort_enable -%}
+				{% case sort_by %} 
+					{% when 'manual' %}
+					    {%- assign sort_text = 'collections.sorting.featured' | t -%}
+					{% when 'best-selling' %}
+					    {%- assign sort_text = 'collections.sorting.best_selling' | t -%}
+					{% when 'title-ascending' %}
+					    {%- assign sort_text = 'collections.sorting.az' | t -%}
+					{% when 'title-descending' %}
+					    {%- assign sort_text = 'collections.sorting.za' | t -%}
+					{% when 'price-ascending' %}
+					    {%- assign sort_text = 'collections.sorting.price_ascending' | t -%}
+					{% when 'price-descending' %}
+					    {%- assign sort_text = 'collections.sorting.price_descending' | t -%}
+					{% when 'created-descending' %}
+					    {%- assign sort_text = 'collections.sorting.date_descending' | t -%}
+					{% else %}
+					    {%- assign sort_text = 'collections.sorting.date_ascending' | t -%}
+				{% endcase %}
+				<div class="shopify-ordering pr mr__30 fs__12">
+					<span class="db t_ellipsis tr cusor_pointer">{{sort_text}}</span>
+					{%- if canonical_url contains '&q=' or canonical_url contains '?q=' -%}
+					   {%- assign sort_url = canonical_url -%}
+					{%- else -%}
+					   {%- assign remove_page = '?page=' | append:paginate.current_page -%}
+					   {%- assign sort_url = canonical_url | remove:remove_page -%}
+					{%- endif -%}
+					<ul class="select_orderby pa">
+						<li{%- if sort_by == "manual" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'manual' }}">{{ 'collections.sorting.featured' | t }}</a></li>
+						<li{%- if sort_by == "best-selling" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'best-selling' }}">{{ 'collections.sorting.best_selling' | t }}</a></li>
+						<li{%- if sort_by == "title-ascending" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'title-ascending' }}">{{ 'collections.sorting.az' | t }}</a></li>
+						<li{%- if sort_by == "title-descending" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'title-descending' }}">{{ 'collections.sorting.za' | t }}</a></li>
+						<li{%- if sort_by == "price-ascending" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'price-ascending' }}">{{ 'collections.sorting.price_ascending' | t }}</a></li>
+						<li{%- if sort_by == "price-descending" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'price-descending' }}">{{ 'collections.sorting.price_descending' | t }}</a></li>
+						<li{%- if sort_by == "created-descending" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'created-descending' }}">{{ 'collections.sorting.date_descending' | t }}</a></li>
+						<li{%- if sort_by == "created-ascending" %} class="selected"{%- endif -%}><a href="{{ sort_url | sort_by: 'created-ascending' }}">{{ 'collections.sorting.date_ascending' | t }}</a></li>
+					</ul>
+				</div>
+				{%- endif -%}
+			</div>
+		</div>
+		{%- if settings.shop_filters and pop_style == 'pop_default' -%}
+		<div class="nt-top-sidebar col-12">
+			{%- section 'nt_filter' -%}
+	   </div>
+	   {%- endif -%}
+		<div class="col-12"><div class="hr shop_separator"></div></div>
+	</div>
+	{%- if current_tags.size > 0 -%}
+      <div class="nav_filters mb__20">
+         <ul>
+           {%- for tag in current_tags -%}
+              <li class="dib remove_tag">{{ tag | link_to_remove_tag: tag | replace: 'title=', 'aria-label=' }}</li>
+           {%- endfor -%}
+            {%- if current_tags.size > 1 -%}<li class="dib remove_tag"><a aria-label="Remove filter All" href="/collections/{{collection.handle}}">{{ 'collections.filters.all_reset' | t }}</a></li>{%-endif-%}
+         </ul>
+      </div>
+   {%- endif -%}
+	<div class="nt-shop-loader"></div>
+		<div class="row">
+			<div class="col-lg-{{class_gl}} col-12">
+				<div class="yit-wcan-container">
+					<div class="products nt-products-holder row {{pr_style}} {{coll_style}} {{settings.image_size}} nt-masonry {{settings.image_ratio}} position_{{settings.image_position}}{%- if settings_pr_img_size and collection.products_count > 0 %} equal-nt{%- endif -%}" data-masonry='{"selector":".product","layoutMode":"{%- if coll_style == 'fitRows' -%}fitRows{%- else -%}masonry{%- endif -%}"{%- if coll_style == 'metro' -%},"columnWidth":".product"{%- endif -%}}'>
+					   {%- if coll_style == 'metro' -%}<div class="grid-sizer size-{{grid_columns}}"></div>{%- endif-%}
+					   {%- for product in collection.products -%}
+					      {%- if coll_style == 'metro' -%}
+					          {%- assign index = forloop.index | append:',' | prepend:',' -%}
+					          {%- if array_metro contains index -%}
+			                  {%- assign grid_columns = '6 metro-item' -%}
+			                  {%- assign settings_metro_img_size = true -%}
+			               {%- else -%}
+			                  {%- assign grid_columns = settings.grid_column -%}
+			                  {%- assign settings_metro_img_size = false -%}
+			               {%- endif -%}
+					      {%- endif -%}
+					      {%- include 'nt_product_loop' -%}
+					   {%- endfor -%}
+					</div>
+					{%- if collection.products.size == 0 -%}<p class="shopify-info">{{ 'collections.general.no_matches' | t }}</p>{%- endif -%}
+					{%- if paginate.pages > 1 -%}
+				  <div class="products-footer tc">
+				      {%- if use_pagination == 'more-btn-infinite' or use_pagination == 'more-btn' -%}
+				      <a href="{{ paginate.next.url }}&view=inajax{{settings.grid_column}}" class="pr tu fwb ls__2 nt-products-load-more{%- if use_pagination == 'more-btn-infinite' %} load-on-scroll{%- endif -%}"><span class="load-label">{{ 'products.grid_items.load_more' | t }}</span><span class="load-finished dn">{{ 'products.grid_items.load_finished' | t }}</span><span class="loading-label flex pa">{{ 'products.grid_items.loading' | t }}</span></a>
+				      {%- else -%}
+				      {%- include 'pagination',class_ajax:'nt-pagination-ajax' -%}
+				      {%- endif -%}
+				  </div>
+				  {%- endif -%}
+				</div>
+			</div>
+			{%- if settings.shop_sidebar == 'left' or settings.shop_sidebar == 'right' -%}
+			<div class="sidebar col-lg-{{class_sidebar}} col-12">{%- section 'section_sidebar_shop' -%}</div>
+		   {%- endif -%}
+		</div>
+	{%- endpaginate -%} 
+</div>

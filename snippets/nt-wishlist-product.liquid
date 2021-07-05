@@ -1,0 +1,25 @@
+{%- if shop.customer_accounts_enabled -%}
+<div class="yith-wcwl-add-to-wishlist add-to-wishlist-{{ product.id }} {{customer}}">
+   {%- if customer -%}
+      {%- if NITRO_WISHLIST contains product.id -%}
+         <div class="yith-wcwl-wishlistexistsbrowse nt_addedbrowse_wishlist">
+            <a href="/pages/wishlist" rel="nofollow" class="add_to_wishlist tooltip_left" aria-label="{{ 'products.grid_items.browse_Wishlist' | t }}"><i class="fa fa-heart" aria-hidden="true"></i></a>
+         </div>
+      {%- else -%}
+         <div class="yith-wcwl-add-button nt_add_wishlist">
+            <a href="javascript:void(0);" data-customer_id="{{customer.id}}" data-email="{{customer.email}}" data-action="add" data-handle="{{product.handle}}" data-id="{{product.id}}" rel="nofollow" class="add_nitro_wishlist add_to_wishlist tooltip_left" aria-label="{{ 'products.grid_items.add_to_wishlist' | t }}"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+         </div>
+         <div class="yith-wcwl-add-button nt_adding_wishlist feid-in" style="display: none; pointer-events: none">
+            <a href="javascript:void(0);" rel="nofollow" class="load_nitro_wishlist add_to_wishlist tooltip_left btn-loading" aria-label="{{ 'products.grid_items.adding_to_wishlist' | t }}"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+         </div>
+         <div class="yith-wcwl-wishlistaddedbrowse nt_addedbrowse_wishlist" style="display:none;">
+            <a href="/pages/wishlist" rel="nofollow" class="add_to_wishlist tooltip_left" aria-label="{{ 'products.grid_items.browse_Wishlist' | t }}"><i class="fa fa-heart" aria-hidden="true"></i></a>
+         </div>
+      {%- endif -%}
+   {%- else -%}
+      <div class="yith-wcwl-add-button">
+         <a href="/account" rel="nofollow" class="nitro_wishlist_login add_to_wishlist tooltip_left" aria-label="{{ 'products.grid_items.login_to_wishlist' | t }}"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+      </div>
+   {%- endif -%}
+</div>
+{%- endif -%}

@@ -1,0 +1,279 @@
+    {% include 'soisy_order_form' %}
+    {%- assign image = settings.cart_bg_image -%}
+    {%- assign color_scheme = settings.cat_color -%}
+    {%- if cart.item_count > 0 -%}
+    <div class="{{color_scheme}} collection_header with_term_description bg_overlay_{{settings.cart_overlay}} pr oh{%- if settings.cart_bg_image %} ntparallax{%- endif %}{%- if image != blank %} with_featured_img lazyload nt_bg_lz lazypreload{%- else %} dark_ver{%- endif -%}"{%- if image != blank %} data-bgset="{%- include 'bgset', image: image -%}" data-sizes="auto" data-parent-fit="cover" {%- endif -%}>
+        {%- if image -%}<div class="div_overlay"></div>{%- endif %}
+        <div class="container tc">
+            <div class="wrap_cat">
+            <h1 class="page-title" itemprop="headline">{{ 'cart.general.title' | t }}</h1>
+            </div>
+        </div>
+    </div>
+    {%- endif -%} 
+    {%- assign image_size = '100x' -%}
+    <div class="container container_cat">
+        <div class="nt-shop-loader"></div>
+        <div class="row">
+            <div class="site-content col-12" role="main" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+            <div class="shopify">
+                {%- if cart.item_count > 0 -%}
+                {%- if settings.cart_reminder_enable -%}
+                <ul class="shopify-error">
+                    <li class="html_li fs__16">{{ 'cart.reminder' | t | split:'[time]' | first }}<div class="count1 dib" id="cart_timer">0:00</div>{{ 'cart.reminder' | t | split:'[time]' | last }}</li>
+                </ul>
+                {%- endif -%} 
+                <form class="shopify-cart-form" action="/cart" method="post" data-pjax>
+                <div class="responsive-table" id="pjax-container">
+                    <div class="responsive-table">
+                    <table class="shop_table shop_table_responsive cart shopify-cart-form__contents" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th class="product-remove">&nbsp;</th>
+                            <th class="product-thumbnail">&nbsp;</th>
+                            <th class="product-name">{{ 'cart.label.product' | t }}</th>
+                            <th class="product-price">{{ 'cart.label.price' | t }}</th>
+                            <th class="product-quantity">{{ 'cart.label.quantity' | t }}</th>
+                            <th class="product-subtotal">{{ 'cart.label.total' | t }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {%- for item in cart.items -%}
+                        {%- if item.variant.compare_at_price > item.variant.price -%}
+                    {%- capture saving- %}{{ item.variant.compare_at_price | minus: item.variant.price }}{%- endcapture -%}
+                    {%- assign total_saving = saving | plus: total_saving -%}
+                    {%- endif -%} 
+                        <tr class="shopify-cart-form__cart-item cart_item cart_item_{{ item.id }}">
+                            <td class="product-remove">
+                            <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="car_page_remove remove tooltip_top_right" aria-label="{{ 'cart.general.remove_label' | t }}" data-product_id="{{ item.id }}" data-product_sku="{{ item.sku }}">×</a>						
+                            </td>
+                            <td class="product-thumbnail">
+                            <a href="{{ item.url | within: item.product.collections.last }}">
+                                {%- if item.image -%}
+                                {%- assign image_0 = item.image -%}
+                                <img src="{{ image_0 | img_url: image_size }}" srcset="{{ image_0 | img_url: image_size }} 1x, {{ image_0 | img_url: image_size, scale: 2 }} 2x" class="w__100 attachment-shop_catalog size-shop_catalog sp-post-image" alt="{{image_0.alt | escape }}">  
+                                {%- endif -%}
+                            </a>						
+                            </td>
+                            <td class="product-name" data-title="{{ 'cart.label.product' | t }}">
+                            <a  class="fs__16" href="{{ item.url | within: item.product.collections.last }}">{{ item.product.title }}</a>
+                            {%- if item.product.has_only_default_variant == false -%}
+                            <dl class="variation">
+                                {%- for option in item.product.options -%}
+                                <dt class="variation-Color">{{ option | capitalize }}:</dt>
+                                <dd class="variation-Color"><p>{{ item.variant.options[forloop.index0] | capitalize }}</p></dd>
+                                {%- endfor -%}
+                            </dl>
+                            {%- endif -%}
+                            {%- if item.discounts.size > 0 -%}
+                            <div class="cart-drawer__item-discount-container">
+                            {%- for discount in item.discounts -%}
+                                <p class="cart-drawer__item-discount text-small">{{ discount.title }}</p>
+                            {%- endfor -%}
+                            </div>
+                            {%- endif -%}
+                            {%- assign property_size = item.properties | size -%}
+                                {%- if property_size > 0 -%}
+                                <ul class="cart-drawer__item-properties">
+                            {%- for p in item.properties -%}
+                                {%- unless p.last == blank -%}
+                                <li class="cart-drawer__item-property{%- if p == 'template' %} ajax-cart__template{%- endif %}{%- if p.last == blank %} visually-hidden{%- endif -%}">
+                                    {{ p.first }}:
+                                    {%- if p.last contains '/uploads/' %}
+                                    <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                                    {%- else %}
+                                    {{ p.last }}
+                                    {%- endif -%}
+                                </li>
+                                {%- endunless -%}
+                                {%- endfor -%}
+                                </ul>
+                            {%- endif -%}
+                            </td>
+                            <td class="product-price" data-title="{{ 'cart.label.price' | t }}">
+                            <span class="shopify-Price-amount amount">{{ item.price | money }}</span>
+                                {%- if item.unit_price_measurement -%}
+                                {%- capture unit_price_base_unit -%}
+                                    <span>
+                                    {%- if item.unit_price_measurement.reference_value != 1 -%}
+                                        {{- item.unit_price_measurement.reference_value -}}
+                                    {%- endif -%}
+                                    {{ item.unit_price_measurement.reference_unit }}
+                                    </span>
+                                {%- endcapture -%}
+                                <div class="item-unit-price"><span>{{ item.unit_price | money }}</span><span>/</span>{{- unit_price_base_unit -}}</div>
+                                {%- endif -%}
+                            </td>
+                            <td class="product-quantity" data-title="{{ 'cart.label.quantity' | t }}">
+                            <div class="quantity">
+                                <input type="button" value="-" class="minus">
+                                <input data-price="{{item.price}}" data-vid="{{ forloop.index }}" type="number" required="required" step="1" min="0" {%- if item.variant.inventory_management == blank or item.variant.inventory_policy == 'continue' %} max="999"{%- else %} max="{{ item.variant.inventory_quantity }}"{%- endif %} name="updates[]" id="updates_{{ item.key }}"  value="{{ item.quantity }}" data-val="{{ item.quantity }}" data-product_id="{{forloop.index}}" title="Qty" class="custom-qty input-text qty text cart__popup-qty--input on_page" size="4" pattern="[0-9]*" inputmode="numeric">
+                                <input type="button" value="+" class="plus">
+                            </div>
+                            </td>
+                            <td class="product-subtotal" data-title="{{ 'cart.label.total' | t }}">
+                            <span class="shopify-Price-amount amount">{%- if item.original_line_price != item.line_price -%}<s>{{ item.original_line_price | money }}</s> {% endif -%}{{ item.line_price | money }}</span>						
+                            </td>
+                        </tr>
+                        {%- endfor -%}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                <div class="row cart-actions mb__80">
+                    <div class="col-12 col-sm-6">
+                    {%- if settings.cart_coupon_enable -%}
+                    <div class="coupon pr">
+                        <input type="text" name="discount" class="input-text" id="coupon_code" value="" placeholder="{{ 'cart.general.placeholder_coupon' | t }}">
+                    </div>
+                    {%- endif -%}
+                    </div>
+                    <div class="col-12 col-sm-6 tr">
+                    <input type="submit" name="update" class="button update-cart hide" value="{{ 'cart.general.update' | t }}">	
+                    </div>
+                </div>
+                <div class="cart-collaterals row mb__80">
+                    <div class="col-12 col-lg-6">
+                        {%- if settings.cart_notes_enable -%}
+                    <div class="cart_totals note">
+                        <h2>{{ 'cart.general.note' | t }}</h2>
+                        <textarea name="note" class="cart-note__input cart-drawer__note CartSpecialInstructions" colspan="6">{{ cart.note }}</textarea>
+                    </div>
+                    {%- endif -%}
+                    {%- if settings.shipping_calculator == 'Enabled' -%}
+                    {%- include 'shipping-calculator' -%}
+                    {%- endif -%}
+                    </div>
+                    <div class="col-12 col-lg-6">
+                    <div class="cart_totals">
+                        <h2>{{ 'cart.general.total_title' | t }}</h2>
+                        <div class="responsive-table">
+                        <div class="responsive-table">
+                            <table cellspacing="0" class="shop_table shop_table_responsive">
+                            <tbody>
+                                <tr class="cart-subtotal">
+                                <th>{{ 'cart.general.subtotal' | t }}</th>
+                                <td data-title="{{ 'cart.general.subtotal' | t }}"><span class="shopify-Price-amount amount">{{ cart.total_price | money }}</span></td>
+                                </tr>
+                                <tr class="shipping">
+                                <th>{{ 'cart.general.shipping' | t }}</th>
+                                <td data-title="{{ 'cart.general.shipping' | t }}">
+                                    <p class="mg__0 fs__16">{{ 'cart.general.shipping_at_checkout' | t }}</p>
+                                </td>
+                                </tr>
+                                <tr class="order-total">
+                                <th>{{ 'cart.general.total' | t }}</th>
+                                <td data-title="{{ 'cart.general.total' | t }}"><strong><span class="shopify-Price-amount amount">{{ cart.total_price | money }}</span></strong></td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        </div>
+                        <div class="wc-proceed-to-checkout tc{%- if cart.items.size == 0 and settings.use_threshold_page %} free_ship{%- endif %}{%- if settings.use_agree_checkbox_page %} form_nt_agree nt_checkout pe_none{%- endif -%}">
+                        {%- if settings.use_threshold_page and cart.item_count > 0 -%}
+                        <div class="ship_nt_wrap">{%- include 'shipping-threshold' -%}</div>
+                        {%- elsif settings.use_threshold_page -%}
+                        <div class="ship_nt_wrap"><p class="cart-drawer__disclaimer">{{ 'cart.general.shipping_free' | t }}</p></div>
+                    {%- endif -%}
+                    {%- if settings.use_agree_checkbox_page -%}
+                        {%- assign page_url = pages[settings.link_conditions].url -%}
+                        <p class="agree_checkbox content_threshold">
+                            <label class="label-for-checkbox">
+                            <input type="checkbox" class="input-checkbox nt_agree">
+                            {%- if settings.link_conditions != blank -%}{{ 'cart.general.link_conditions_html' | t:link: page_url }}{%- else -%}{{ 'cart.general.link_conditions_emty' | t }}{%- endif -%}
+                            </label>
+                            </p>
+                    {%- endif -%}
+                        {%- if settings.explain_code -%}<p>{{ 'cart.general.explain_code' | t }}</p>{%- endif -%}
+                        {%- if settings.explain_curency -%}<p class="explain_curency">{{ 'cart.general.explain_currency_html' | t:currency:shop.currency }}</p>{%- endif -%}
+                        <style>
+                            #soisy_buy_btn {
+                            margin-bottom: 15px;
+                            background-image: url({{ "soisy_mark.png" | asset_url }});
+                            background-repeat: no-repeat;
+                            background-position: 95%;
+                            background-size: 10%;
+                            display: none;
+                            }
+                        </style>
+                        <span id="soisy_buy_btn" class="button">Acquista a rate con SOISY</span>
+                        <button class="checkout-button button alt btn--loader pr" name="checkout">{{ 'cart.general.proceed_checkout' | t }}<span class="btn--loader-balls"></span></button>
+                        {%- if settings.use_additional_checkout_buttons and additional_checkout_buttons -%}
+                        <div class="checkout-buttons__separator">{{ 'cart.general.checkout_separator' | t }}</div>
+                        <div class="additional-checkout-buttons mt__10">{{ content_for_additional_checkout_buttons }}</div>                  
+                    {%- endif -%}
+                            {%- if settings.show_cart_trust_seal_page and settings.cart_img_trust_seal_page != blank -%}
+                            {%- assign image = settings.cart_img_trust_seal_page -%}
+                            {%- assign image_size = '550x' -%}
+                            <div class="trust_img mt__20 "><img alt="{{image.alt}}" src="{{ image | img_url: image_size }}" srcset="{{ image | img_url: image_size }} 1x, {{ image | img_url: image_size, scale: 2 }} 2x"></div>
+                            {%- endif -%}
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </form>
+                {%- else -%}
+                <p class="cart-empty">{{ 'cart.general.empty' | t }}</p>
+                <div class="empty-cart-text">{{ 'cart.general.guest_note_html' | t }}</div>
+                <p class="return-to-shop db tc mt__30 mb__100"><a href="/collections/all" class="wc-backward">{{ 'cart.general.continue_shopping' | t }}</a></p>
+                {%- endif -%}
+            </div>
+            </div>
+            <!-- .site-content -->
+        </div>
+        </div>
+        {%- if settings.cart_reminder_enable -%}
+        <script>
+        var settMinutes = 60 * {{settings.cart_minutes}}, time = getCookie("cartTime"),display = document.querySelector('#cart_timer');
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10)
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = minutes + ":" + seconds;
+                var calc = 60 * parseInt(timer / 60, 10) + parseInt(timer % 60, 10);
+                setCookie("cartTime", calc, 1);
+                if (--timer < 0) {
+                    // timer = duration;
+                    // calc = 0;
+                    //deleteCookie("cartTime");
+                    window.clearInterval(timer);
+                    display.textContent = "0:00";
+                }
+            }, 1000);
+        }
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        function deleteCookie(cname) {
+            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+        if (time > 0) {startTimer(time, display);}
+        else {startTimer(settMinutes, display)}
+        </script>
+    {%- endif -%}
+
+
+{% include 'soisy' %}
+
+
